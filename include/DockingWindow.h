@@ -105,34 +105,43 @@ class ATL_NO_VTABLE CDockingWindowBaseImpl : public CWindowImpl< T, TBase, TWinT
 protected:
     class CGhostMoveTracker : public CDDTrackerBaseT<CGhostMoveTracker>
     {
-//probably better use GetSystemMetrics
-        enum{GhostRectSideSize=3};
     public:
         CGhostMoveTracker(const CDocker& docker,const POINT& pt,DFDOCKRECT& dockHdr)
-            :m_docker(docker),m_dockHdr(dockHdr),m_dc(::GetWindowDC(NULL))
+            :m_docker(docker),m_dockHdr(dockHdr),m_dc(::GetDC(NULL))
+            ,m_ghostBarBrush(CDCHandle::GetHalftoneBrush())
+            ,m_ghostRectSideSize(GetGhostBarWidth())
         {
             m_offset.cx=m_dockHdr.rect.left-pt.x;
             m_offset.cy=m_dockHdr.rect.top-pt.y;
             m_size.cx=m_dockHdr.rect.right-m_dockHdr.rect.left;
             m_size.cy=m_dockHdr.rect.bottom-m_dockHdr.rect.top;
         }
-        void DrawGhostRect(CDC& dc,RECT* pRect)
+        static int GetGhostBarWidth()
         {
-            CBrush brush = CDCHandle::GetHalftoneBrush();
-            if(brush.m_hBrush != NULL)
+#ifndef _WIN32_WCE
+            return ::GetSystemMetrics(SM_CXDRAG);
+#else // CE specific
+            return ::GetSystemMetrics(SM_CXEDGE);
+#endif // _WIN32_WCE
+        }
+        void DrawGhostRect(CDC& dc, const RECT* pRect)
+        {
+            if(m_ghostBarBrush.m_hBrush != NULL)
             {
-                HBRUSH hBrushOld = dc.SelectBrush(brush);
+                CRect rect(*pRect);
+                CRgn rgn;
+                rgn.CreateRectRgnIndirect(&rect);
 
-                dc.PatBlt(pRect->left, pRect->top,
-                          pRect->right-pRect->left,GhostRectSideSize, PATINVERT);
-                dc.PatBlt(pRect->left, pRect->bottom-GhostRectSideSize,
-                          pRect->right-pRect->left,GhostRectSideSize, PATINVERT);
+                HBRUSH hBrushOld = dc.SelectBrush(m_ghostBarBrush);
 
-                dc.PatBlt(pRect->left, pRect->top+GhostRectSideSize,
-                          GhostRectSideSize,pRect->bottom-pRect->top-2*GhostRectSideSize, PATINVERT);
-                dc.PatBlt(pRect->right-GhostRectSideSize, pRect->top+GhostRectSideSize,
-                          GhostRectSideSize,pRect->bottom-pRect->top-2*GhostRectSideSize, PATINVERT);
+                dc.SelectClipRgn(rgn);
 
+                rect.DeflateRect(m_ghostRectSideSize, m_ghostRectSideSize);
+                dc.ExcludeClipRect(&rect);
+
+                dc.PatBlt(pRect->left, pRect->top, pRect->right, pRect->bottom, PATINVERT);
+
+                dc.SelectClipRgn(NULL);
 
                 dc.SelectBrush(hBrushOld);
             }
@@ -223,6 +232,8 @@ protected:
 
         CPoint m_lastPos;
         CRect m_lastRect;
+        CBrush m_ghostBarBrush;
+        const int m_ghostRectSideSize;
     };
 public:
     CDockingWindowBaseImpl(void)
