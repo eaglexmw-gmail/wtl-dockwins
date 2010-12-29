@@ -10,10 +10,12 @@
 // not sold for profit without the authors written consent, and
 // providing that this notice and the authors name is included. If
 // the source code in  this file is used in any commercial application
-// then a simple email woulod be nice.
+// then a simple email would be nice.
 
 #include <DockMisc.h>
 #include <DockingBox.h>
+
+#include <string>
 
 namespace dockwins{
 
@@ -28,31 +30,31 @@ CVC6LikeCaption::CPinButton::CIcons CVC6LikeCaption::CPinButton::m_icons;
 
 #endif
 
-void DrawEllipsisText(CDC& dc,LPCTSTR sText,int n,LPRECT prc,bool bHorizontal)
+void DrawEllipsisText(CDC& dc,LPCTSTR sText, int n,LPRECT prc,bool bHorizontal)
 {
     assert(n>0);
     long width=bHorizontal ? prc->right - prc->left : prc->bottom - prc->top;
     CSize size;
-    LPTSTR sTmp=0;
+    std::basic_string<TCHAR> sTmp;
+
     bool bRes=(GetTextExtentPoint32(dc, sText, n,&size)!=FALSE);
     assert(bRes);
     if(width<size.cx)
     {
-        LPCTSTR sEllipsis=_T("...");
-        const size_t ellipsisLen=sizeof(sEllipsis)-1;
-        sTmp=new TCHAR[ellipsisLen+n];
-        _tcscpy(sTmp,_T("..."));
-        _tcsncpy(sTmp+ellipsisLen,sText,n);
-        bRes=(GetTextExtentExPoint(dc,sTmp,ellipsisLen+n,width,&n,NULL,&size)!=FALSE);
+        const std::basic_string<TCHAR> sEllipsis=_T("...");
+        sTmp.reserve(sEllipsis.size()+n);
+        sTmp.append(sEllipsis);
+        sTmp.append(sText, n);
+        bRes=(GetTextExtentExPoint(dc,sTmp.c_str(),sTmp.size(),width,&n,NULL,&size)!=FALSE);
         if(bRes)
         {
-            if(n<ellipsisLen+1)
-                n=ellipsisLen+1;
-            _tcsncpy(sTmp,sText,n-ellipsisLen);
-            _tcsncpy(sTmp+(n-ellipsisLen),sEllipsis,ellipsisLen);
-            sText=sTmp;
+            if(n<static_cast<int>(sEllipsis.size()+1))
+                n=sEllipsis.size()+1;
+            sTmp.assign(sText, n-sEllipsis.size());
+            sTmp.append(sEllipsis);
+            sText=sTmp.c_str();
         }
-    }    
+    }
 
 //    UINT prevAlign=dc.SetTextAlign(TA_LEFT | TA_TOP | TA_NOUPDATECP);
     CPoint pt(prc->left,prc->top);
@@ -62,7 +64,6 @@ void DrawEllipsisText(CDC& dc,LPCTSTR sText,int n,LPRECT prc,bool bHorizontal)
         pt.x = prc->right-(prc->right - prc->left-size.cy)/2;
     dc.ExtTextOut(pt.x,pt.y,ETO_CLIPPED,prc,sText,n,NULL);
 //    dc.SetTextAlign(prevAlign);
-    delete [] sTmp;
 }
 
 }//namespace dockwins
