@@ -657,7 +657,7 @@ public:
             m_caption.CalculateRect(*pRc,true);
     }
 
-    unsigned int NcHitTest(CPoint pt)
+    LRESULT NcHitTest(CPoint pt)
     {
         LRESULT lRes=HTNOWHERE;
         RECT rc;
