@@ -1052,7 +1052,9 @@ protected:
 //this class is obsolete and provided only for compatibility with previous versions.
 //the CTitleDockingWindowImpl class provide all functionality of CStateKeeper
 template<class T>
-struct CStateKeeper : public T
+struct
+    __declspec(deprecated("CStateKeeper is deprecated. Use CTitleDockingWindowImpl instead."))
+    CStateKeeper : public T
 {
 };
 
@@ -1062,7 +1064,9 @@ struct CStateKeeper : public T
 template <class T,
           class TBase = CWindow,
           class TDockingWinTraits = CEmptyTitleDockingWindowTraits>
-struct ATL_NO_VTABLE CTitleExDockingWindowImpl : CTitleDockingWindowImpl< T, TBase, TDockingWinTraits >
+struct ATL_NO_VTABLE
+    __declspec(deprecated("CTitleExDockingWindowImpl is deprecated. Use CTitleDockingWindowImpl instead."))
+    CTitleExDockingWindowImpl : CTitleDockingWindowImpl< T, TBase, TDockingWinTraits >
 {
 };
 
