@@ -752,9 +752,6 @@ public:
         HWND m_hWnd;
     };
 
-    CPtrFrame(const CPtrFrame& x):m_pos(x.m_pos),m_ptr(x.m_ptr)
-    {
-    }
     CPtrFrame(position pos, T* ptr)
         :m_pos(pos),m_ptr(ptr)
     {
@@ -804,11 +801,7 @@ public:
     }
 protected:
     position m_pos;
-#ifdef USE_BOOST
-    mutable boost::shared_ptr<T> m_ptr;
-#else
-    mutable std::auto_ptr<T> m_ptr;
-#endif
+    mutable std::tr1::shared_ptr<T> m_ptr;
 };
 
 
