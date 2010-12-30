@@ -80,10 +80,7 @@ public:
         return (::SendMessage(m_hWnd,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr))!=FALSE);
     }
 //#endif
-    operator HWND () const
-    {
-        return m_hWnd;
-    }
+    using CWindow::operator HWND;
 };
 
 template < DWORD t_dwStyle = 0, DWORD t_dwExStyle = 0>
