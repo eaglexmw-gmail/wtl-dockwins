@@ -22,7 +22,45 @@
 #include <cassert>
 #include <SimpleSplitterBar.h>
 
-namespace dockwins{
+//////////////////messages///////////////////////////
+enum
+{
+    WMDF_FIRST = WM_USER,
+    WMDF_NDOCKSTATECHANGED = WMDF_FIRST,
+    WMDF_DOCK,
+    WMDF_LAST = WMDF_DOCK
+};
+
+//wParam MAKEWPARAM(DOCK=TRUE\UNDOCK=FALSE,bHorizontal)
+//lParam hBar
+
+#define DOCKED2HORIZONTAL(wParam) (HIWORD(wParam))
+
+//WMDF_DOCK'z codes:
+
+enum
+{
+    DC_ACCEPT = 1,
+    DC_DOCK,
+    DC_UNDOCK,
+    DC_GETDOCKPOSITION,
+    DC_SETDOCKPOSITION,
+    DC_ADJUSTDRAGRECT,
+    DC_REPLACE,
+    DC_ISBOX,
+    DC_ACTIVATE,
+    DC_ISPINNED,
+    DC_PINUP,
+    DC_GETMINDIST
+};
+
+typedef HWND HDOCKBAR;
+
+const HDOCKBAR HNONDOCKBAR = NULL;
+
+enum { DFPU_VISUALIZE = 1 };
+
+namespace dockwins {
 
 #ifdef DF_AUTO_HIDE_FEATURES
 
@@ -51,59 +89,29 @@ typedef CDockingFrameTraitsT< CSimpleSplitterBarEx<6>,
         WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,0> CDockingSiteTraits;
 
 #endif
-//////////////////messages///////////////////////////
-#define WMDF_FIRST  (WM_USER)
-#define WMDF_LAST    (WMDF_FIRST+1)
-
-#define WMDF_NDOCKSTATECHANGED    (WMDF_FIRST)
-//wParam MAKEWPARAM(DOCK=TRUE\UNDOCK=FALSE,bHorizontal)
-//lParam hBar
-
-#define DOCKED2HORIZONTAL(wParam) (HIWORD(wParam))
-
-#define WMDF_DOCK                (WMDF_FIRST+1)
-//WMDF_DOCK'z codes:
-#define DC_ACCEPT                (1)
-#define DC_DOCK                    (2)
-#define DC_UNDOCK                (3)
-#define DC_GETDOCKPOSITION        (4)
-#define DC_SETDOCKPOSITION        (5)
-
-#define DC_ADJUSTDRAGRECT        (7)
-#define DC_REPLACE                (8)
-#define DC_ISBOX                (9)
-#define DC_ACTIVATE                (10)
-
-#define DC_ISPINNED                (11)
-#define DC_PINUP                (12)
-
-#define DC_GETMINDIST            (13)
-
-#define HDOCKBAR                HWND
-#define HNONDOCKBAR                (0)
 
 //WMDF_DOCK'z structures
-typedef struct tagDFMHDR
+struct DFMHDR
 {
     HWND        hWnd;
     HDOCKBAR    hBar;
     UINT        code;
-}DFMHDR;
+};
 
-typedef struct tagDFDOCKREPLACE
+struct DFDOCKREPLACE
 {
     DFMHDR    hdr;
     HWND    hWnd;
-}DFDOCKREPLACE;
+};
 
-typedef struct tagDFDOCKRECT
+struct DFDOCKRECT
 {
     DFMHDR    hdr;
     RECT    rect;
     DWORD    flag;
-}DFDOCKRECT;
+};
 
-typedef struct tagDFDOCKPOS
+struct DFDOCKPOS
 {
     DFMHDR            hdr;
     DWORD            dwDockSide;
@@ -119,17 +127,17 @@ typedef struct tagDFDOCKPOS
         RECT    rcFloat;
     };
     unsigned long    nIndex;
-}DFDOCKPOS;
+};
 
-typedef struct tagDFDOCKPOSEX
+struct DFDOCKPOSEX
 {
     DFDOCKPOS    dockPos;
     RECT        rect;
     BOOL        bDocking;
     BOOL        bVisible;
-} DFDOCKPOSEX;
+};
 
-typedef struct tagDFPINUP
+struct DFPINUP
 {
     DFMHDR            hdr;
     DWORD            dwDockSide;
@@ -137,9 +145,7 @@ typedef struct tagDFPINUP
     DWORD            dwFlags;
     unsigned long    n;
     HWND*            phWnds;
-} DFPINUP;
-
-#define DFPU_VISUALIZE    (1)
+};
 
 class CDockingSide
 {
