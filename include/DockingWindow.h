@@ -107,10 +107,12 @@ protected:
     {
     public:
         CGhostMoveTracker(const CDocker& docker,const POINT& pt,DFDOCKRECT& dockHdr)
-            :m_docker(docker),m_dockHdr(dockHdr),m_dc(::GetDC(NULL))
-            ,m_ghostBarBrush(CDCHandle::GetHalftoneBrush())
-            ,m_ghostRectSideSize(GetGhostBarWidth())
+            :m_docker(docker),m_dockHdr(dockHdr)
+            ,m_dc(::GetWindowDC(::GetDesktopWindow()))
         {
+            int dxy = GetGhostBarWidth();
+            m_ghostRectSideSize.SetSize(dxy, dxy);
+
             m_offset.cx=m_dockHdr.rect.left-pt.x;
             m_offset.cy=m_dockHdr.rect.top-pt.y;
             m_size.cx=m_dockHdr.rect.right-m_dockHdr.rect.left;
@@ -124,40 +126,19 @@ protected:
             return ::GetSystemMetrics(SM_CXEDGE);
 #endif // _WIN32_WCE
         }
-        void DrawGhostRect(CDC& dc, const RECT* pRect)
+        void DrawGhostRect(CDC& dc, const RECT& rect)
         {
-            if(m_ghostBarBrush.m_hBrush != NULL)
-            {
-                CRect rect(*pRect);
-                CRgn rgn;
-                rgn.CreateRectRgnIndirect(&rect);
-
-                HBRUSH hBrushOld = dc.SelectBrush(m_ghostBarBrush);
-
-                dc.SelectClipRgn(rgn);
-
-                rect.DeflateRect(m_ghostRectSideSize, m_ghostRectSideSize);
-                dc.ExcludeClipRect(&rect);
-
-                dc.PatBlt(pRect->left, pRect->top, pRect->right, pRect->bottom, PATINVERT);
-
-                dc.SelectClipRgn(NULL);
-
-                dc.SelectBrush(hBrushOld);
-            }
-
+            dc.DrawDragRect(&rect, m_ghostRectSideSize, &m_lastRect,
+                m_ghostRectSideSize);
         }
-        void CleanGhostRect(CDC& dc,RECT* pRect)
+        void BeginDrag()
         {
-            DrawGhostRect(dc,pRect);
-        }
-        void BeginDrag(void)
-        {
-            DrawGhostRect(m_dc,&m_dockHdr.rect);
+            DrawGhostRect(m_dc, m_dockHdr.rect);
+            m_lastRect = m_dockHdr.rect;
         }
         void EndDrag(bool /*bCanceled*/)
         {
-            CleanGhostRect(m_dc,&m_dockHdr.rect);
+            DrawGhostRect(m_dc, CRect());
             Reset();
         }
         void OnMove(LONG x, LONG y)
@@ -169,6 +150,20 @@ protected:
 
             DFDOCKRECT dockHdr = m_dockHdr;
 
+            AdjustDragRect(dockHdr, x, y);
+
+
+            if (m_lastRect == dockHdr.rect)
+                return;
+
+            DrawGhostRect(m_dc, dockHdr.rect);
+
+            m_dockHdr = dockHdr;
+            m_lastRect = dockHdr.rect;
+        }
+
+        void AdjustDragRect(DFDOCKRECT &dockHdr, LONG x, LONG y)
+        {
             dockHdr.rect.left=x;
             dockHdr.rect.top=y;
 
@@ -187,17 +182,8 @@ protected:
                 dockHdr.rect.right=dockHdr.rect.left+m_size.cx;
                 dockHdr.rect.bottom=dockHdr.rect.top+m_size.cy;
             }
-
-            if (m_lastRect == dockHdr.rect)
-                return;
-
-            CleanGhostRect(m_dc, &m_dockHdr.rect);
-
-            m_dockHdr = dockHdr;
-            m_lastRect = m_dockHdr.rect;
-
-            DrawGhostRect(m_dc,&m_dockHdr.rect);
         }
+
         bool ProcessWindowMessage(MSG* pMsg)
         {
             bool bHandled=false;
@@ -233,7 +219,7 @@ protected:
         CPoint m_lastPos;
         CRect m_lastRect;
         CBrush m_ghostBarBrush;
-        const int m_ghostRectSideSize;
+        CSize m_ghostRectSideSize;
     };
 public:
     CDockingWindowBaseImpl(void)
