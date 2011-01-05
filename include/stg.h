@@ -4,13 +4,15 @@
 #ifndef WTL_DW_STG_H_INCLUDED_
 #define WTL_DW_STG_H_INCLUDED_
 
-#include <vector>
-#include <sstream>
+#pragma once
+
+#include <algorithm>
 #include <iomanip>
 #include <iterator>
-#include <algorithm>
+#include <sstream>
+#include <vector>
 
-namespace sstate{
+namespace sstate {
 
 class IStorge
 {

@@ -4,7 +4,11 @@
 #ifndef WTL_DW_DDTRACKER_H_INCLUDED_
 #define WTL_DW_DDTRACKER_H_INCLUDED_
 
-#include<cassert>
+#pragma once
+
+#include <cassert>
+
+namespace dockwins {
 
 class IDDTracker
 {
@@ -30,9 +34,8 @@ public:
     {
        return false;
     }
-
-
 };
+
 template<class T>
 class CDDTrackerBaseT
 {
@@ -125,5 +128,7 @@ public:
 private:
     POINT pt_;
 };
+
+} // namespace dockwins
 
 #endif // WTL_DW_DDTRACKER_H_INCLUDED_

@@ -15,14 +15,16 @@
 #ifndef SSEC_H_INCLUDED_
 #define SSEC_H_INCLUDED_
 
+#pragma once
+
+#include <algorithm>
 #include <cassert>
 #include <deque>
-#include <utility>
-#include <algorithm>
 #include <functional>
 #include <numeric>
+#include <utility>
 
-namespace ssec{
+namespace ssec {
 
 template <class TPosition,class TDistance=TPosition>
 struct bounds_type

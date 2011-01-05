@@ -4,11 +4,13 @@
 #ifndef WTL_DW_STGREG_H_INCLUDED_
 #define WTL_DW_STGREG_H_INCLUDED_
 
-#include <stg.h>
+#pragma once
+
 #include <cassert>
 
+#include "stg.h"
 
-namespace sstate{
+namespace sstate {
 
 namespace{
 REGSAM ModesMap[]={KEY_READ,KEY_WRITE,KEY_ALL_ACCESS};

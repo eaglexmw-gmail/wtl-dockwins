@@ -15,11 +15,13 @@
 #ifndef WTL_DW_SIMPLESPLITTERBAR_H_INCLUDED_
 #define WTL_DW_SIMPLESPLITTERBAR_H_INCLUDED_
 
+#pragma once
+
 #ifndef __ATLMISC_H__
-        #error SimpleSplitterBar.h requires atlmisc.h to be included first
+    #error SimpleSplitterBar.h requires atlmisc.h to be included first
 #endif
 
-namespace dockwins{
+namespace dockwins {
 
 template<long TThickness=5>
 class CSimpleSplitterBar :  public CRect

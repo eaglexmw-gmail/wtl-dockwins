@@ -15,9 +15,11 @@
 #ifndef WTL_DW_EXTDOCKINGWINDOW_H_INCLUDED_
 #define WTL_DW_EXTDOCKINGWINDOW_H_INCLUDED_
 
-#include <DockingWindow.h>
+#pragma once
 
-namespace dockwins{
+#include "DockingWindow.h"
+
+namespace dockwins {
 
 #ifdef DF_AUTO_HIDE_FEATURES
 class CPinIcons

@@ -4,11 +4,13 @@
 #ifndef WTL_DW_STGXML_H_INCLUDED_
 #define WTL_DW_STGXML_H_INCLUDED_
 
-#include <stg.h>
+#pragma once
+
 #include <cassert>
 
-namespace sstate{
+#include "stg.h"
 
+namespace sstate {
 
 class CStgXML
     : public IStorge

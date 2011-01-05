@@ -15,10 +15,13 @@
 #ifndef WTL_DW_DOCKINGBOX_H_INCLUDED_
 #define WTL_DW_DOCKINGBOX_H_INCLUDED_
 
-#include <sstream>
-#include <ExtDockingWindow.h>
+#pragma once
 
-namespace dockwins{
+#include <sstream>
+
+#include "ExtDockingWindow.h"
+
+namespace dockwins {
 
 class CDockingBoxMessage
 {

@@ -16,16 +16,18 @@
 #ifndef WTL_DW_DWAUTOHIDE_H_INCLUDED_
 #define WTL_DW_DWAUTOHIDE_H_INCLUDED_
 
+#pragma once
+
 #define DF_AUTO_HIDE_FEATURES
 
 #include <queue>
 #include <deque>
-#include <ssec.h>
-#include <DockMisc.h>
-#include <ExtDockingWindow.h>
 
+#include "ssec.h"
+#include "DockMisc.h"
+#include "ExtDockingWindow.h"
 
-namespace dockwins{
+namespace dockwins {
 
 typedef CDockingWindowTraits<COutlookLikeCaption,
                                 WS_CAPTION | WS_CHILD |

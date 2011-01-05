@@ -15,18 +15,22 @@
 #ifndef WTL_DW_WNDFRMPKG_H_INCLUDED_
 #define WTL_DW_WNDFRMPKG_H_INCLUDED_
 
+#pragma once
+
 #ifndef __ATLMISC_H__
-        #error WndFrmPkg.h requires atlmisc.h to be included first
+    #error WndFrmPkg.h requires atlmisc.h to be included first
 #endif
 
 #include <memory>
-#include <ssec.h>
-#include <DDTracker.h>
+
 #ifdef USE_BOOST
-#include<boost/smart_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #endif
 
-namespace dockwins{
+#include "ssec.h"
+#include "DDTracker.h"
+
+namespace dockwins {
 
 class CWndFrame
 {

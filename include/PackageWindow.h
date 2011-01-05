@@ -15,10 +15,12 @@
 #ifndef WTL_DW_PACKAGEWINDOW_H_INCLUDED_
 #define WTL_DW_PACKAGEWINDOW_H_INCLUDED_
 
-#include <DockMisc.h>
-#include <WndFrmPkg.h>
+#pragma once
 
-namespace dockwins{
+#include "DockMisc.h"
+#include "WndFrmPkg.h"
+
+namespace dockwins {
 
 template <class T,
           class TWndPackage,

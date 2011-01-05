@@ -15,12 +15,15 @@
 #ifndef WTL_DW_DOCKMISC_H_INCLUDED_
 #define WTL_DW_DOCKMISC_H_INCLUDED_
 
+#pragma once
+
 #ifndef __ATLMISC_H__
         #error dockmisk.h requires atlmisc.h to be included first
 #endif
 
 #include <cassert>
-#include <SimpleSplitterBar.h>
+
+#include "SimpleSplitterBar.h"
 
 namespace dockwins {
 

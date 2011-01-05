@@ -4,20 +4,22 @@
 #ifndef WTL_DW_SSTATE_H_INCLUDED_
 #define WTL_DW_SSTATE_H_INCLUDED_
 
+#pragma once
 
-#include<memory>
-#include<utility>
-#include<algorithm>
-#include<map>
-#include<cassert>
-#include<limits>
-#include<string>
-#include<sstream>
-#include<atlsplit.h>
-#include<stg.h>
+// NOTE: To be able to CSplitterWindowStateAdapter include atlsplit.h first
 
+#include <algorithm>
+#include <cassert>
+#include <limits>
+#include <map>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <utility>
 
-namespace sstate{
+#include "stg.h"
+
+namespace sstate {
 
 const    TCHAR ctxtGeneral[]        = _T("General");
 const    TCHAR ctxtCXScreen[]    =_T("SM_CXSCREEN");
@@ -819,6 +821,8 @@ protected:
     CImpl* m_pImpl;
 };
 
+#ifdef __ATLSPLIT_H__
+
 template <bool t_bVertical = true>
 class CSplitterWindowStateAdapter
 {
@@ -884,5 +888,8 @@ protected:
     CImpl* m_pImpl;
 };
 
-}//namespace sstate
+#endif // __ATLSPLIT_H__
+
+} // namespace sstate
+
 #endif // WTL_DW_SSTATE_H_INCLUDED_

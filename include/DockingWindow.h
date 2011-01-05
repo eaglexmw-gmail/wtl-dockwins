@@ -15,10 +15,12 @@
 #ifndef WTL_DW_DOCKINGWINDOW_H_INCLUDED_
 #define WTL_DW_DOCKINGWINDOW_H_INCLUDED_
 
-#include <DockMisc.h>
-#include <DDTracker.h>
+#pragma once
 
-namespace dockwins{
+#include "DockMisc.h"
+#include "DDTracker.h"
+
+namespace dockwins {
 
 class CDocker : protected CWindow
 {

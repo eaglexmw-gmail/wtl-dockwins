@@ -15,13 +15,14 @@
 #ifndef WTL_DW_DBSTATE_H_INCLUDED_
 #define WTL_DW_DBSTATE_H_INCLUDED_
 
+#pragma once
+
 #include <list>
-#include <dwstate.h>
-#include <DockingBox.h>
 
+#include "dwstate.h"
+#include "DockingBox.h"
 
-namespace sstate{
-
+namespace sstate {
 
 class CDockWndMgrEx: public CDockWndMgr
 {

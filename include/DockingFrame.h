@@ -15,9 +15,14 @@
 #ifndef WTL_DW_DOCKINGFRAME_H_INCLUDED_
 #define WTL_DW_DOCKINGFRAME_H_INCLUDED_
 
-#include <atlframe.h>
-#include <DockMisc.h>
-#include <PackageWindow.h>
+#pragma once
+
+#ifndef __ATLFRAME_H__
+    #error DockingFrame.h requires atlframe.h to be included first
+#endif // __ATLFRAME_H__
+
+#include "DockMisc.h"
+#include "PackageWindow.h"
 
 namespace dockwins{
 /////////////////CDockingFrameImplBase

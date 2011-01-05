@@ -15,15 +15,15 @@
 #ifndef WTL_DW_DWSTATE_H_INCLUDED_
 #define WTL_DW_DWSTATE_H_INCLUDED_
 
+#pragma once
+
 #include <cassert>
 #include <queue>
-#include <sstate.h>
-#include <DockMisc.h>
 
+#include "sstate.h"
+#include "DockMisc.h"
 
-namespace sstate{
-
-
+namespace sstate {
 
 struct IDockWndState : public IState
 {
