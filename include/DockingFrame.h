@@ -483,7 +483,7 @@ class ATL_NO_VTABLE CDockingSiteBasement : public CWindowImpl<T, TBase, TWinTrai
 {
     typedef CDockingSiteBasement<T, TBase, TWinTraits >  thisClass;
 public:
-    DECLARE_WND_CLASS(NULL)
+    DECLARE_WND_CLASS_EX(NULL, 0, COLOR_WINDOW)
     CDockingSiteBasement():m_hWndClient(NULL)
     {
     }

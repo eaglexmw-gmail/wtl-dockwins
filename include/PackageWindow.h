@@ -258,7 +258,7 @@ protected:
         : CPackageWindowImpl<CPackageWindowT<TTraits>, CWndFramesPackage<TTraits> >
     {
     public:
-        DECLARE_WND_CLASS(_T("CPackageWindowFrame::CPackageWindow"))
+        DECLARE_WND_CLASS_EX(_T("CPackageWindowFrame::CPackageWindow"), 0, COLOR_WINDOW)
         virtual void OnFinalMessage(HWND /*hWnd*/)
         {
             delete this;

@@ -1752,7 +1752,7 @@ public:
         return true;
     }
 
-    DECLARE_WND_CLASS(_T("CAutoHideManager"))
+    DECLARE_WND_CLASS_EX(_T("CAutoHideManager"), 0, COLOR_WINDOW)
 protected:
     BEGIN_MSG_MAP(thisClass)
         MESSAGE_HANDLER(WM_DESTROY, OnDestroy)

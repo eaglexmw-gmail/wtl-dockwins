@@ -50,7 +50,7 @@ public:
         baseClass::OnUndocked(hBar);
     }
 
-    DECLARE_WND_CLASS(_T("CFoldersDockingWindow"))
+    DECLARE_WND_CLASS_EX(_T("CFoldersDockingWindow"), 0, COLOR_WINDOW)
     BEGIN_MSG_MAP(thisClass)
         MESSAGE_HANDLER(WM_CREATE, OnCreate)
         MESSAGE_HANDLER(WM_SIZE, OnSize)

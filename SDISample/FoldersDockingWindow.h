@@ -50,12 +50,18 @@ public:
         baseClass::OnUndocked(hBar);
     }
 
-    DECLARE_WND_CLASS(_T("CFoldersDockingWindow"))
+    DECLARE_WND_CLASS_EX(_T("CFoldersDockingWindow"), 0, COLOR_WINDOW)
     BEGIN_MSG_MAP(thisClass)
         MESSAGE_HANDLER(WM_CREATE, OnCreate)
         MESSAGE_HANDLER(WM_SIZE, OnSize)
+        MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
         CHAIN_MSG_MAP(baseClass)
     END_MSG_MAP()
+
+    LRESULT OnEraseBkgnd(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+    {
+        return 1;
+    }
 
     LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
