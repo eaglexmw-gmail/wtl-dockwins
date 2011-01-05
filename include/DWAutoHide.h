@@ -902,8 +902,8 @@ protected:
     CBunch            m_bunch;
 };
 
-#define HTSPLITTERH HTLEFT
-#define HTSPLITTERV HTTOP
+const UINT HTSPLITTERH = HTLEFT;
+const UINT HTSPLITTERV = HTTOP;
 
 template <class T,
           class TBase,

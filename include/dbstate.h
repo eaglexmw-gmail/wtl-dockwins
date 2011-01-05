@@ -177,7 +177,7 @@ protected:
             std::for_each(m_bunch.begin(),m_bunch.end(),CResetter());
             std::for_each(m_bunch.begin(),m_bunch.end(),CQLoader(m_queue,stg,xratio,yratio));
             DWORD weight=0;
-            HDOCKBAR hBar=HNONDOCKBAR;
+            dockwins::HDOCKBAR hBar=dockwins::HNONDOCKBAR;
             BOOL bVisible=TRUE;
             HWND hActiveWnd=NULL;
             CPinner pinner (m_docker);
@@ -200,7 +200,7 @@ protected:
 //very ugly :(
                     if((dpos.weight&0xfffffe00)!=weight)
                     {
-                        if(hBar!=HNONDOCKBAR)
+                        if(hBar!=dockwins::HNONDOCKBAR)
                         {
                             if(dockwins::CDockingBox::IsWindowBox(hBar) && (hActiveWnd!=NULL))
                             {
@@ -211,7 +211,7 @@ protected:
                                 ::SendMessage(::GetParent(hBar),WM_CLOSE,0,0);
                         }
                         hActiveWnd=NULL;
-                        hBar=HNONDOCKBAR;
+                        hBar=dockwins::HNONDOCKBAR;
                     }
                     bVisible=dpos.bVisible;
                     dpos.bVisible=TRUE;
@@ -225,7 +225,7 @@ protected:
                 }
                 m_queue.pop();
             }
-            if(hBar!=HNONDOCKBAR)
+            if(hBar!=dockwins::HNONDOCKBAR)
             {
                 if(dockwins::CDockingBox::IsWindowBox(hBar) && (hActiveWnd!=NULL))
                 {

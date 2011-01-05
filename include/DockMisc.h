@@ -22,6 +22,8 @@
 #include <cassert>
 #include <SimpleSplitterBar.h>
 
+namespace dockwins {
+
 //////////////////messages///////////////////////////
 enum
 {
@@ -60,15 +62,9 @@ const HDOCKBAR HNONDOCKBAR = NULL;
 
 enum { DFPU_VISUALIZE = 1 };
 
-namespace dockwins {
-
 #ifdef DF_AUTO_HIDE_FEATURES
 
-#ifdef HTOBJECT
-#define HTPIN HTOBJECT
-#else
-#define HTPIN 19
-#endif
+const UINT HTPIN = HTOBJECT;
 
 #endif
 

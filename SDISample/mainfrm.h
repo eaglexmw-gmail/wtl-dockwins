@@ -24,7 +24,7 @@ class CMainFrame : public CFrameWindowImpl<CMainFrame>, public CUpdateUI<CMainFr
         public CMessageFilter, public CIdleHandler
 */
 
-#define CWM_INITIALIZE    (WMDF_LAST+1)
+const UINT CWM_INITIALIZE = dockwins::WMDF_LAST+1;
 
 class CMainFrame :
         public dockwins::CDockingFrameImpl<CMainFrame>,

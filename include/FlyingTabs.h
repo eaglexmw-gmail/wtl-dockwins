@@ -31,11 +31,8 @@
 
 namespace dockwins{
 
-#define CTCN_TABLEAVCTRL CTCN_LAST-1
-
-#ifndef CTCS_VERTICAL
-#define CTCS_VERTICAL TCS_VERTICAL
-#endif
+const UINT CTCN_TABLEAVCTRL = CTCN_LAST-1;
+const UINT CTCS_VERTICAL = TCS_VERTICAL;
 
 class CFlyingTabCtrl :
     public CDotNetTabCtrlImpl<CFlyingTabCtrl, CTabViewTabItem>
