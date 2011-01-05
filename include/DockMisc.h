@@ -339,6 +339,18 @@ protected:
 
         void Update()
         {
+            if (m_hfontSmCaption)
+                m_hfontSmCaption.DeleteObject();
+
+            if (m_vfontSmCaption)
+                m_vfontSmCaption.DeleteObject();
+
+            if (m_hfont)
+                m_hfont.DeleteObject();
+
+            if (m_vfont)
+                m_vfont.DeleteObject();
+
             if(!m_style.IgnoreSystemSettings())
             {
                 BOOL bFullDrag;
@@ -349,33 +361,30 @@ protected:
                                             ? ( CStyle::sFullDrag | CStyle::sAnimation)
                                             : ( CStyle::sGhostDrag | CStyle::sNoAnimation));
             }
-            HFONT hFont=reinterpret_cast<HFONT>(::GetStockObject(DEFAULT_GUI_FONT));
-            assert(hFont);
-            if(hFont!=m_hfont)
-            {
-                m_hfont=hFont;
-                LOGFONT lf;
-                m_hfont.GetLogFont(&lf);
-                lf.lfOutPrecision = OUT_TT_ONLY_PRECIS;
-                lf.lfEscapement   = 2700;
-                lf.lfOrientation  = 2700;
-                m_vfont.Attach( ::CreateFontIndirect(&lf) );
-                assert(m_vfont.m_hFont);
-            }
             ::ZeroMemory(&m_ncm, sizeof(m_ncm));
             m_ncm.cbSize = sizeof(m_ncm);
             if(::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(m_ncm), &m_ncm, 0))
             {
                 LOGFONT lf = m_ncm.lfSmCaptionFont;
-                lf.lfWeight = FW_NORMAL;
-                m_hfontSmCaption.Attach( ::CreateFontIndirect(&lf) );
+                m_hfontSmCaption.CreateFontIndirect(&lf);
                 assert(m_hfontSmCaption.m_hFont);
-                lf.lfOutPrecision = OUT_TT_ONLY_PRECIS;
+                //lf.lfOutPrecision = OUT_TT_ONLY_PRECIS;
                 lf.lfEscapement   = 2700;
                 lf.lfOrientation  = 2700;
-                m_vfontSmCaption.Attach( ::CreateFontIndirect(&lf) );
+                m_vfontSmCaption.CreateFontIndirect(&lf);
                 assert(m_vfontSmCaption.m_hFont);
             }
+
+            m_hfont.CreateFontIndirect(&m_ncm.lfMessageFont);
+            assert(m_hfont);
+
+            LOGFONT lf;
+            m_hfont.GetLogFont(&lf);
+            //lf.lfOutPrecision = OUT_TT_ONLY_PRECIS;
+            lf.lfEscapement   = 2700;
+            lf.lfOrientation  = 2700;
+            m_vfont.CreateFontIndirect(&lf);
+            assert(m_vfont);
 
             m_hHResizeCursor=::LoadCursor(NULL, IDC_SIZENS );
             m_hVResizeCursor=::LoadCursor(NULL, IDC_SIZEWE );
@@ -510,7 +519,7 @@ protected:
         COLORREF            m_colorAutoHideBarText;
         CStyle                m_style;
         CFont                m_vfont;
-        CFontHandle            m_hfont;
+        CFont            m_hfont;
         CFont                m_hfontSmCaption;
         CFont                m_vfontSmCaption;
         HCURSOR                m_hHResizeCursor;
