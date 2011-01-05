@@ -61,7 +61,7 @@ public:
     {
         m_images.Create(16, 16, TRUE, 3, 0);
 
-        assert(m_images.m_hImageList);
+        ATLASSERT(m_images.m_hImageList);
         CBitmap bmp;
 
         bmp.LoadBitmap(IDB_DUMMYBMP);

@@ -46,7 +46,7 @@ public:
     {
         thisClass* ptr=new thisClass;
         HWND hNewWnd=ptr->Create(hWnd);
-        assert(hNewWnd);
+        ATLASSERT(hNewWnd);
         if(hNewWnd==NULL)
             delete ptr;
         return hNewWnd;
@@ -55,10 +55,10 @@ public:
     {
         if(CDockingBox::IsWindowBox(pHdr->hdr.hBar))
         {
-            assert(m_wnd.m_hWnd);
+            ATLASSERT(m_wnd.m_hWnd);
             HWND hActiveWnd=m_wnd.m_hWnd;
             int n=m_tabs.GetItemCount();
-            assert(n>=2);
+            ATLASSERT(n>=2);
             while(n>0)
             {
                 pHdr->hdr.hWnd=GetItemHWND(--n);
@@ -102,8 +102,8 @@ public:
                     else
                         *pPt=rc.CenterPoint();
                     // now only horizontal tab control supported
-///11                    assert((m_tabs.GetWindowLong(GWL_STYLE)&TCS_VERTICAL)==0);
-                    assert((m_tabs.GetWindowLong(GWL_STYLE)&CTCS_VERTICAL)==0);
+///11                    ATLASSERT((m_tabs.GetWindowLong(GWL_STYLE)&TCS_VERTICAL)==0);
+                    ATLASSERT((m_tabs.GetWindowLong(GWL_STYLE)&CTCS_VERTICAL)==0);
                 }
             }
         }
@@ -117,7 +117,7 @@ public:
         {
             MSG msg={0};
             int curSel=m_tabs.GetCurSel();
-            assert(curSel!=-1);
+            ATLASSERT(curSel!=-1);
             HWND hWnd=GetItemHWND(curSel);
 ///11        bool bHorizontal=!(m_tabs.GetWindowLong(GWL_STYLE)&TCS_VERTICAL);
             bool bHorizontal=!(m_tabs.GetWindowLong(GWL_STYLE)&CTCS_VERTICAL);
@@ -146,7 +146,7 @@ public:
                     DispatchMessage(&msg);
                 m_prevItem=curSel;
                 m_prevPos=pos;
-                assert(index==curSel);
+                ATLASSERT(index==curSel);
             }
             if(
                 (index!=-1)
@@ -196,8 +196,8 @@ public:
                 if(GetItemHWND(curSel)==NULL)
                 {
                     m_tabs.DeleteItem(curSel,false);
-                    assert(m_prevSelItem>=0);
-                    assert(m_prevSelItem<m_tabs.GetItemCount());
+                    ATLASSERT(m_prevSelItem>=0);
+                    ATLASSERT(m_prevSelItem<m_tabs.GetItemCount());
                     m_tabs.SetCurSel(m_prevSelItem);
                 }
                 //let control update itself!!!
@@ -209,7 +209,7 @@ public:
     }
     LRESULT OnDock(DFDOCKRECT* pHdr)
     {
-        assert(pHdr->hdr.hWnd);
+        ATLASSERT(pHdr->hdr.hWnd);
         int index=GetIndex(pHdr);
         int n=m_tabs.GetItemCount();
         if( (index<0) || (index>n) )
@@ -220,7 +220,7 @@ public:
     LRESULT OnUndock(DFMHDR* pHdr)
     {
         CWindow wnd(pHdr->hWnd);
-        assert(::IsWindow(pHdr->hWnd));
+        ATLASSERT(::IsWindow(pHdr->hWnd));
         BOOL bRes=RemoveWindow(pHdr->hWnd);
         IsStillAlive();
         return bRes;
@@ -264,16 +264,16 @@ public:
 
     int InsertWndTab(int index,CWindow wnd)
     {
-         assert(wnd.IsWindow());
+         ATLASSERT(wnd.IsWindow());
         PrepareForDock(wnd);
         return InsertWndTab(index,wnd,reinterpret_cast<DWORD>(wnd.m_hWnd));
     }
 
     int InsertWndTab(int index,CWindow wnd,DWORD param)
     {
-        assert(index>=0);
-        assert(index<=m_tabs.GetItemCount());
-        assert(wnd.IsWindow());
+        ATLASSERT(index>=0);
+        ATLASSERT(index<=m_tabs.GetItemCount());
+        ATLASSERT(wnd.IsWindow());
         int txtLen=wnd.GetWindowTextLength()+1;
         TCHAR* ptxt = new TCHAR[txtLen];
         wnd.GetWindowText(ptxt,txtLen);
@@ -329,11 +329,11 @@ public:
     {
         if(m_wnd.m_hWnd!=0)
         {
-            assert(m_wnd.GetParent()==m_hWnd);
+            ATLASSERT(m_wnd.GetParent()==m_hWnd);
             CRect rc;
             GetClientRect(&rc);
             m_tabs.AdjustRect(FALSE,&rc);
-            assert( (m_wnd.GetWindowLong(GWL_STYLE) & WS_CAPTION ) == 0 );
+            ATLASSERT( (m_wnd.GetWindowLong(GWL_STYLE) & WS_CAPTION ) == 0 );
             m_wnd.SetWindowPos(HWND_TOP,&rc,SWP_SHOWWINDOW);
         }
     }
@@ -342,7 +342,7 @@ public:
     {
         if(m_wnd.m_hWnd!=0)
         {
-            assert(m_wnd.GetParent()==m_hWnd);
+            ATLASSERT(m_wnd.GetParent()==m_hWnd);
             int len= m_wnd.GetWindowTextLength()+1;
             TCHAR* ptxt = new TCHAR[len];
             m_wnd.GetWindowText(ptxt,len);
@@ -373,7 +373,7 @@ public:
             if(bRes && (n!=0))
             {
                 HWND hWnd=GetItemHWND(0);
-                assert(hWnd);
+                ATLASSERT(hWnd);
                 if(hWnd)
                 {
                     ::ShowWindow(hWnd,SW_HIDE);
@@ -394,7 +394,7 @@ public:
                             bRes=::SetWindowPos(hWnd,HWND_TOP,rc.left, rc.top,
                                                     rc.right - rc.left, rc.bottom - rc.top,SWP_SHOWWINDOW);
                     }
-                    assert(!IsDocking());
+                    ATLASSERT(!IsDocking());
                 }
             }
         }
@@ -412,7 +412,7 @@ public:
         pHdr->hdr.hBar=GetOwnerDockingBar();
         bool bRes=baseClass::OnGetDockingPosition(pHdr);
         pHdr->nIndex=FindItem(pHdr->hdr.hWnd);
-        assert(pHdr->nIndex!=-1);
+        ATLASSERT(pHdr->nIndex!=-1);
         if(m_tabs.GetItemCount()==2)
             pHdr->hdr.hBar=GetItemHWND((pHdr->nIndex==0)?1:0);
         else
@@ -424,7 +424,7 @@ public:
 
     bool OnSetDockingPosition(DFDOCKPOS* pHdr)
     {
-        assert(pHdr->hdr.hWnd);
+        ATLASSERT(pHdr->hdr.hWnd);
         int index=pHdr->nIndex;
         int n=m_tabs.GetItemCount();
         if( (index<0) || (index>n) )
@@ -451,7 +451,7 @@ public:
             while(--n>=0)
             {
                 pinHdr.phWnds[n]=GetItemHWND(n);
-                assert(::IsWindow(pinHdr.phWnds[n]));
+                ATLASSERT(::IsWindow(pinHdr.phWnds[n]));
                 RemoveWindow(pinHdr.phWnds[n]);
             }
 
@@ -489,7 +489,7 @@ public:
 ///11    m_tabs.Create(m_hWnd, rcDefault, NULL,WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | TCS_TOOLTIPS | TCS_BOTTOM);
         m_tabs.Create(m_hWnd, rcDefault, NULL,WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CTCS_TOOLTIPS | CTCS_BOTTOM);
         BOOL bRes=m_images.Create(16, 16, ILC_COLOR32 | ILC_MASK , 0, 5);
-        assert(bRes);
+        ATLASSERT(bRes);
         if(bRes)
             m_tabs.SetImageList(m_images);
         return 0;
@@ -547,7 +547,7 @@ public:
                 {
                     if(m_wnd.m_hWnd!=NULL)
                     {
-                        assert(::GetParent(m_wnd.m_hWnd)==m_hWnd);
+                        ATLASSERT(::GetParent(m_wnd.m_hWnd)==m_hWnd);
                         m_wnd.ShowWindow(SW_HIDE);
                     }
                     m_wnd=hWnd;
@@ -566,11 +566,11 @@ public:
         if(pnmh->hwndFrom==m_tabs)
         {
             int index=m_tabs.GetCurSel();
-            assert(index!=-1);
+            ATLASSERT(index!=-1);
             if(index!=-1)
             {
                 HWND hWnd=GetItemHWND(index);
-                assert(::IsWindow(hWnd));
+                ATLASSERT(::IsWindow(hWnd));
                 CRect rc;
                 ::GetWindowRect(hWnd,&rc);
                 ::PostMessage(hWnd,WM_NCLBUTTONDOWN,HTCAPTION,MAKELPARAM(rc.right,rc.bottom));
@@ -608,11 +608,11 @@ public:
         if(pnmh->hwndFrom==m_tabs)
         {
             int index=m_tabs.GetCurSel();
-            assert(index!=-1);
+            ATLASSERT(index!=-1);
             if(index!=-1)
             {
                 HWND hWnd=GetItemHWND(index);
-                assert(::IsWindow(hWnd));
+                ATLASSERT(::IsWindow(hWnd));
                 ::PostMessage(hWnd,WM_NCLBUTTONDBLCLK,HTCAPTION,0);
             }
         }

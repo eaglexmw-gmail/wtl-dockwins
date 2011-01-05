@@ -78,8 +78,8 @@ public:
 
     LRESULT AcceptDock(DFDOCKRECT* pHdr)
     {
-        assert(::IsWindow(pHdr->hdr.hWnd));
-        assert(pHdr->hdr.hBar==m_hWnd);
+        ATLASSERT(::IsWindow(pHdr->hdr.hWnd));
+        ATLASSERT(pHdr->hdr.hBar==m_hWnd);
 
         LRESULT lRes=FALSE;
         CRect rcClient;
@@ -310,7 +310,7 @@ public:
         {
             delete ptr;
             ptr=0;
-            assert(ptr);
+            ATLASSERT(ptr);
         }
         return ptr;
     }

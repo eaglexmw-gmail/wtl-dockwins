@@ -60,7 +60,7 @@ public:
     {
         bHandled=FALSE;
         m_edit.SetFocus();
-        assert(GetFocus()==m_edit.m_hWnd);
+        ATLASSERT(GetFocus()==m_edit.m_hWnd);
         return MA_ACTIVATE;   // activation already done
     }
 protected:

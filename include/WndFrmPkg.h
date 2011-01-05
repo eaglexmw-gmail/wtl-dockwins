@@ -102,7 +102,7 @@ public:
         dockHdr.code=DC_GETMINDIST;
         dockHdr.hWnd=m_hWnd;
         dockHdr.hBar=::GetParent(m_hWnd);
-        assert(::IsWindow(dockHdr.hBar));
+        ATLASSERT(::IsWindow(dockHdr.hBar));
         return ::SendMessage(dockHdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(&dockHdr));
     }
 protected:
@@ -204,7 +204,7 @@ protected:
     protected:
         void SetPosition()
         {
-            assert(m_bounds.bind(m_pos)==m_pos);
+            ATLASSERT(m_bounds.bind(m_pos)==m_pos);
             m_frames.set_position(m_i,m_pos);
             m_owner.Arrange(m_rc);
             m_wnd.RedrawWindow(&m_rc,NULL,RDW_INVALIDATE | RDW_UPDATENOW);
@@ -600,14 +600,14 @@ public:
     bool Undock(const DFMHDR* pHdr,const CRect& rc)
     {
         iterator i=std::find_if(m_frames.begin(),m_frames.end(),CFrame::CCmp(pHdr->hWnd));
-        assert(i!=m_frames.end());
+        ATLASSERT(i!=m_frames.end());
         m_frames.erase(i);
         return Arrange(rc);
     }
     bool Replace(const DFDOCKREPLACE* pHdr,const CRect& rc)
     {
         iterator i=std::find_if(m_frames.begin(),m_frames.end(),CFrame::CCmp(pHdr->hdr.hWnd));
-        assert(i!=m_frames.end());
+        ATLASSERT(i!=m_frames.end());
         m_frames.replace(i,CFrame(0,pHdr->hWnd));
         return Arrange(rc);
     }
@@ -656,7 +656,7 @@ public:
 
     bool SetDockingPosition(const DFDOCKPOS* pHdr,const CRect& rc)
     {
-        assert(::IsWindow(pHdr->hdr.hWnd));
+        ATLASSERT(::IsWindow(pHdr->hdr.hWnd));
         CWindow wnd(pHdr->hdr.hWnd);
         PrepareForDocking(wnd,pHdr->hdr.hBar);
         position pos=m_frames.low()+position((m_frames.hi()-m_frames.low())*pHdr->fPctPos);
@@ -669,7 +669,7 @@ public:
 
     bool GetDockingPosition(DFDOCKPOS* pHdr,const CRect& /*rc*/) const
     {
-        assert(::IsWindow(pHdr->hdr.hWnd));
+        ATLASSERT(::IsWindow(pHdr->hdr.hWnd));
         const_iterator i=std::find_if(m_frames.begin(),m_frames.end(),CFrame::CCmp(pHdr->hdr.hWnd));
         bool bRes=(i!=m_frames.end());
         if(bRes)
@@ -693,7 +693,7 @@ public:
     }
     bool Dock(DFDOCKRECT* pHdr,const CRect& rc)
     {
-        assert(::IsWindow(pHdr->hdr.hWnd));
+        ATLASSERT(::IsWindow(pHdr->hdr.hWnd));
         CWindow wnd(pHdr->hdr.hWnd);
         PrepareForDocking(wnd,pHdr->hdr.hBar);
         CFrame frame(0,pHdr->hdr.hWnd);
@@ -706,14 +706,14 @@ public:
     bool Undock(DFMHDR* pHdr,const CRect& rc)
     {
         bool bRes=baseClass::Undock(pHdr,rc);
-        assert(bRes);
+        ATLASSERT(bRes);
         PrepareForUndocking(pHdr->hWnd,pHdr->hBar);
         if(m_frames.size()==0)
         {
             DFMHDR dockHdr;
             dockHdr.hWnd = pHdr->hBar;
             dockHdr.hBar = ::GetParent(pHdr->hBar);
-            assert(::IsWindow(dockHdr.hBar));
+            ATLASSERT(::IsWindow(dockHdr.hBar));
             dockHdr.code=DC_UNDOCK;
             ::SendMessage(dockHdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(&dockHdr));
             ::PostMessage(dockHdr.hWnd,WM_CLOSE,NULL,NULL);
@@ -726,7 +726,7 @@ public:
         PrepareForUndocking(pHdr->hdr.hWnd,pHdr->hdr.hBar);
         PrepareForDocking(pHdr->hWnd,pHdr->hdr.hBar);
         bool bRes=baseClass::Replace(pHdr,rc);
-        assert(bRes);
+        ATLASSERT(bRes);
         ::SetWindowPos(pHdr->hWnd,NULL,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 //        ::ShowWindow(pHdr->hWnd,SW_SHOWNA);
         return bRes;
@@ -926,7 +926,7 @@ protected:
 */
         virtual bool AcceptDock(DFDOCKRECT* /*pHdr*/) const
         {
-            assert(false);
+            ATLASSERT(false);
             return true;
         }
 
@@ -1063,7 +1063,7 @@ public:
 
     bool AcceptDock(const_iterator i,DFDOCKRECT* pHdr,const CRect& rc)
     {
-        assert(std::find_if(m_frames.begin(),m_frames.end(),CFrame::CCmp(m_pDecl->hwnd()))!=m_frames.end());
+        ATLASSERT(std::find_if(m_frames.begin(),m_frames.end(),CFrame::CCmp(m_pDecl->hwnd()))!=m_frames.end());
         const_iterator begin=m_frames.begin();
         if(std::find_if(begin,i,CFrame::CCmp(m_pDecl->hwnd()))==i)
             CDockOrientationFlag::SetLow(pHdr->flag);
@@ -1078,7 +1078,7 @@ public:
                 long len=(pHdr->rect.right-pHdr->rect.left);
                 if(CDockOrientationFlag::IsLow(pHdr->flag))
                 {
-                    assert(i!=m_frames.end());
+                    ATLASSERT(i!=m_frames.end());
                     pHdr->rect.left=(*i)+CSplitterBar::GetThickness();
                     pHdr->rect.right=pHdr->rect.left+len;
                 }
@@ -1094,7 +1094,7 @@ public:
                 long len=(pHdr->rect.bottom-pHdr->rect.top);
                 if(CDockOrientationFlag::IsLow(pHdr->flag))
                 {
-                    assert(i!=m_frames.end());
+                    ATLASSERT(i!=m_frames.end());
                     pHdr->rect.top=(*i)+CSplitterBar::GetThickness();
                     pHdr->rect.bottom=pHdr->rect.top+len;
                 }
@@ -1144,7 +1144,7 @@ public:
             pHdr->hdr.hWnd=ptr->hwnd();
             CFrame frame(0,ptr);
             bRes=Dock(frame,pHdr,*this);
-            assert(bRes);
+            ATLASSERT(bRes);
             if(bRes)
             {
                 pHdr->hdr.hWnd=hDockWnd;
@@ -1178,7 +1178,7 @@ public:
             pHdr->nWidth=m_frames.get_frame_size(i)-CSplitterBar::GetThickness();
             CFrames::size_type dWnd=std::distance(m_frames.begin(),i);
             i=std::find_if(m_frames.begin(),m_frames.end(),CFrame::CCmp(m_pDecl->hwnd()));
-            assert(i!=m_frames.end());
+            ATLASSERT(i!=m_frames.end());
             CFrames::size_type dBWnd=std::distance(m_frames.begin(),i);
             if(dBWnd>dWnd)
             {
@@ -1205,7 +1205,7 @@ public:
 //        if(side.IsTop())
 //        {
 //            iterator i=ssec::search_n(m_frames.begin(),m_frames.end(),CFrame::CCmp(m_pDecl->hwnd()),pHdr->nBar);
-//            assert(i!=m_frames.end());
+//            ATLASSERT(i!=m_frames.end());
 //            if(i->hwnd()==m_pDecl->hwnd() || side.IsSingle())
 //            {
 //                CPackageFrame* ptr=CPackageFrame::CreateInstance(pHdr->hdr.hBar,!IsHorizontal());
@@ -1223,7 +1223,7 @@ public:
 //        else
 //        {
 //            reverse_iterator ri=ssec::search_n(m_frames.rbegin(),m_frames.rend(),CFrame::CCmp(m_pDecl->hwnd()),pHdr->nBar);
-//            assert(ri!=m_frames.rend());
+//            ATLASSERT(ri!=m_frames.rend());
 //            iterator i=ri.base();
 //            if(/*ri->hwnd()*/(*ri).hwnd()==m_pDecl->hwnd() || side.IsSingle())
 //            {
@@ -1241,17 +1241,17 @@ public:
 //            }
 //            else
 //            {
-//                assert(i!=m_frames.begin());
+//                ATLASSERT(i!=m_frames.begin());
 //                m_frames.set_frame_size(--i,pHdr->nWidth+splitterSize);
 //            }
 //            pHdr->hdr.hBar=i->hwnd();
 //        }
 //        bRes=Arrange(*this);
-//        assert(bRes);
+//        ATLASSERT(bRes);
 //        if(bRes)
 //        {
 //            bRes=(::SendMessage(pHdr->hdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr))!=FALSE);
-//            assert(bRes);
+//            ATLASSERT(bRes);
 //        }
 //        return bRes;
 //    }
@@ -1266,7 +1266,7 @@ public:
         if(side.IsTop())
         {
             iterator i=ssec::search_n(m_frames.begin(),m_frames.end(),CFrame::CCmp(m_pDecl->hwnd()),pHdr->nBar);
-            assert(i!=m_frames.end());
+            ATLASSERT(i!=m_frames.end());
             if(i->hwnd()==m_pDecl->hwnd() || side.IsSingle())
             {
                 CPackageFrame* ptr=CPackageFrame::CreateInstance(pHdr->hdr.hBar,!IsHorizontal());
@@ -1276,7 +1276,7 @@ public:
 //                    i=m_frames.insert(i,CFrame(*i,ptr),pHdr->nWidth);
                     i=m_frames.insert(i,CFrame::CCmp(m_pDecl->hwnd()),CFrame(*i,ptr),pHdr->nWidth+splitterSize);
                     bRes=Arrange(*this);
-                    assert(bRes);
+                    ATLASSERT(bRes);
                 }
             }
             pHdr->hdr.hBar=i->hwnd();
@@ -1284,7 +1284,7 @@ public:
         else
         {
             reverse_iterator ri=ssec::search_n(m_frames.rbegin(),m_frames.rend(),CFrame::CCmp(m_pDecl->hwnd()),pHdr->nBar);
-            assert(ri!=m_frames.rend());
+            ATLASSERT(ri!=m_frames.rend());
             iterator i=ri.base();
             if(/*ri->hwnd()*/(*ri).hwnd()==m_pDecl->hwnd() || side.IsSingle())
             {
@@ -1299,7 +1299,7 @@ public:
 //                    i=m_frames.insert(i,CFrame(pos,ptr),pHdr->nWidth);
                     i=m_frames.insert(i,CFrame::CCmp(m_pDecl->hwnd()),CFrame(pos,ptr),pHdr->nWidth+splitterSize);
                     bRes=Arrange(*this);
-                    assert(bRes);
+                    ATLASSERT(bRes);
                     pHdr->hdr.hBar=i->hwnd();
                 }
             }
@@ -1309,7 +1309,7 @@ public:
         if(bRes)
         {
             bRes=(::SendMessage(pHdr->hdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr))!=FALSE);
-            assert(bRes);
+            ATLASSERT(bRes);
         }
         return bRes;
     }
@@ -1318,7 +1318,7 @@ public:
     {
         DFDOCKRECT dockHdr;
         ::CopyRect(&dockHdr.rect,&rc);
-        assert(m_pDecl==0);
+        ATLASSERT(m_pDecl==0);
         m_pDecl=new CWindowPtrWrapper(ptr);
         CFrame frame(0,m_pDecl);
         return baseClass::Dock(frame,&dockHdr,*this);
@@ -1327,7 +1327,7 @@ public:
     {
         DFDOCKRECT dockHdr;
         ::CopyRect(&dockHdr.rect,&rc);
-        assert(m_pDecl==0);
+        ATLASSERT(m_pDecl==0);
         m_pDecl=new CFrameWrapper(ptr);
         CFrame frame(0,m_pDecl);
         return baseClass::Dock(frame,&dockHdr,*this);

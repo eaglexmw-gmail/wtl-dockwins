@@ -75,9 +75,9 @@ public:
         m_settings.SetStyle(style);
         bool bRes=true;
 #ifdef DF_AUTO_HIDE_FEATURES
-        assert(m_hWnd);
+        ATLASSERT(m_hWnd);
         bRes=m_ahManager.Initialize(m_hWnd);
-        assert(bRes);
+        ATLASSERT(bRes);
 #endif
         T* pThis = static_cast<T*>(this);
         pThis->ApplySystemSettings();
@@ -222,11 +222,11 @@ public:
     LRESULT Undock(DFMHDR* pHdr)
     {
         bool bRes;
-        assert(::IsWindow(pHdr->hWnd));
+        ATLASSERT(::IsWindow(pHdr->hWnd));
         bRes=m_vPackage.Undock(pHdr);
         if(!bRes)
             bRes=m_hPackage.Undock(pHdr);
-        assert(bRes);
+        ATLASSERT(bRes);
         RedrawWindow(NULL,NULL,RDW_INVALIDATE | RDW_UPDATENOW |
                                     ((m_hWndClient==NULL)?RDW_ERASE:0));
         return bRes;
@@ -252,7 +252,7 @@ public:
 
     bool SetDockingPosition(DFDOCKPOS* pHdr)
     {
-        assert(::IsWindow(pHdr->hdr.hWnd));
+        ATLASSERT(::IsWindow(pHdr->hdr.hWnd));
         bool bRes;
         CDockingSide side(pHdr->dwDockSide);
         if(side.IsHorizontal())
@@ -266,7 +266,7 @@ public:
 
     bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        assert(::IsWindow(pHdr->hdr.hWnd));
+        ATLASSERT(::IsWindow(pHdr->hdr.hWnd));
         bool bRes;
 #ifdef DF_AUTO_HIDE_FEATURES
         bRes=m_ahManager.GetDockingPosition(pHdr);

@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include <cassert>
-
 #include "stg.h"
 
 namespace sstate {
@@ -46,14 +44,14 @@ public:
 
     virtual long SetBinary(LPCTSTR name,const void* data,size_t size)
     {
-        assert(m_key!=0);
+        ATLASSERT(m_key!=0);
         DWORD type=(size==sizeof(DWORD) ? REG_DWORD : REG_BINARY);
         return ::RegSetValueEx(m_key,name,0,type,static_cast<const BYTE*>(data),size);
     }
 
     virtual long GetBinary(LPCTSTR name,void* data,size_t& size)
     {
-        assert(m_key!=0);
+        ATLASSERT(m_key!=0);
         DWORD type;
         DWORD cbData=DWORD(size);
         long res=::RegQueryValueEx(m_key,name,0,&type,static_cast<LPBYTE>(data),&cbData);
@@ -63,19 +61,19 @@ public:
 
     virtual long SetString(LPCTSTR name,LPCTSTR data)
     {
-        assert(m_key!=0);
-        assert(data);
+        ATLASSERT(m_key!=0);
+        ATLASSERT(data);
         return ::RegSetValueEx(m_key,name,0,REG_SZ,
             reinterpret_cast<const BYTE*>(data),std::char_traits<TCHAR>::length(data)*sizeof(TCHAR));
     }
 
     virtual long GetString(LPCTSTR name,LPTSTR data,size_t& size)
     {
-        assert(m_key!=0);
+        ATLASSERT(m_key!=0);
         DWORD type;
         DWORD cbData=DWORD(size);
         long res=::RegQueryValueEx(m_key,name,0,&type,reinterpret_cast<LPBYTE>(data),&cbData);
-        assert( res!=ERROR_SUCCESS
+        ATLASSERT( res!=ERROR_SUCCESS
                 || (type==REG_SZ)
                 || (type==REG_EXPAND_SZ)
                 );

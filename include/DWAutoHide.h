@@ -88,7 +88,7 @@ struct IPinnedLabel
         }
         int Assign(HWND hWnd,unsigned long width)
         {
-            assert(::IsWindow(hWnd));
+            ATLASSERT(::IsWindow(hWnd));
             m_hWnd=hWnd;
             m_width=width;
             m_icon=reinterpret_cast<HICON>(::SendMessage(hWnd, WM_GETICON, FALSE, 0));
@@ -225,7 +225,7 @@ public:
     CSinglePinnedLabel(DFPINUP* pHdr,bool bHorizontal)
         :m_width(0)
     {
-        assert( (pHdr->n==0) || (pHdr->n==1) );
+        ATLASSERT( (pHdr->n==0) || (pHdr->n==1) );
         m_wnd.Assign(pHdr->hdr.hWnd,pHdr->nWidth);
         m_wnd.PrepareForDock(pHdr->hdr.hBar,bHorizontal);
     }
@@ -236,7 +236,7 @@ public:
 
     virtual IPinnedLabel* Remove(HWND hWnd,HDOCKBAR hBar)
     {
-        assert(IsOwner(hWnd));
+        ATLASSERT(IsOwner(hWnd));
         m_wnd.PrepareForUndock(hBar);
         return 0;
     }
@@ -266,7 +266,7 @@ public:
         SIZE sz;
         LPCTSTR text=m_wnd.Text();
         bool bRes=(GetTextExtentPoint32(dc, text,_tcslen(text),&sz)!=FALSE);
-        assert(bRes);
+        ATLASSERT(bRes);
         unsigned long width=sz.cx+2*captionPadding;
         if(m_wnd.Icon()!=NULL)
         {
@@ -283,7 +283,7 @@ public:
     }
     virtual CPinnedWindow* FromPoint(long x,bool /*bActivate*/)
     {
-        assert(x>=0 && x<Width() );
+        ATLASSERT(x>=0 && x<Width() );
         return ActivePinnedWindow();
     }
 
@@ -299,7 +299,7 @@ public:
     }
     virtual bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        assert(pHdr->hdr.hWnd==m_wnd.Wnd());
+        ATLASSERT(pHdr->hdr.hWnd==m_wnd.Wnd());
         pHdr->nBar=0;
         pHdr->nWidth=m_wnd.Width();
         pHdr->nHeight=1;
@@ -319,7 +319,7 @@ public:
     CMultyPinnedLabel(DFPINUP* pHdr,bool bHorizontal)
         :m_width(0)
     {
-        assert(pHdr->n>1);
+        ATLASSERT(pHdr->n>1);
         m_n=pHdr->n;
         m_tabs=new CPinnedWindow[m_n];
         int maxLen=0;
@@ -343,7 +343,7 @@ public:
 
     virtual bool UnPin(HWND hWnd,HDOCKBAR hBar,DFDOCKPOS* pHdr)
     {
-        assert(pHdr->hdr.hWnd==hWnd);
+        ATLASSERT(pHdr->hdr.hWnd==hWnd);
         GetDockingPosition(pHdr);
         pHdr->hdr.hWnd=m_tabs[0].Wnd();
         pHdr->hdr.code=DC_SETDOCKPOSITION;
@@ -365,7 +365,7 @@ public:
     }
     virtual IPinnedLabel* Remove(HWND hWnd,HDOCKBAR hBar)
     {
-        assert(IsOwner(hWnd));
+        ATLASSERT(IsOwner(hWnd));
         IPinnedLabel* ptr=this;
         try
         {
@@ -434,7 +434,7 @@ public:
         SIZE sz;
         LPCTSTR text=m_tabs[m_longestTextTab].Text();
         bool bRes=(GetTextExtentPoint32(dc, text,_tcslen(text),&sz)!=FALSE);
-        assert(bRes);
+        ATLASSERT(bRes);
         bRes;
         long width=sz.cx+2*captionPadding;
         CDWSettings settings;
@@ -450,7 +450,7 @@ public:
     }
     virtual CPinnedWindow* FromPoint(long x,bool bActivate)
     {
-        assert(x>=0 && x<Width() );
+        ATLASSERT(x>=0 && x<Width() );
         unsigned long i=m_activeTab;
         if(x<long(m_activeTab)*m_passiveTabWidth)
             i=x/m_passiveTabWidth;
@@ -460,7 +460,7 @@ public:
             if( width<x )
                 i+=(x-width)/m_passiveTabWidth+1;
         }
-        assert(m_activeTab<m_n);
+        ATLASSERT(m_activeTab<m_n);
         if(bActivate)
             m_activeTab=i;
         return m_tabs+i;
@@ -519,13 +519,13 @@ public:
             if(i==m_activeTab)
             {
                 *pRight=*pLeft+m_width-m_passiveTabWidth*(m_n-1);
-                assert(*pRight<=(side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
+                ATLASSERT(*pRight<=(side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
                 DrawActiveTab(i,dc,rcOutput,side.IsHorizontal());
             }
             else
             {
                 *pRight=*pLeft+m_passiveTabWidth;
-                assert(*pRight<=(side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
+                ATLASSERT(*pRight<=(side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
                 DrawPassiveTab(i,dc,rcOutput,side);
             }
             dc.MoveTo(rcOutput.left, rcOutput.top);
@@ -788,7 +788,7 @@ public:
                     ptELine.x=*xELine;
                     ptELine.y=*yELine;
                     *pRight=*pLeft+(*i)->Width();
-                    assert( m_side.IsHorizontal() ? *pRight<=right : *pRight<=bottom);
+                    ATLASSERT( m_side.IsHorizontal() ? *pRight<=right : *pRight<=bottom);
                     (*i)->Draw(dc,rcLabel,m_side);
 
                     *pLeft=*pRight+IPinnedLabel::labelPadding;
@@ -799,7 +799,7 @@ public:
                     dc.SelectPen(hPrevPen);
 
                     *pRight=*pLeft+1;
-                    assert( m_side.IsHorizontal()
+                    ATLASSERT( m_side.IsHorizontal()
                                 ? (*pLeft>=left && (*pLeft<=right+IPinnedLabel::labelPadding) )
                                 : (*pLeft>=top && (*pLeft<=bottom+IPinnedLabel::labelPadding) ) );
                 }
@@ -847,7 +847,7 @@ public:
     }
     CPinnedLabelPtr Insert(DFPINUP* pHdr)
     {
-        assert(m_side.Side()==CSide(pHdr->dwDockSide).Side());
+        ATLASSERT(m_side.Side()==CSide(pHdr->dwDockSide).Side());
         CPinnedLabelPtr ptr=0;
         try{
             if(pHdr->n>1)
@@ -1063,7 +1063,7 @@ public:
     }
     void StartResizing(const CPoint& pt)
     {
-        assert(false);
+        ATLASSERT(false);
     }
     bool OnClosing()
     {
@@ -1420,7 +1420,7 @@ public:
             m_barThickness=tm.tmHeight;
         dc.SelectFont(hOldFont);
         int widthIcon=settings.CXMinIcon();
-        assert(widthIcon==settings.CYMinIcon()); //if it throw let me know ;)
+        ATLASSERT(widthIcon==settings.CYMinIcon()); //if it throw let me know ;)
         if(widthIcon>m_barThickness)
             m_barThickness=widthIcon;
         m_barThickness+=2*IPinnedLabel::captionPadding+IPinnedLabel::labelEdge;
@@ -1594,7 +1594,7 @@ public:
     {
         pHdr->hdr.hBar=m_hWnd;
         CSide side(pHdr->dwDockSide);
-        assert(side.IsValid());
+        ATLASSERT(side.IsValid());
         CAutoHideBar* pbar=m_bars+side.Side();
         bUpdate=!pbar->IsBarVisible();
         IPinnedLabel* pLabel=pbar->Insert(pHdr);
@@ -1616,7 +1616,7 @@ public:
                                                 Vanish();
 
         HDOCKBAR hBar=GetParent();
-        assert(::IsWindow(hBar));
+        ATLASSERT(::IsWindow(hBar));
         DFDOCKPOS* pHdr=0;
         DFDOCKPOS dockHdr;
         if(bUnpin)
@@ -1670,11 +1670,11 @@ public:
 
     bool Visualize(IPinnedLabel::CPinnedWindow* ptr,const CSide& side,bool bAnimate=false)
     {
-        assert(ptr);
-        assert(IsVisualizationNeeded(ptr));
+        ATLASSERT(ptr);
+        ATLASSERT(IsVisualizationNeeded(ptr));
         Vanish();
         Orientation(side);
-        assert(m_pActive==0);
+        ATLASSERT(m_pActive==0);
         m_pActive=ptr;
         bool bRes=(::SetWindowPos(m_pActive->Wnd(),HWND_TOP,0,0,0,0,
                             SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW)!=FALSE);
@@ -1699,7 +1699,7 @@ public:
                 }
             }
         }
-        assert(bRes);
+        ATLASSERT(bRes);
         return bRes;
     }
 
@@ -1737,19 +1737,19 @@ public:
                                 new CSizeTrackerFull(m_hWnd,pt,Orientation(),m_splitter.GetThickness(),m_rcBound));
 
         HWND hWndParent=GetParent();
-        assert(hWndParent);
+        ATLASSERT(hWndParent);
         TrackDragAndDrop(*pTracker,hWndParent);
     }
 
     bool PinBtnPress()
     {
-        assert(m_pActive);
+        ATLASSERT(m_pActive);
         return Remove(m_pActive->Wnd(),true);
     }
 
     bool OnClosing()
     {
-        assert(m_pActive);
+        ATLASSERT(m_pActive);
         ::PostMessage(m_pActive->Wnd(),WM_CLOSE,NULL,NULL);
         return true;
     }
@@ -1827,7 +1827,7 @@ protected:
         switch(pHdr->code)
         {
             case DC_UNDOCK:
-                assert(::IsWindow(pHdr->hWnd));
+                ATLASSERT(::IsWindow(pHdr->hWnd));
                 lRes=Remove(pHdr->hWnd);
                 break;
         }

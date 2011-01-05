@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include <cassert>
 #include <queue>
 
 #include "sstate.h"
@@ -123,7 +122,7 @@ protected:
                     {
                         dpos.id=x.first;
 ///////////////            dpos.UpdateWeight();
-                        assert(dpos.bDocking);
+                        ATLASSERT(dpos.bDocking);
 //                        dpos.weight=0;
                         dpos.weight=DWORD(dpos.dockPos.fPctPos*0xffff)&0xffff;
                         dpos.weight|=(dpos.dockPos.nBar&0x3fff)<<16;
@@ -180,7 +179,7 @@ protected:
             {
 //                 CRestPos& dpos=const_cast<CRestPos&>(m_queue.top());
                  CRestPos dpos=m_queue.top();
-                 assert(m_bunch.find(dpos.id)!=m_bunch.end());
+                 ATLASSERT(m_bunch.find(dpos.id)!=m_bunch.end());
                  m_bunch[dpos.id]->Restore(&dpos,xratio,yratio);
                  m_queue.pop();
             }
@@ -204,7 +203,7 @@ protected:
         }
         void Remove(ID id)
         {
-            assert(m_bunch.find(id)!=m_bunch.end());
+            ATLASSERT(m_bunch.find(id)!=m_bunch.end());
             m_bunch.erase(id);
         }
     protected:
@@ -223,7 +222,7 @@ public:
     }
     ~CDockWndMgr(void)
     {
-        assert(m_pImpl);
+        ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
     operator IState* (void)
@@ -303,7 +302,7 @@ public:
         }
         virtual bool RestoreDefault(void)
         {
-            assert( (m_pos.dockPos.hdr.hWnd==NULL) || (m_pos.dockPos.hdr.hWnd==m_dockWnd.m_hWnd) );
+            ATLASSERT( (m_pos.dockPos.hdr.hWnd==NULL) || (m_pos.dockPos.hdr.hWnd==m_dockWnd.m_hWnd) );
             bool bRes=(m_pos.dockPos.hdr.hWnd!=NULL);
             if(bRes)
                 bRes=m_dockWnd.SetDockingWindowPlacement(&m_pos);
@@ -374,7 +373,7 @@ public:
     }
     ~CDockingWindowStateAdapter(void)
     {
-        assert(m_pImpl);
+        ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
     operator IDockWndState* (void)

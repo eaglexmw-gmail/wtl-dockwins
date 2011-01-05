@@ -7,7 +7,6 @@
 #pragma once
 
 #include <algorithm>
-#include <cassert>
 #include <functional>
 #include <queue>
 #include <vector>
@@ -105,7 +104,7 @@ protected:
         const int nNominalFontLogicalUnits = 11;        // 8 point Tahoma with 96 DPI
 
         // Use the actual font of the tab control
-        assert(IsWindow());
+        ATLASSERT(IsWindow());
         HFONT hFont = GetFont();
         if(hFont != NULL)
         {

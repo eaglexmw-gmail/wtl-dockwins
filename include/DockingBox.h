@@ -31,7 +31,7 @@ public:
         std::basic_ostringstream<TCHAR> smessage;
         smessage<<_T("DockingBoxMessage-")<<GetCurrentProcessId();
         m_message=RegisterWindowMessage(smessage.str().c_str());
-        assert(m_message);
+        ATLASSERT(m_message);
         ATLTRACE(_T("%s = %x \n"),smessage.str().c_str(), m_message);
 //        if(m_message==0)
 //                throw exception();
@@ -50,7 +50,7 @@ class CDockingBox : public CDocker
 public:
     CDockingBox(HWND hWnd):CDocker(hWnd)
     {
-        assert(IsWindowBox(hWnd));
+        ATLASSERT(IsWindowBox(hWnd));
     }
 
     bool AcceptDock(DFDOCKRECT* pHdr) const
@@ -136,7 +136,7 @@ public:
     {
         pHdr->hdr.code=DC_GETDOCKPOSITION;
         HWND hWnd=CDockingBox::IsWindowBox(pHdr->hdr.hBar) ? pHdr->hdr.hBar : m_hWnd;
-        assert(::IsWindow(hWnd));
+        ATLASSERT(::IsWindow(hWnd));
         return (::SendMessage(hWnd,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr))!=FALSE);
     }
 
@@ -230,25 +230,25 @@ public:
 
     LRESULT OnDock(DFDOCKRECT* /*pHdr*/)
     {
-        assert(false);
+        ATLASSERT(false);
         return FALSE;
     }
 
     LRESULT OnUndock(DFMHDR* /*pHdr*/)
     {
-        assert(false);
+        ATLASSERT(false);
         return FALSE;
     }
 
     LRESULT OnActivate(DFMHDR* /*pHdr*/)
     {
-        assert(false);
+        ATLASSERT(false);
         return FALSE;
     }
 
     bool OnSetDockingPosition(DFDOCKPOS* /*pHdr*/)
     {
-        assert(false);
+        ATLASSERT(false);
         return false;
     }
 
@@ -350,7 +350,7 @@ public:
     }
     static HWND CreateInstance(HWND hWnd)
     {
-        assert(false);
+        ATLASSERT(false);
         return NULL;
     }
 };
@@ -433,7 +433,7 @@ public:
     HDOCKBAR CreateDockingBox(void)
     {
         HDOCKBAR hBar=CBox::CreateInstance(m_docker);
-        assert(hBar!=HNONDOCKBAR);
+        ATLASSERT(hBar!=HNONDOCKBAR);
         if(hBar!=HNONDOCKBAR)
         {
             CDockingBox    box(hBar);
@@ -515,7 +515,7 @@ public:
         if(bRes)
         {
             pHdr->hBar=GetOwnerDockingBar();
-            assert(CDockingBox::IsWindowBox(pHdr->hBar));
+            ATLASSERT(CDockingBox::IsWindowBox(pHdr->hBar));
             bRes=m_docker.Activate(pHdr);
         }
         return bRes;

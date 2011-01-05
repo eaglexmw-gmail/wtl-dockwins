@@ -66,7 +66,7 @@ protected:
                         if(dside.IsValid())
                         {
 /////////////////////////////3<<30+0x3f8<<20+0x3fff<<9+0x1ff
-                            assert(dpos.bDocking);
+                            ATLASSERT(dpos.bDocking);
 //                            dpos.weight=0;
                             dpos.weight=dpos.dockPos.nIndex&0x1ff;
                             dpos.weight|=(DWORD(dpos.dockPos.fPctPos*0x3fff)&0x3fff)<<9;
@@ -139,7 +139,7 @@ protected:
             void PinUp(const CRestPos& dpos)
             {
                 dockwins::CDockingSide side (dpos.dockPos.dwDockSide);
-                assert(side.IsPinned());
+                ATLASSERT(side.IsPinned());
                 dockwins::CDockingSide curSide (m_pinHdr.dwDockSide);
                 if(curSide.Side()!=side.Side()
                     || (dpos.dockPos.nBar!=m_nBar) )
@@ -186,7 +186,7 @@ protected:
             {
 //                CRestPos& dpos=const_cast<CRestPos&>(m_queue.top());
                 CRestPos dpos=m_queue.top();
-                assert(m_bunch.find(dpos.id)!=m_bunch.end());
+                ATLASSERT(m_bunch.find(dpos.id)!=m_bunch.end());
                 dockwins::CDockingSide side(dpos.dockPos.dwDockSide);
                 if(side.IsValid() && side.IsPinned())
                 {

@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include <cassert>
-
 namespace dockwins {
 
 class IDDTracker
@@ -107,7 +105,7 @@ bool TrackDragAndDrop(T& tracker,HWND hWnd)
         }
     }
     tracker.EndDrag(!bResult);
-    assert(::GetCapture()!=hWnd);
+    ATLASSERT(::GetCapture()!=hWnd);
     return bResult;
 }
 

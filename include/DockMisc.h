@@ -21,8 +21,6 @@
         #error dockmisk.h requires atlmisc.h to be included first
 #endif
 
-#include <cassert>
-
 #include "SimpleSplitterBar.h"
 
 namespace dockwins {
@@ -169,27 +167,27 @@ public:
     }
     bool IsHorizontal() const
     {
-        assert(IsValid());
+        ATLASSERT(IsValid());
         return ((m_side&mskVertical)==0);
     }
     bool IsTop() const
     {
-        assert(IsValid());
+        ATLASSERT(IsValid());
         return ((m_side&mskTop)!=0);
     }
     DWORD Side() const
     {
-        assert(IsValid());
+        ATLASSERT(IsValid());
         return m_side&mskSide;
     }
     bool IsSingle() const
     {
-        assert(IsValid());
+        ATLASSERT(IsValid());
         return ((m_side&sSingle)!=0);
     }
     bool IsPinned() const
     {
-        assert(IsValid());
+        ATLASSERT(IsValid());
         return ((m_side&sPinned)!=0);
     }
     bool IsActive() const
@@ -366,16 +364,16 @@ protected:
             {
                 LOGFONT lf = m_ncm.lfSmCaptionFont;
                 m_hfontSmCaption.CreateFontIndirect(&lf);
-                assert(m_hfontSmCaption.m_hFont);
+                ATLASSERT(m_hfontSmCaption.m_hFont);
                 //lf.lfOutPrecision = OUT_TT_ONLY_PRECIS;
                 lf.lfEscapement   = 2700;
                 lf.lfOrientation  = 2700;
                 m_vfontSmCaption.CreateFontIndirect(&lf);
-                assert(m_vfontSmCaption.m_hFont);
+                ATLASSERT(m_vfontSmCaption.m_hFont);
             }
 
             m_hfont.CreateFontIndirect(&m_ncm.lfMessageFont);
-            assert(m_hfont);
+            ATLASSERT(m_hfont);
 
             LOGFONT lf;
             m_hfont.GetLogFont(&lf);
@@ -383,7 +381,7 @@ protected:
             lf.lfEscapement   = 2700;
             lf.lfOrientation  = 2700;
             m_vfont.CreateFontIndirect(&lf);
-            assert(m_vfont);
+            ATLASSERT(m_vfont);
 
             m_hHResizeCursor=::LoadCursor(NULL, IDC_SIZENS );
             m_hVResizeCursor=::LoadCursor(NULL, IDC_SIZEWE );
@@ -404,24 +402,26 @@ protected:
 
             return RGB(red, green, blue);
         }
-//I stole the code for background brush color from the cool Daniel Bowen's(dbowen@es.com)
-//class CDotNetTabCtrlImpl(DotNetTabCtrl.h) to make background of the auto-hide bars and
-//the tab controls identically.
+        // I stole the code for background brush color from the cool Daniel
+        // Bowen's(dbowen@es.com) class CDotNetTabCtrlImpl(DotNetTabCtrl.h) to
+        // make background of the auto-hide bars and the tab controls
+        // identically.
         static COLORREF CreateCoolCtrlBackgroundColor()
         {
             COLORREF clrBtnFace = ::GetSysColor(COLOR_BTNFACE);
-            // This is a brave attempt to mimic the algorithm that Visual Studio.Net
-            // uses to calculate the tab's background color and inactive tab color.
-            // The other colors that VS.Net uses seems to be standard ones,
-            // but these two colors are calculated.
+            // This is a brave attempt to mimic the algorithm that Visual
+            // Studio.Net uses to calculate the tab's background color and
+            // inactive tab color. The other colors that VS.Net uses seems to be
+            // standard ones, but these two colors are calculated.
             BYTE nRed = 0, nGreen = 0, nBlue = 0, nMax = 0;
 
-            // Early experiments seemed to reveal that the background color is dependant
-            // on COLOR_BTNFACE.  The following algorithm is just an attempt
-            // to match several empirical results.  I tested with 20 variations
-            // on COLOR_BTNFACE and kept track of what the tab background became.
-            // I then brought the numbers into Excel, and started crunching on the numbers
-            // until I came up with a formula that seems to pretty well match.
+            // Early experiments seemed to reveal that the background color is
+            // dependent on COLOR_BTNFACE. The following algorithm is just an
+            // attempt to match several empirical results.  I tested with 20
+            // variations on COLOR_BTNFACE and kept track of what the tab
+            // background became. I then brought the numbers into Excel, and
+            // started crunching on the numbers until I came up with a formula
+            // that seems to pretty well match.
 
             nRed = GetRValue(clrBtnFace);
             nGreen = GetGValue(clrBtnFace);

@@ -273,7 +273,7 @@ public:
 
     bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        assert(::IsWindow(m_hWnd));
+        ATLASSERT(::IsWindow(m_hWnd));
         bool bRes=true;
         pHdr->hdr.hBar=GetOwnerDockingBar();
         if(IsDocking())
@@ -305,7 +305,7 @@ public:
     }
     bool SetDockingPosition(DFDOCKPOS* pHdr)
     {
-        assert(::IsWindow(m_hWnd));
+        ATLASSERT(::IsWindow(m_hWnd));
         if(IsDocking())
                     Undock();
         pHdr->hdr.hWnd=m_hWnd;
@@ -356,7 +356,7 @@ public:
 
     virtual bool Undock(void)
     {
-        assert(IsDocking());
+        ATLASSERT(IsDocking());
         DFMHDR dockHdr;
 //        dockHdr.code=DC_UNDOCK;
         dockHdr.hWnd=m_hWnd;
@@ -427,12 +427,12 @@ public:
     }
     void OnDocked(HDOCKBAR hBar,bool /*bHorizontal*/)
     {
-        assert(!IsDocking());
+        ATLASSERT(!IsDocking());
         m_hBarOwner=hBar;
     }
     void OnUndocked(HDOCKBAR /*hBar*/)
     {
-        assert(IsDocking());
+        ATLASSERT(IsDocking());
         m_hBarOwner=HNONDOCKBAR;
     }
 ////////////////messages handlers/////////////////////////////////
@@ -722,8 +722,8 @@ public:
         CRect rc;
         GetWindowRect(&rc);
         T* pThis=static_cast<T*>(this);
-        assert(rc.Width()>0);
-        assert(rc.Height()>0);
+        ATLASSERT(rc.Width()>0);
+        ATLASSERT(rc.Height()>0);
         return pThis->PinUp(side,(side.IsHorizontal() ? rc.Width() : rc.Height()));
     }
 
@@ -744,7 +744,7 @@ public:
 
     bool PinBtnPress(void)
     {
-        assert(IsDocking());
+        ATLASSERT(IsDocking());
         DFDOCKPOS dockHdr;
 //        dockHdr.hdr.code=DC_GETDOCKPOSITION;
         dockHdr.hdr.hWnd=m_hWnd;
@@ -777,7 +777,7 @@ protected:
             MESSAGE_HANDLER(WM_SETTEXT,OnCaptionChange)
             MESSAGE_HANDLER(WM_SETICON,OnCaptionChange)
 #ifdef DF_FOCUS_FEATURES
-            assert(CDockingFocusHandler::This());
+            ATLASSERT(CDockingFocusHandler::This());
             CHAIN_MSG_MAP_ALT_MEMBER((*CDockingFocusHandler::This()),0)
 #endif
         }
@@ -921,7 +921,7 @@ public:
     }
     virtual bool Undock(void)
     {
-        assert(IsDocking());
+        ATLASSERT(IsDocking());
         GetDockingPosition(&m_pos);
         return baseClass::Undock();
     }
@@ -931,11 +931,11 @@ public:
         if(IsDocking())
         {
             bRes=GetDockingPosition(&m_pos);
-            assert(bRes);
+            ATLASSERT(bRes);
             if(bRes)
             //    bRes=Undock();
                 bRes=Float(&m_rcUndock,SWP_HIDEWINDOW);
-            assert(bRes);
+            ATLASSERT(bRes);
         }
         else
             m_pos.hdr.hBar=HNONDOCKBAR;
@@ -948,7 +948,7 @@ public:
             bRes=SetDockingPosition(&m_pos);
         else
             ShowWindow(SW_SHOW);
-        assert(bRes);
+        ATLASSERT(bRes);
         return bRes;
     }
 

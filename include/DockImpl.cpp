@@ -32,13 +32,13 @@ CVC6LikeCaption::CPinButton::CIcons CVC6LikeCaption::CPinButton::m_icons;
 
 void DrawEllipsisText(CDC& dc,LPCTSTR sText, int n,LPRECT prc,bool bHorizontal)
 {
-    assert(n>0);
+    ATLASSERT(n>0);
     long width=bHorizontal ? prc->right - prc->left : prc->bottom - prc->top;
     CSize size;
     std::basic_string<TCHAR> sTmp;
 
     bool bRes=(GetTextExtentPoint32(dc, sText, n,&size)!=FALSE);
-    assert(bRes);
+    ATLASSERT(bRes);
     if(width<size.cx)
     {
         const std::basic_string<TCHAR> sEllipsis=_T("...");

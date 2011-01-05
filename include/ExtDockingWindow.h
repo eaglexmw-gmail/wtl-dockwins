@@ -242,7 +242,7 @@ public:
         m_thickness=23;
         CDWSettings settings;
         HFONT hFont = IsHorizontal() ? settings.HSysFont() : settings.VSysFont();
-        assert(hFont);
+        ATLASSERT(hFont);
         HDC dc=::GetDC(NULL);
         if(dc!=NULL)
         {

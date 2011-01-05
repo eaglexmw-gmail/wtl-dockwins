@@ -18,7 +18,6 @@
 #pragma once
 
 #include <algorithm>
-#include <cassert>
 #include <deque>
 #include <functional>
 #include <numeric>
@@ -214,7 +213,7 @@ public:
 
     const_iterator locate(position pos) const
     {
-        assert(m_bounds.bind(pos)==pos);
+        ATLASSERT(m_bounds.bind(pos)==pos);
         const_iterator i=m_separators.begin();
         if(i!=m_separators.end())
         {
@@ -226,7 +225,7 @@ public:
     }
     iterator locate(position pos)
     {
-        assert(m_bounds.bind(pos)==pos);
+        ATLASSERT(m_bounds.bind(pos)==pos);
         iterator i=m_separators.begin();
         if(i!=m_separators.end())
         {
@@ -238,13 +237,13 @@ public:
 
     position get_frame_low(const_iterator i) const
     {
-        assert(i!=m_separators.end());
+        ATLASSERT(i!=m_separators.end());
         return (*i);
     }
 
     position get_frame_hi(const_iterator i) const
     {
-        assert(i!=m_separators.end());
+        ATLASSERT(i!=m_separators.end());
         return (++i==m_separators.end()) ?m_bounds.hi :(*i);
     }
 
@@ -261,14 +260,14 @@ public:
 //    iterator insert(iterator i,const T& x,distance length)
 //    {
 //        position pos=x;
-////      assert(m_bounds.bind(pos)==pos);
+////      ATLASSERT(m_bounds.bind(pos)==pos);
 //
 //        distance leftLimit=distance_limit(m_separators.begin(),i);
 //        distance rightLimit=distance_limit(i,m_separators.end())/*+traits::min_distance(x)*/;
 //
 //        bounds_t ef_bounds(m_bounds.low+leftLimit,m_bounds.hi-rightLimit-traits::min_distance(x));
 //
-//        assert(ef_bounds.low<=ef_bounds.hi);
+//        ATLASSERT(ef_bounds.low<=ef_bounds.hi);
 //        pos=ef_bounds.bind(pos);
 //
 //        lshrink(m_separators.begin(),i,pos-leftLimit);
@@ -289,12 +288,12 @@ public:
         distance rightLimit=distance_limit(i,m_separators.end())/*+traits::min_distance(x)*/;
 
         bounds_t ef_bounds(m_bounds.low+leftLimit,m_bounds.hi-rightLimit);
-        assert(ef_bounds.low<=ef_bounds.hi);
+        ATLASSERT(ef_bounds.low<=ef_bounds.hi);
 
         distance limit=ef_bounds.distance();
         if(length>limit)
             length=limit;
-//        assert(length>=traits::min_distance(x));
+//        ATLASSERT(length>=traits::min_distance(x));
         position pos=x;
         bounds_t bounds(pos,pos+length);
         if(bounds.low<ef_bounds.low)
@@ -318,19 +317,19 @@ public:
     iterator insert(const T& x,distance length)
     {
         position pos=x;
-        assert(m_bounds.bind(pos)==pos);
+        ATLASSERT(m_bounds.bind(pos)==pos);
         iterator i=std::lower_bound(m_separators.begin(),m_separators.end(),pos,std::less<position>());
         return insert(i,x,length);
     }
     void set_position(iterator i,position pos)
     {
         distance limit=distance_limit(m_separators.begin(),i);
-        assert(pos-limit>=m_bounds.low);
+        ATLASSERT(pos-limit>=m_bounds.low);
         lshrink(m_separators.begin(),i,pos-limit);
 
 
         limit=distance_limit(i,m_separators.end());
-        assert(pos+limit<=m_bounds.hi);
+        ATLASSERT(pos+limit<=m_bounds.hi);
 
         (*i)=pos;
         rshrink(m_separators.rbegin(),reverse_iterator(i),pos+limit);
@@ -338,7 +337,7 @@ public:
 
     void set_bounds(const bounds_t& bounds)
     {
-        assert(bounds.distance()>=distance_limit(m_separators.begin(),m_separators.end()));
+        ATLASSERT(bounds.distance()>=distance_limit(m_separators.begin(),m_separators.end()));
         distance prevDist=m_bounds.distance();
 //        distance offset=bounds.low-m_bounds.low;
         m_bounds=bounds;
@@ -351,7 +350,7 @@ public:
     }
     const_iterator erase(iterator i)
     {
-        assert(i!=m_separators.end());
+        ATLASSERT(i!=m_separators.end());
         i=m_separators.erase(i);
         if(i!=m_separators.end() && (i==m_separators.begin()) )
             (*i)=m_bounds.low;
@@ -359,7 +358,7 @@ public:
     }
     const_iterator replace(iterator i,const T& x)
     {
-        assert(i!=m_separators.end());
+        ATLASSERT(i!=m_separators.end());
         position pos=(*i);
         i=m_separators.erase(i);
         i=m_separators.insert(i,x);
@@ -370,14 +369,14 @@ public:
 /*
     void set_frame_size(iterator i,distance length)
     {
-        assert(i!=m_separators.end());
-        assert(m_bounds.distance()>distance_limit(m_separators.begin(),m_separators.end()));
+        ATLASSERT(i!=m_separators.end());
+        ATLASSERT(m_bounds.distance()>distance_limit(m_separators.begin(),m_separators.end()));
         position pos=(*i);
         iterator inext=i;
         ++inext;
         if(length>get_frame_size(i))
         {
-            assert(pos<hi()-distance_limit(inext,m_separators.end()));
+            ATLASSERT(pos<hi()-distance_limit(inext,m_separators.end()));
             distance offset=hi()-distance_limit(inext,m_separators.end())-pos;
             if(offset>length)
                 offset=length;
@@ -386,7 +385,7 @@ public:
 
             if(length>0)
             {
-                assert(pos>low()+distance_limit(i,m_separators.end()));
+                ATLASSERT(pos>low()+distance_limit(i,m_separators.end()));
                 distance offset=pos-low()+distance_limit(i,m_separators.end());
                 if(offset>length)
                     offset=length;
@@ -411,7 +410,7 @@ public:
     void set_bounds(const bounds_t& bounds,P p)
     {
         iterator idecl=std::find_if(m_separators.begin(),m_separators.end(),p);
-        assert(idecl!=m_separators.end());
+        ATLASSERT(idecl!=m_separators.end());
 
         distance prevDist=m_bounds.distance();
         m_bounds=bounds;
@@ -433,7 +432,7 @@ public:
     template<class P>
     iterator insert(iterator i,P p,const T& x,distance length)
     {
-        assert(std::find_if(m_separators.begin(),m_separators.end(),p)!=m_separators.end());
+        ATLASSERT(std::find_if(m_separators.begin(),m_separators.end(),p)!=m_separators.end());
 
         iterator first=std::find_if(m_separators.begin(),i,p);
         iterator last=i;
@@ -461,8 +460,8 @@ public:
     template<class T>
     iterator erase(iterator i,T p)
     {
-        assert(i!=m_separators.end());
-        assert(std::find_if(m_separators.begin(),m_separators.end(),p)!=m_separators.end());
+        ATLASSERT(i!=m_separators.end());
+        ATLASSERT(std::find_if(m_separators.begin(),m_separators.end(),p)!=m_separators.end());
 
         distance n=get_frame_size(i);
         i=m_separators.erase(i);

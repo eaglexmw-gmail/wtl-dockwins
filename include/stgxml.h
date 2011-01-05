@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include <cassert>
-
 #include "stg.h"
 
 namespace sstate {
@@ -42,7 +40,7 @@ public:
 
     long Create(LPCTSTR name=_T("config"),LPCOLESTR msxmlDocClassName=OLESTR("Msxml2.FreeThreadedDOMDocument"))
     {
-        assert(!m_key);
+        ATLASSERT(!m_key);
         CComPtr<IXMLDOMDocument> doc;
         HRESULT res=doc.CoCreateInstance(msxmlDocClassName);
         if(SUCCEEDED(res))
@@ -56,8 +54,8 @@ public:
 
     virtual long Create(IStorge& parent,LPCTSTR name,Modes mode)
     {
-        assert(!(!static_cast<CStgXML&>(parent)));
-        assert(!m_key);
+        ATLASSERT(!(!static_cast<CStgXML&>(parent)));
+        ATLASSERT(!m_key);
         HRESULT res=Open(parent,name,mode);
         if(res!=S_OK)
         {
@@ -88,22 +86,22 @@ public:
 
     virtual long Open(IStorge& parent,LPCTSTR name,Modes /*mode*/)
     {
-        assert(!(!static_cast<CStgXML&>(parent)));
-        assert(!m_key);
+        ATLASSERT(!(!static_cast<CStgXML&>(parent)));
+        ATLASSERT(!m_key);
         return Open(static_cast<IXMLDOMNode*>(static_cast<CStgXML&>(parent).m_key),name);
     }
 
 
     virtual long SetString(LPCTSTR name,LPCTSTR data)
     {
-        assert(!(!m_key));
+        ATLASSERT(!(!m_key));
         return m_key->setAttribute(CComBSTR(name),CComVariant(data));
 
     }
 
     virtual long GetString(LPCTSTR name,LPTSTR data,size_t& size)
     {
-        assert(!(!m_key));
+        ATLASSERT(!(!m_key));
         CComVariant val;
         long res=m_key->getAttribute(CComBSTR(name),&val);
         if(SUCCEEDED(res))
@@ -140,7 +138,7 @@ public:
 
     long Load(LPCTSTR filename,LPCTSTR name=_T("config"),LPCOLESTR msxmlDocClassName=OLESTR("Msxml2.FreeThreadedDOMDocument"))
     {
-        assert(!m_key);
+        ATLASSERT(!m_key);
         CComPtr<IXMLDOMDocument> doc;
         long res=doc.CoCreateInstance(msxmlDocClassName);
         if(SUCCEEDED(res))
@@ -170,7 +168,7 @@ public:
 
     long Save(LPCTSTR filename)
     {
-        assert(!(!m_key));
+        ATLASSERT(!(!m_key));
         CComPtr<IXMLDOMDocument> doc;
         long res=m_key->get_ownerDocument(&doc);
         if(SUCCEEDED(res))
@@ -204,8 +202,8 @@ public:
 protected:
     long Open(IXMLDOMNode* parent,LPCTSTR name)
     {
-        assert(parent!=0);
-        assert(!m_key);
+        ATLASSERT(parent!=0);
+        ATLASSERT(!m_key);
         CComPtr<IXMLDOMNode> node;
         HRESULT res=parent->selectSingleNode(CComBSTR(name),&node);
         if(SUCCEEDED(res))

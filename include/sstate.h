@@ -9,7 +9,6 @@
 // NOTE: To be able to CSplitterWindowStateAdapter include atlsplit.h first
 
 #include <algorithm>
-#include <cassert>
 #include <limits>
 #include <map>
 #include <memory>
@@ -64,7 +63,7 @@ public:
     }
     virtual ~CStateBase(void)
     {
-        assert(m_ref==0);
+        ATLASSERT(m_ref==0);
     }
 private:
     CStateBase(const CStateBase& );
@@ -227,7 +226,7 @@ public:
     }
     void Remove(ID id)
     {
-        assert(m_bunch.find(id)!=m_bunch.end());
+        ATLASSERT(m_bunch.find(id)!=m_bunch.end());
         m_bunch.erase(id);
     }
 protected:
@@ -286,13 +285,13 @@ protected:
         }
         void SetWindow(HWND hWnd=NULL,int nDefCmdShow=SW_SHOWDEFAULT)
         {
-            assert(::IsWindow(hWnd));
+            ATLASSERT(::IsWindow(hWnd));
             m_hWnd=hWnd;
             m_nDefCmdShow=nDefCmdShow;
         }
         virtual bool Store(IStorge& stg)
         {
-            assert(IsWindow(m_hWnd));
+            ATLASSERT(IsWindow(m_hWnd));
 
             WINDOWPLACEMENT wp;
             wp.length = sizeof(WINDOWPLACEMENT);
@@ -317,7 +316,7 @@ protected:
         }
         virtual bool Restore(IStorge& stg,const std::pair<long,long>& xratio,const std::pair<long,long>& yratio)
         {
-            assert(IsWindow(m_hWnd));
+            ATLASSERT(IsWindow(m_hWnd));
             WINDOWPLACEMENT wp;
 /*
             DWORD dwType;
@@ -379,7 +378,7 @@ protected:
         }
         virtual bool RestoreDefault(void)
         {
-            assert(IsWindow(m_hWnd));
+            ATLASSERT(IsWindow(m_hWnd));
             bool bRes=baseClass::RestoreDefault();
             ShowWindow(m_hWnd,m_nDefCmdShow&(~ForceDefaultCmdShow));
             return bRes;
@@ -419,7 +418,7 @@ public:
     }
     ~CWindowStateMgr(void)
     {
-        assert(m_pImpl);
+        ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
     operator IState* (void)
@@ -593,13 +592,13 @@ protected:
         CImpl(HWND hWnd,int nDefCmdShow=SW_SHOWNA)
             :m_hWnd(hWnd),m_nDefCmdShow(nDefCmdShow)
         {
-            assert(::IsWindow(hWnd));
+            ATLASSERT(::IsWindow(hWnd));
         }
         virtual bool Store(IStorge& stg)
         {
             WINDOWPLACEMENT wp;
             wp.length = sizeof(WINDOWPLACEMENT);
-            assert(::IsWindow(m_hWnd));
+            ATLASSERT(::IsWindow(m_hWnd));
             bool bRes=false;
             if (::GetWindowPlacement(m_hWnd,&wp))
             {
@@ -617,7 +616,7 @@ protected:
         }
         virtual bool Restore(IStorge& stg,const std::pair<long,long>& /*xratio*/,const std::pair<long,long>& /*yratio*/)
         {
-            assert(::IsWindow(m_hWnd));
+            ATLASSERT(::IsWindow(m_hWnd));
             WINDOWPLACEMENT wp;
 /*
             DWORD dwType;
@@ -649,7 +648,7 @@ public:
     }
     ~CWindowStateAdapter(void)
     {
-        assert(m_pImpl);
+        ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
     operator IState* (void)
@@ -669,7 +668,7 @@ protected:
         CImpl(HWND hWnd,int nDefCmdShow=SW_SHOWNA)
             :m_hWnd(hWnd),m_nDefCmdShow(nDefCmdShow)
         {
-            assert(::IsWindow(hWnd));
+            ATLASSERT(::IsWindow(hWnd));
         }
         virtual bool Store(IStorge& stg)
         {
@@ -717,7 +716,7 @@ public:
     }
     ~CToggleWindowAdapter(void)
     {
-        assert(m_pImpl);
+        ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
     operator IState* (void)
@@ -737,12 +736,12 @@ protected:
         CImpl(HWND hWnd)
             :m_rebar(hWnd)
         {
-            assert(::IsWindow(hWnd));
+            ATLASSERT(::IsWindow(hWnd));
         }
 
         virtual bool Store(IStorge& stg)
         {
-            assert(m_rebar.IsWindow());
+            ATLASSERT(m_rebar.IsWindow());
             unsigned int bandCount=m_rebar.GetBandCount();
             for(unsigned int i=0;i<bandCount;i++)
             {
@@ -810,7 +809,7 @@ public:
     }
     ~CRebarStateAdapter(void)
     {
-        assert(m_pImpl);
+        ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
     operator IState* (void)
@@ -877,7 +876,7 @@ public:
     }
     ~CSplitterWindowStateAdapter(void)
     {
-        assert(m_pImpl);
+        ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
     operator IState* (void)
