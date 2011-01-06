@@ -18,7 +18,9 @@
 
 #pragma once
 
+#ifndef DF_AUTO_HIDE_FEATURES
 #define DF_AUTO_HIDE_FEATURES
+#endif // DF_AUTO_HIDE_FEATURES
 
 #include <queue>
 #include <deque>
@@ -93,7 +95,7 @@ struct IPinnedLabel
             m_width=width;
             m_icon=reinterpret_cast<HICON>(::SendMessage(hWnd, WM_GETICON, FALSE, 0));
             if(m_icon == NULL)
-                m_icon = reinterpret_cast<HICON>(::GetClassLong(hWnd, GCL_HICONSM));
+                m_icon = reinterpret_cast<HICON>(::GetClassLong(hWnd, GCLP_HICONSM));
             delete [] m_txt;
             int len=0;
             try
@@ -178,10 +180,10 @@ struct IPinnedLabel
                     }
                 }
             }
-            DrawEllipsisText(dc,m_txt,_tcslen(m_txt),&rcOutput,side.IsHorizontal());
+            DrawEllipsisText(dc,m_txt,-1,&rcOutput,side.IsHorizontal());
         }
     protected:
-        unsigned long    m_width;
+        UINT    m_width;
         HWND            m_hWnd;
         HICON            m_icon;
         mutable LPTSTR    m_txt;
@@ -265,7 +267,8 @@ public:
     {
         SIZE sz;
         LPCTSTR text=m_wnd.Text();
-        bool bRes=(GetTextExtentPoint32(dc, text,_tcslen(text),&sz)!=FALSE);
+        bool bRes=(GetTextExtentPoint32(dc, text,
+            static_cast<int>(_tcslen(text)),&sz)!=FALSE);
         ATLASSERT(bRes);
         unsigned long width=sz.cx+2*captionPadding;
         if(m_wnd.Icon()!=NULL)
@@ -433,7 +436,7 @@ public:
     {
         SIZE sz;
         LPCTSTR text=m_tabs[m_longestTextTab].Text();
-        bool bRes=(GetTextExtentPoint32(dc, text,_tcslen(text),&sz)!=FALSE);
+        bool bRes=(GetTextExtentPoint32(dc, text,-1,&sz)!=FALSE);
         ATLASSERT(bRes);
         bRes;
         long width=sz.cx+2*captionPadding;
@@ -483,7 +486,7 @@ public:
         else
         {
             LPCTSTR text=m_tabs[i].Text();
-            DrawEllipsisText(dc,text,_tcslen(text),&rcOutput,side.IsHorizontal());
+            DrawEllipsisText(dc,text,-1,&rcOutput,side.IsHorizontal());
         }
     }
     void DrawActiveTab(unsigned long i,CDC& dc,const CRect& rc,const CSide& side) const
@@ -664,18 +667,18 @@ public:
             widths.push(labelWidth);
             width+=labelWidth;
         }
-        long averageLableWidth=width;
-        long n=m_bunch.size();
+        CBunch::difference_type averageLableWidth=width;
+        CBunch::size_type n=m_bunch.size();
         if(n>0 && (width>availableWidth) )
         {
             width=availableWidth;
-            long itemsLeft=n;
+            CBunch::difference_type itemsLeft=n;
             averageLableWidth=width/itemsLeft;
-            long diffrence=width%itemsLeft;
+            CBunch::difference_type diffrence=width%itemsLeft;
             while(!widths.empty())
             {
-                long itemWidth=widths.top();
-                long diff=averageLableWidth-itemWidth;
+                CBunch::difference_type itemWidth=widths.top();
+                CBunch::difference_type diff=static_cast<CBunch::difference_type>(averageLableWidth-itemWidth);
                 if(diff>0)
                 {
                     diffrence+=diff;
@@ -696,10 +699,10 @@ public:
                 averageLableWidth=0;
             for(const_iterator i=m_bunch.begin();i!=m_bunch.end();++i)
             {
-                long labelWidth=(*i)->Width();
+                CBunch::difference_type labelWidth=(*i)->Width();
                 if( labelWidth>averageLableWidth )
-                            labelWidth=averageLableWidth;
-                (*i)->Width(labelWidth);
+                            labelWidth=static_cast<CBunch::difference_type>(averageLableWidth);
+                (*i)->Width(static_cast<long>(labelWidth));
             }
         }
         dc.SelectFont(hPrevFont);
@@ -777,7 +780,7 @@ public:
             *pLeft+=IPinnedLabel::leftBorder;
             *pRight-=IPinnedLabel::rightBorder;
 
-            long minSize=m_bunch.size()*IPinnedLabel::labelPadding-IPinnedLabel::labelPadding;
+            CBunch::difference_type minSize=m_bunch.size()*IPinnedLabel::labelPadding-IPinnedLabel::labelPadding;
 
             if(minSize<(*pRight-*pLeft))
             {
@@ -997,12 +1000,12 @@ public:
         return lRes;
     }
 
-    void NcMouseMove(const CPoint& /*pt*/,unsigned int nHitTest)
+    void NcMouseMove(const CPoint& /*pt*/,WPARAM nHitTest)
     {
         m_caption.HotTrack(m_hWnd,nHitTest);
     }
 
-    BOOL NcLButtonDown(const CPoint& pt,unsigned int nHitTest)
+    BOOL NcLButtonDown(const CPoint& pt,WPARAM nHitTest)
     {
         T* pThis=static_cast<T*>(this);
         bool res=m_caption.Action(m_hWnd,pt,nHitTest);
@@ -1185,7 +1188,7 @@ protected:
         return NULL;
     }
 
-    unsigned int OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+    LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
     {
         return static_cast<T*>(this)->NcHitTest(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
     }
@@ -1202,7 +1205,7 @@ protected:
     {
         T* pThis=static_cast<T*>(this);
         pThis->NcMouseMove(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)),wParam);
-        return NULL;
+        return 0;
     }
 
     LRESULT OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)

@@ -24,7 +24,11 @@
 #include "DockMisc.h"
 #include "PackageWindow.h"
 
-namespace dockwins{
+#ifdef DF_AUTO_HIDE_FEATURES
+#include "DWAutoHide.h"
+#endif // DF_AUTO_HIDE_FEATURES
+
+namespace dockwins {
 /////////////////CDockingFrameImplBase
 
 template <class T, class TBase,class TWinTraits = CDockingFrameTraits >
@@ -232,7 +236,7 @@ public:
         return bRes;
     }
     template<class T>
-    bool DockWindow(T& dockWnd,CDockingSide side,unsigned long nBar,float fPctPos,unsigned long    nWidth, unsigned long nHeight)
+    bool DockWindow(T& dockWnd,CDockingSide side, SIZE_T nBar,float fPctPos, UINT nWidth, UINT nHeight)
     {
         if(dockWnd.IsDocking())
             dockWnd.Undock();
@@ -422,14 +426,14 @@ protected:
     {
         CPoint pt( GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
         T* pThis = static_cast<T*>(this);
-        bHandled=pThis->OnMouseMove(wParam,pt);
+        bHandled=pThis->OnMouseMove(static_cast<DWORD>(wParam),pt);
         return 0;
     }
     LRESULT OnMouseHover(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
     {
         CPoint pt( GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
         T* pThis = static_cast<T*>(this);
-        bHandled=pThis->OnMouseHover(wParam,pt);
+        bHandled=pThis->OnMouseHover(static_cast<DWORD>(wParam),pt);
         return 0;
     }
 #endif

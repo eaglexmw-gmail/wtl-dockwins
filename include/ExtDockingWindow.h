@@ -320,7 +320,7 @@ public:
             dc.SetBkMode(TRANSPARENT);
             HFONT hFontOld = dc.SelectFont(hFont);
             if( (rc.left<rc.right) && (rc.top<rc.bottom))
-                DrawEllipsisText(dc,sText,_tcslen(sText),&rc,IsHorizontal());
+                DrawEllipsisText(dc,sText,-1,&rc,IsHorizontal());
             dc.SelectFont(hFontOld);
         }
         m_btnClose.Draw(dc.m_hDC);
@@ -350,7 +350,7 @@ public:
         return lRes;
     }
 
-    void HotTrack(HWND hWnd,unsigned int nHitTest)
+    void HotTrack(HWND hWnd, WPARAM nHitTest)
     {
         m_btnClose.Hot(hWnd,nHitTest==HTCLOSE);
 #ifdef DF_AUTO_HIDE_FEATURES
@@ -358,7 +358,7 @@ public:
 #endif
     }
 
-    bool Action(HWND hWnd,const CPoint& /*pt*/,unsigned int nHitTest)
+    bool Action(HWND hWnd,const CPoint& /*pt*/, WPARAM nHitTest)
     {
         bool res=false;
         switch(nHitTest)
@@ -376,7 +376,7 @@ public:
         }
         return res;
     }
-    void ActionDone(HWND hWnd,unsigned int nHitTest,bool /*ok*/)
+    void ActionDone(HWND hWnd, WPARAM nHitTest,bool /*ok*/)
     {
         switch(nHitTest)
         {
@@ -617,7 +617,7 @@ public:
         return lRes;
     }
 
-    void HotTrack(HWND hWnd,unsigned int nHitTest)
+    void HotTrack(HWND hWnd, WPARAM nHitTest)
     {
         m_btnClose.Hot(hWnd,nHitTest==HTCLOSE);
 #ifdef DF_AUTO_HIDE_FEATURES
@@ -625,7 +625,7 @@ public:
 #endif
     }
 
-    bool Action(HWND hWnd,const CPoint& /*pt*/,unsigned int nHitTest)
+    bool Action(HWND hWnd,const CPoint& /*pt*/, WPARAM nHitTest)
     {
         bool res=false;
         switch(nHitTest)
@@ -643,7 +643,7 @@ public:
         }
         return res;
     }
-    void ActionDone(HWND hWnd,unsigned int nHitTest,bool /*ok*/)
+    void ActionDone(HWND hWnd, WPARAM nHitTest,bool /*ok*/)
     {
         switch(nHitTest)
         {

@@ -12,8 +12,8 @@
 // the source code in  this file is used in any commercial application
 // then a simple email would be nice.
 
-#include <DockMisc.h>
-#include <DockingBox.h>
+#include "DockMisc.h"
+#include "DockingBox.h"
 
 #include <string>
 
@@ -32,7 +32,9 @@ CVC6LikeCaption::CPinButton::CIcons CVC6LikeCaption::CPinButton::m_icons;
 
 void DrawEllipsisText(CDC& dc,LPCTSTR sText, int n,LPRECT prc,bool bHorizontal)
 {
-    ATLASSERT(n>0);
+    if (n < 0)
+        n = static_cast<int>(_tcslen(sText));
+
     long width=bHorizontal ? prc->right - prc->left : prc->bottom - prc->top;
     CSize size;
     std::basic_string<TCHAR> sTmp;
@@ -45,11 +47,12 @@ void DrawEllipsisText(CDC& dc,LPCTSTR sText, int n,LPRECT prc,bool bHorizontal)
         sTmp.reserve(sEllipsis.size()+n);
         sTmp.append(sEllipsis);
         sTmp.append(sText, n);
-        bRes=(GetTextExtentExPoint(dc,sTmp.c_str(),sTmp.size(),width,&n,NULL,&size)!=FALSE);
+        bRes=(GetTextExtentExPoint(dc,sTmp.c_str(),static_cast<int>
+            (sTmp.size()),width,&n,NULL,&size)!=FALSE);
         if(bRes)
         {
             if(n<static_cast<int>(sEllipsis.size()+1))
-                n=sEllipsis.size()+1;
+                n=static_cast<int>(sEllipsis.size()+1);
             sTmp.assign(sText, n-sEllipsis.size());
             sTmp.append(sEllipsis);
             sText=sTmp.c_str();

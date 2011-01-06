@@ -657,12 +657,12 @@ public:
         return lRes;
     }
 
-    void NcMouseMove(const CPoint& /*pt*/,unsigned int nHitTest)
+    void NcMouseMove(const CPoint& /*pt*/, WPARAM nHitTest)
     {
         m_caption.HotTrack(m_hWnd,nHitTest);
     }
 
-    BOOL NcLButtonDown(const CPoint& pt,unsigned int nHitTest)
+    BOOL NcLButtonDown(const CPoint& pt, WPARAM nHitTest)
     {
         T* pThis=static_cast<T*>(this);
         bool res=m_caption.Action(m_hWnd,pt,nHitTest);
@@ -854,7 +854,7 @@ protected:
         return NULL;
     }
 
-    unsigned int OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+    LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
     {
         return static_cast<T*>(this)->NcHitTest(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
     }
@@ -992,7 +992,7 @@ public:
         return bRes;
     }
 
-    bool CanBeClosed(unsigned long /*param*/)
+    bool CanBeClosed(WPARAM /*param*/)
     {
         Hide();
         return false;

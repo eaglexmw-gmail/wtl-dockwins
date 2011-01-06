@@ -116,10 +116,10 @@ struct DFDOCKPOS
     {
         struct
         {
-            unsigned long    nBar;
-            float            fPctPos;
-            unsigned long    nWidth;
-            unsigned long    nHeight;
+            SIZE_T    nBar;
+            float fPctPos;
+            ULONG nWidth;
+            ULONG nHeight;
         };
         RECT    rcFloat;
     };

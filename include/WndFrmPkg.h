@@ -103,7 +103,8 @@ public:
         dockHdr.hWnd=m_hWnd;
         dockHdr.hBar=::GetParent(m_hWnd);
         ATLASSERT(::IsWindow(dockHdr.hBar));
-        return ::SendMessage(dockHdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(&dockHdr));
+        return static_cast<distance>
+            (::SendMessage(dockHdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(&dockHdr)));
     }
 protected:
     position m_pos;
@@ -347,7 +348,7 @@ protected:
         const_iterator end=m_frames.end();
         if(begin!=end)
         {
-            hdwp=BeginDeferWindowPos(m_frames.size());
+            hdwp=BeginDeferWindowPos(static_cast<int>(m_frames.size()));
             const_iterator next=begin;
             while((hdwp!=NULL)&&(++next!=end))
             {
@@ -381,7 +382,7 @@ protected:
         const_iterator end=m_frames.end();
         if(begin!=end)
         {
-            hdwp=BeginDeferWindowPos(m_frames.size());
+            hdwp=BeginDeferWindowPos(static_cast<int>(m_frames.size()));
             const_iterator next=begin;
             while((hdwp!=NULL)&&(++next!=end))
             {
@@ -1259,9 +1260,9 @@ public:
     bool SetDockingPosition(DFDOCKPOS* pHdr)
     {
         bool bRes=true;
-        unsigned long limit=GetMinFrameDist(&(pHdr->hdr));
+        LRESULT limit=GetMinFrameDist(&(pHdr->hdr));
         if(pHdr->nWidth<limit)
-                        pHdr->nWidth=limit;
+                        pHdr->nWidth=static_cast<ULONG>(limit);
         CDockingSide side(pHdr->dwDockSide);
         if(side.IsTop())
         {
