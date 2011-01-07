@@ -54,7 +54,7 @@ public:
         public sstate::CStgXML
     {
     public:
-        CConfig(void)
+        CConfig()
         {
             TCHAR name[_MAX_PATH];
             int len=::GetModuleFileName(_Module.GetModuleInstance(), name,_MAX_PATH);
@@ -67,7 +67,7 @@ public:
             if(Root()==0)
                 Create();
         }
-        ~CConfig(void)
+        ~CConfig()
         {
             if(!m_filename.empty()
                 && (Root()!=0))

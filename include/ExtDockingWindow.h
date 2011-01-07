@@ -124,7 +124,7 @@ class COutlookLikeExCaption : public CCaptionBase
     typedef COutlookLikeExCaption    thisClass;
     typedef CCaptionBase            baseClass;
 public:
-    enum{fntSpace=10,cFrameSpace=2,btnSpace=1};
+    enum{fntSpace=8,cFrameSpace=2,btnSpace=1};
 protected:
     typedef baseClass::CButton CButtonBase;
     struct CButton
@@ -133,7 +133,10 @@ protected:
         virtual void CalculateRect(CRect& rc,bool bHorizontal=true)
         {
             CopyRect(rc);
-            DeflateRect(cFrameSpace+btnSpace,cFrameSpace+btnSpace);
+
+            const int cx = cFrameSpace+btnSpace;
+            DeflateRect(cx, cx);
+
             if(bHorizontal)
             {
                 left=right-Height();
@@ -151,7 +154,7 @@ protected:
         : public CButton
     {
     public:
-        virtual void Draw(CDCHandle dc)
+        virtual void Draw(CDC& dc)
         {
             CPen pen;
 #ifdef DF_FOCUS_FEATURES
@@ -195,7 +198,7 @@ protected:
             m_sicon=state;
         }
 
-        virtual void Draw(CDCHandle dc)
+        virtual void Draw(CDC& dc)
         {
 #ifdef DF_FOCUS_FEATURES
             CCaptionFocus cf(dc);
@@ -243,18 +246,17 @@ public:
         CDWSettings settings;
         HFONT hFont = IsHorizontal() ? settings.HSysFont() : settings.VSysFont();
         ATLASSERT(hFont);
-        HDC dc=::GetDC(NULL);
-        if(dc!=NULL)
+        CWindowDC dc(NULL);
+        if(dc)
         {
-            HFONT hOldFont = reinterpret_cast<HFONT>(::SelectObject(dc,hFont));
+            HFONT hOldFont = dc.SelectFont(hFont);
             if(hOldFont!=NULL)
             {
                 TEXTMETRIC tm;
-                if(::GetTextMetrics(dc, &tm))
+                if(dc.GetTextMetrics(&tm))
                     m_thickness=tm.tmHeight+fntSpace;
-                ::SelectObject(dc,hOldFont);
+                dc.SelectFont(hOldFont);
             }
-            ::ReleaseDC(NULL,dc);
         }
     }
 
@@ -286,8 +288,10 @@ public:
         dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
 #endif
         int len=GetWindowTextLength(hWnd)+1;
-        TCHAR* sText=new TCHAR[len];
-        if(GetWindowText(hWnd,sText,len)!=0)
+        CString sText;
+        int result = GetWindowText(hWnd,sText.GetBufferSetLength(len),len);
+        sText.ReleaseBuffer(result);
+        if(result!=0)
         {
             HFONT hFont;
             CDWSettings settings;
@@ -320,15 +324,14 @@ public:
             dc.SetBkMode(TRANSPARENT);
             HFONT hFontOld = dc.SelectFont(hFont);
             if( (rc.left<rc.right) && (rc.top<rc.bottom))
-                DrawEllipsisText(dc,sText,-1,&rc,IsHorizontal());
+                DrawEllipsisText(dc,sText,sText.GetLength(),&rc,IsHorizontal());
             dc.SelectFont(hFontOld);
         }
-        m_btnClose.Draw(dc.m_hDC);
+        m_btnClose.Draw(dc);
 #ifdef DF_AUTO_HIDE_FEATURES
-        m_btnPin.Draw(dc.m_hDC);
+        m_btnPin.Draw(dc);
 #endif
         dc.DrawEdge(this,EDGE_ETCHED,BF_RECT);
-        delete [] sText;
     }
 
     LRESULT HitTest(const CPoint& pt) const
@@ -444,7 +447,7 @@ protected:
     class CCloseButton: public CButton
     {
     public:
-        virtual void Draw(CDCHandle dc)
+        virtual void Draw(CDC& dc)
         {
 
             CPen pen;
@@ -487,7 +490,7 @@ protected:
         {
             m_sicon=state;
         }
-        virtual void Draw(CDCHandle dc)
+        virtual void Draw(CDC& dc)
         {
 #ifdef DF_FOCUS_FEATURES
             CCaptionFocus cf(dc);
@@ -592,9 +595,9 @@ public:
             }
         }
 
-        m_btnClose.Draw(dc.m_hDC);
+        m_btnClose.Draw(dc);
 #ifdef DF_AUTO_HIDE_FEATURES
-        m_btnPin.Draw(dc.m_hDC);
+        m_btnPin.Draw(dc);
 #endif
     }
 

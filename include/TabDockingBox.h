@@ -338,7 +338,7 @@ public:
         }
     }
 
-    void UpdateWindowCaption(void)
+    void UpdateWindowCaption()
     {
         if(m_wnd.m_hWnd!=0)
         {
@@ -353,7 +353,7 @@ public:
         }
     }
 
-    void IsStillAlive(void)
+    void IsStillAlive()
     {
         int n=m_tabs.GetItemCount();
         if(n<=1)
@@ -363,7 +363,7 @@ public:
                 Hide();
         }
     }
-    bool CanBeClosed(unsigned long param)
+    bool CanBeClosed(UINT param)
     {
         int n=m_tabs.GetItemCount();
         bool bRes=(param==0);
@@ -432,7 +432,7 @@ public:
         return (InsertWndTab(index,pHdr->hdr.hWnd)!=-1);
     }
 #ifdef DF_AUTO_HIDE_FEATURES
-    bool PinUp(const CDockingSide& side,unsigned long width,bool bVisualize=false)
+    bool PinUp(const CDockingSide& side,UINT width,bool bVisualize=false)
     {
         if(IsDocking())
                     Undock();

@@ -30,19 +30,19 @@ const    TCHAR ctxtVisible[]        =_T("visible");
 const    TCHAR ctxtBand[]        =_T("band");
 const    TCHAR ctxtWndPrefix[]    =_T("Wnd-");
 typedef std::basic_string<TCHAR> tstring;
-typedef unsigned long ID;
+typedef UINT ID;
 //typedef tstring ID;
 
 const unsigned int ForceDefaultCmdShow=0x80000000;
 
 struct IState
 {
-    virtual ~IState(void){}
+    virtual ~IState(){}
     virtual bool Store(IStorge& /*stg*/)=0;
     virtual bool Restore(IStorge& /*stg*/,const std::pair<long,long>& /*xratio*/,const std::pair<long,long>& /*yratio*/)=0;
-    virtual bool RestoreDefault(void)=0;
-    virtual void AddRef(void)=0;
-    virtual void Release(void)=0;
+    virtual bool RestoreDefault()=0;
+    virtual void AddRef()=0;
+    virtual void Release()=0;
 };
 
 template<class T>
@@ -52,16 +52,16 @@ public:
     CStateBase():m_ref(1)
     {
     }
-    virtual void AddRef(void)
+    virtual void AddRef()
     {
         m_ref++;
     }
-    virtual void Release(void)
+    virtual void Release()
     {
         if(--m_ref==0)
             delete this;
     }
-    virtual ~CStateBase(void)
+    virtual ~CStateBase()
     {
         ATLASSERT(m_ref==0);
     }
@@ -69,7 +69,7 @@ private:
     CStateBase(const CStateBase& );
     const CStateBase& operator=(const CStateBase& );
 protected:
-    unsigned long m_ref;
+    UINT m_ref;
 };
 
 template<class T=IState>
@@ -77,7 +77,7 @@ class CStateHolder
 {
     typedef CStateHolder<T> thisClass;
 public:
-    CStateHolder(void)
+    CStateHolder()
         :m_pState(0)
     {
     }
@@ -97,7 +97,7 @@ public:
             m_pState->AddRef();
         return *this;
     }
-    ~CStateHolder(void)
+    ~CStateHolder()
     {
         if(m_pState!=0)
             m_pState->Release();
@@ -190,11 +190,11 @@ protected:
         }
     };
 public:
-    CContainerImpl(void)
+    CContainerImpl()
         :m_nextFreeID(/*std::numeric_limits<ID>::max()*/ULONG_MAX)
     {
     }
-    ID GetUniqueID(void) const
+    ID GetUniqueID() const
     {
         return m_nextFreeID--;
     }
@@ -208,7 +208,7 @@ public:
         std::for_each(m_bunch.begin(),m_bunch.end(),CRestorer(stg,xratio,yratio));
         return true;
     }
-    virtual bool RestoreDefault(void)
+    virtual bool RestoreDefault()
     {
         std::for_each(m_bunch.begin(),m_bunch.end(),CDefRestorer());
         return true;
@@ -245,7 +245,7 @@ namespace
             m_oldWindowProc=(WNDPROC)(::SetWindowLongPtr(m_hWnd, GWLP_WNDPROC,LONG_PTR(&WndProc)));
             ::SetWindowPlacement(m_hWnd,wp);
         }
-        ~SetWindowPlacementInsensibly(void)
+        ~SetWindowPlacementInsensibly()
         {
             ::SetWindowLongPtr(m_hWnd, GWLP_WNDPROC,LONG_PTR(m_oldWindowProc));
         }
@@ -376,7 +376,7 @@ protected:
                 bRes=baseClass::RestoreDefault();
             return bRes;
         }
-        virtual bool RestoreDefault(void)
+        virtual bool RestoreDefault()
         {
             ATLASSERT(IsWindow(m_hWnd));
             bool bRes=baseClass::RestoreDefault();
@@ -416,12 +416,12 @@ public:
     {
         m_pImpl=new CImpl(hWnd,nDefCmdShow);
     }
-    ~CWindowStateMgr(void)
+    ~CWindowStateMgr()
     {
         ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
-    operator IState* (void)
+    operator IState* ()
     {
         return m_pImpl;
     }
@@ -575,7 +575,7 @@ public:
             bRes=m_pImpl->RestoreDefault();
         return bRes;
     }
-    bool RestoreDefault(void)
+    bool RestoreDefault()
     {
         return m_pImpl->RestoreDefault();
     }
@@ -632,7 +632,7 @@ protected:
                     bRes=(::SetWindowPlacement(m_hWnd,&wp)!=FALSE);
             return bRes;
         }
-        virtual bool RestoreDefault(void)
+        virtual bool RestoreDefault()
         {
             ::ShowWindow(m_hWnd,m_nDefCmdShow);
             return true;
@@ -646,12 +646,12 @@ public:
     {
         m_pImpl = new CImpl(hWnd,nDefCmdShow);
     }
-    ~CWindowStateAdapter(void)
+    ~CWindowStateAdapter()
     {
         ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
-    operator IState* (void)
+    operator IState* ()
     {
         return m_pImpl;
     }
@@ -700,7 +700,7 @@ protected:
                     RestoreDefault();
             return bRes;
         }
-        virtual bool RestoreDefault(void)
+        virtual bool RestoreDefault()
         {
             ::ShowWindow(m_hWnd,m_nDefCmdShow);
             return true;
@@ -714,12 +714,12 @@ public:
     {
         m_pImpl = new CImpl(hWnd,nDefCmdShow);
     }
-    ~CToggleWindowAdapter(void)
+    ~CToggleWindowAdapter()
     {
         ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
-    operator IState* (void)
+    operator IState* ()
     {
         return m_pImpl;
     }
@@ -795,7 +795,7 @@ protected:
             return true;
 
         }
-        virtual bool RestoreDefault(void)
+        virtual bool RestoreDefault()
         {
             return true;
         }
@@ -807,12 +807,12 @@ public:
     {
         m_pImpl = new CImpl(hWnd);
     }
-    ~CRebarStateAdapter(void)
+    ~CRebarStateAdapter()
     {
         ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
-    operator IState* (void)
+    operator IState* ()
     {
         return m_pImpl;
     }
@@ -859,7 +859,7 @@ protected:
             return true;
 
         }
-        virtual bool RestoreDefault(void)
+        virtual bool RestoreDefault()
         {
             m_splitter.SetSplitterPos(m_defaultPos);
             return true;
@@ -874,12 +874,12 @@ public:
     {
         m_pImpl = new CImpl(splitter,defaultPos);
     }
-    ~CSplitterWindowStateAdapter(void)
+    ~CSplitterWindowStateAdapter()
     {
         ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
-    operator IState* (void)
+    operator IState* ()
     {
         return m_pImpl;
     }

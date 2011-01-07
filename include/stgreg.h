@@ -24,7 +24,7 @@ public:
 
     }
 
-    virtual ~CStgRegistry(void)
+    virtual ~CStgRegistry()
     {
         if(m_key!=0)
             ::RegCloseKey(m_key);

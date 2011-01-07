@@ -26,7 +26,7 @@ namespace sstate {
 
 struct IDockWndState : public IState
 {
-    virtual void Reset(void)=0;
+    virtual void Reset()=0;
     virtual bool Store(IStorge& /*stg*/)=0;
     virtual bool Restore(IStorge& stg,const std::pair<long,long>& /*xratio*/,const std::pair<long,long>& /*yratio*/)=0;
     virtual bool Store(dockwins::DFDOCKPOSEX* /*pDocPos*/)=0;
@@ -158,11 +158,11 @@ protected:
             }
         };
     public:
-        CImpl(void)
+        CImpl()
             :m_nextFreeID(/*std::numeric_limits<ID>::max()*/ULONG_MAX)
         {
         }
-        ID GetUniqueID(void) const
+        ID GetUniqueID() const
         {
             return m_nextFreeID--;
         }
@@ -185,7 +185,7 @@ protected:
             }
             return true;
         }
-        virtual bool RestoreDefault(void)
+        virtual bool RestoreDefault()
         {
             std::for_each(m_bunch.begin(),m_bunch.end(),CDefRestorer());
             return true;
@@ -216,16 +216,16 @@ protected:
     {
     }
 public:
-    CDockWndMgr(void)
+    CDockWndMgr()
     {
         m_pImpl=new CImpl();
     }
-    ~CDockWndMgr(void)
+    ~CDockWndMgr()
     {
         ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
-    operator IState* (void)
+    operator IState* ()
     {
         return m_pImpl;
     }
@@ -262,7 +262,7 @@ public:
         {
             m_pos.dockPos.hdr.hWnd=NULL;
         }
-        virtual void Reset(void)
+        virtual void Reset()
         {
             if(m_dockWnd.GetDockingWindowPlacement(&m_pos))
                 m_dockWnd.Hide();
@@ -300,7 +300,7 @@ public:
                 bRes=Restore(&dpos,xratio,yratio);
             return bRes;
         }
-        virtual bool RestoreDefault(void)
+        virtual bool RestoreDefault()
         {
             ATLASSERT( (m_pos.dockPos.hdr.hWnd==NULL) || (m_pos.dockPos.hdr.hWnd==m_dockWnd.m_hWnd) );
             bool bRes=(m_pos.dockPos.hdr.hWnd!=NULL);
@@ -327,17 +327,17 @@ public:
                 {
                     if(dside.IsHorizontal())
                     {
-//                         pDocPos->dockPos.nWidth=unsigned long(pDocPos->dockPos.nWidth*yratio);
-//                         pDocPos->dockPos.nHeight=unsigned long(pDocPos->dockPos.nHeight*xratio);
-                        pDocPos->dockPos.nWidth=unsigned long(::MulDiv(pDocPos->dockPos.nWidth,yratio.first,yratio.second));
-                        pDocPos->dockPos.nHeight=unsigned long(::MulDiv(pDocPos->dockPos.nHeight,xratio.first,xratio.second));
+//                         pDocPos->dockPos.nWidth=UINT(pDocPos->dockPos.nWidth*yratio);
+//                         pDocPos->dockPos.nHeight=UINT(pDocPos->dockPos.nHeight*xratio);
+                        pDocPos->dockPos.nWidth=UINT(::MulDiv(pDocPos->dockPos.nWidth,yratio.first,yratio.second));
+                        pDocPos->dockPos.nHeight=UINT(::MulDiv(pDocPos->dockPos.nHeight,xratio.first,xratio.second));
                     }
                     else
                     {
-//                         pDocPos->dockPos.nWidth=unsigned long(pDocPos->dockPos.nWidth*xratio);
-//                         pDocPos->dockPos.nHeight=unsigned long(pDocPos->dockPos.nHeight*yratio);
-                        pDocPos->dockPos.nWidth=unsigned long(::MulDiv(pDocPos->dockPos.nWidth,xratio.first,xratio.second));
-                        pDocPos->dockPos.nHeight=unsigned long(::MulDiv(pDocPos->dockPos.nHeight,yratio.first,yratio.second));
+//                         pDocPos->dockPos.nWidth=UINT(pDocPos->dockPos.nWidth*xratio);
+//                         pDocPos->dockPos.nHeight=UINT(pDocPos->dockPos.nHeight*yratio);
+                        pDocPos->dockPos.nWidth=UINT(::MulDiv(pDocPos->dockPos.nWidth,xratio.first,xratio.second));
+                        pDocPos->dockPos.nHeight=UINT(::MulDiv(pDocPos->dockPos.nHeight,yratio.first,yratio.second));
                     }
                 }
             }
@@ -371,12 +371,12 @@ public:
     {
         m_pImpl=new CImpl(x,nDefCmdShow);
     }
-    ~CDockingWindowStateAdapter(void)
+    ~CDockingWindowStateAdapter()
     {
         ATLASSERT(m_pImpl);
         m_pImpl->Release();
     }
-    operator IDockWndState* (void)
+    operator IDockWndState* ()
     {
         return m_pImpl;
     }

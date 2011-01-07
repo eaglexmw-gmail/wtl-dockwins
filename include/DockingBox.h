@@ -26,7 +26,7 @@ namespace dockwins {
 class CDockingBoxMessage
 {
 public:
-    CDockingBoxMessage(void)
+    CDockingBoxMessage()
     {
         std::basic_ostringstream<TCHAR> smessage;
         smessage<<_T("DockingBoxMessage-")<<GetCurrentProcessId();
@@ -36,12 +36,12 @@ public:
 //        if(m_message==0)
 //                throw exception();
     }
-    operator unsigned long (void) const
+    operator UINT () const
     {
         return m_message;
     }
 protected:
-    unsigned long m_message;
+    UINT m_message;
 };
 
 class CDockingBox : public CDocker
@@ -65,7 +65,7 @@ public:
         return (::SendMessage(m_hWnd,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr))!=FALSE);
     }
 
-    bool IsBox(void) const
+    bool IsBox() const
     {
         return IsWindowBox(m_hWnd);
     }
@@ -79,7 +79,7 @@ public:
         return (::SendMessage(hWnd,m_message,NULL,reinterpret_cast<LPARAM>(&dockHdr))!=FALSE);
     }
 
-    static unsigned long DockingBoxMessage(void)
+    static UINT DockingBoxMessage()
     {
         return    m_message;
     }
@@ -330,11 +330,11 @@ class ATL_NO_VTABLE CDockingBoxBaseImpl :
     typedef CDockingBoxBaseImpl< T, TBase, TDockingWinTraits >            thisClass;
 protected:
     // use CreateInstance instead
-    CDockingBoxBaseImpl(void)
+    CDockingBoxBaseImpl()
     {
     }
 
-    virtual ~CDockingBoxBaseImpl(void)
+    virtual ~CDockingBoxBaseImpl()
     {
     }
 
@@ -367,7 +367,7 @@ class ATL_NO_VTABLE CBoxedDockingWindowImpl :
 protected:
     typedef    typename TDockingWinTraits::CBox    CBox;
 public:
-    bool IsVisible(void) const
+    bool IsVisible() const
     {
         bool bRes=baseClass::IsVisible();
         if(!bRes)
@@ -379,7 +379,7 @@ public:
         return bRes;
     }
 
-    bool Show(void)
+    bool Show()
     {
         bool bRes;
         if(IsDocking())
@@ -400,7 +400,7 @@ public:
         return bRes;
     }
 
-    bool Activate(void)
+    bool Activate()
     {
         bool bRes=IsDocking();
         if(bRes)
@@ -430,7 +430,7 @@ public:
         }
         return bRes;
     }
-    HDOCKBAR CreateDockingBox(void)
+    HDOCKBAR CreateDockingBox()
     {
         HDOCKBAR hBar=CBox::CreateInstance(m_docker);
         ATLASSERT(hBar!=HNONDOCKBAR);

@@ -119,7 +119,7 @@ public:
         pt_.y=y;
         return true;
     }
-    const POINT& DropPoint(void) const
+    const POINT& DropPoint() const
     {
         return pt_;
     }

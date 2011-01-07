@@ -118,12 +118,12 @@ struct DFDOCKPOS
         {
             SIZE_T    nBar;
             float fPctPos;
-            ULONG nWidth;
-            ULONG nHeight;
+            UINT nWidth;
+            UINT nHeight;
         };
         RECT    rcFloat;
     };
-    unsigned long    nIndex;
+    UINT    nIndex;
 };
 
 struct DFDOCKPOSEX
@@ -138,9 +138,9 @@ struct DFPINUP
 {
     DFMHDR            hdr;
     DWORD            dwDockSide;
-    unsigned long    nWidth;
+    UINT    nWidth;
     DWORD            dwFlags;
-    unsigned long    n;
+    UINT    n;
     HWND*            phWnds;
 };
 
@@ -217,7 +217,7 @@ protected:
 class COrientedRect : public CRect
 {
 public:
-    COrientedRect(bool bHorizontal,unsigned long thickness)
+    COrientedRect(bool bHorizontal,UINT thickness)
         :m_thickness(thickness),m_bHorizontal(bHorizontal)
     {
     }
@@ -258,7 +258,7 @@ public:
     }
 protected:
     bool            m_bHorizontal;
-    unsigned long    m_thickness;
+    UINT    m_thickness;
 };
 
 class CDWStyle

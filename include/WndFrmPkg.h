@@ -1199,7 +1199,7 @@ public:
 //    bool SetDockingPosition(DFDOCKPOS* pHdr)
 //    {
 //        bool bRes=true;
-//        unsigned long limit=GetMinFrameDist(&(pHdr->hdr));
+//        UINT limit=GetMinFrameDist(&(pHdr->hdr));
 //        if(pHdr->nWidth<limit)
 //                        pHdr->nWidth=limit;
 //        CDockingSide side(pHdr->dwDockSide);
@@ -1261,8 +1261,8 @@ public:
     {
         bool bRes=true;
         LRESULT limit=GetMinFrameDist(&(pHdr->hdr));
-        if(pHdr->nWidth<limit)
-                        pHdr->nWidth=static_cast<ULONG>(limit);
+        if(static_cast<LRESULT>(pHdr->nWidth)<limit)
+                        pHdr->nWidth=static_cast<UINT>(limit);
         CDockingSide side(pHdr->dwDockSide);
         if(side.IsTop())
         {

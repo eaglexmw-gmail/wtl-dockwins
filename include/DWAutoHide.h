@@ -88,7 +88,7 @@ struct IPinnedLabel
             ref.m_txt=0;
             return *this;
         }
-        int Assign(HWND hWnd,unsigned long width)
+        int Assign(HWND hWnd,UINT width)
         {
             ATLASSERT(::IsWindow(hWnd));
             m_hWnd=hWnd;
@@ -122,11 +122,11 @@ struct IPinnedLabel
         {
             return m_txt;
         }
-        unsigned long Width() const
+        UINT Width() const
         {
             return m_width;
         }
-        void Width(unsigned long width)
+        void Width(UINT width)
         {
             m_width=width;
         }
@@ -270,7 +270,7 @@ public:
         bool bRes=(GetTextExtentPoint32(dc, text,
             static_cast<int>(_tcslen(text)),&sz)!=FALSE);
         ATLASSERT(bRes);
-        unsigned long width=sz.cx+2*captionPadding;
+        UINT width=sz.cx+2*captionPadding;
         if(m_wnd.Icon()!=NULL)
         {
             CDWSettings settings;
@@ -317,7 +317,7 @@ protected:
 
 class CMultyPinnedLabel : public IPinnedLabel
 {
-    enum {npos=ULONG_MAX/*std::numeric_limits<unsigned long>::max()*/};
+    enum {npos=ULONG_MAX/*std::numeric_limits<UINT>::max()*/};
 public:
     CMultyPinnedLabel(DFPINUP* pHdr,bool bHorizontal)
         :m_width(0)
@@ -326,7 +326,7 @@ public:
         m_n=pHdr->n;
         m_tabs=new CPinnedWindow[m_n];
         int maxLen=0;
-        for(unsigned long i=0;i<m_n;i++)
+        for(UINT i=0;i<m_n;i++)
         {
             int len=m_tabs[i].Assign(pHdr->phWnds[i],pHdr->nWidth);
             m_tabs[i].PrepareForDock(pHdr->hdr.hBar,bHorizontal);
@@ -354,7 +354,7 @@ public:
         ::SendMessage(pHdr->hdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr));
 
         pHdr->hdr.hBar=pHdr->hdr.hWnd;
-        for(unsigned long i=1;i<m_n;i++)
+        for(UINT i=1;i<m_n;i++)
         {
             pHdr->nIndex=i;
             pHdr->hdr.hWnd=m_tabs[i].Wnd();
@@ -374,7 +374,7 @@ public:
         {
             if(m_n==2)
             {
-                unsigned long i=(m_tabs[0].Wnd()!=hWnd);
+                UINT i=(m_tabs[0].Wnd()!=hWnd);
                 ptr=new CSinglePinnedLabel(m_tabs[i]);
                 m_tabs[!i].PrepareForUndock(hBar);
             }
@@ -382,9 +382,9 @@ public:
             {
                 CPinnedWindow* ptr=m_tabs;
                 m_tabs=new CPinnedWindow[m_n-1];
-                unsigned long j=0;
+                UINT j=0;
                 unsigned int maxLen=0;
-                for(unsigned long i=0;i<m_n;i++)
+                for(UINT i=0;i<m_n;i++)
                 {
                     if(ptr[i].Wnd()!=hWnd)
                     {
@@ -405,12 +405,12 @@ public:
         }
         return ptr;
     }
-    unsigned long Locate(HWND hWnd) const
+    UINT Locate(HWND hWnd) const
     {
-        for(unsigned long i=0;i<m_n;i++)
+        for(UINT i=0;i<m_n;i++)
             if(m_tabs[i].Wnd()==hWnd)
                 return i;
-            return (unsigned long)npos;
+            return (UINT)npos;
     }
     virtual bool IsOwner(HWND hWnd) const
     {
@@ -454,7 +454,7 @@ public:
     virtual CPinnedWindow* FromPoint(long x,bool bActivate)
     {
         ATLASSERT(x>=0 && x<Width() );
-        unsigned long i=m_activeTab;
+        UINT i=m_activeTab;
         if(x<long(m_activeTab)*m_passiveTabWidth)
             i=x/m_passiveTabWidth;
         else
@@ -469,7 +469,7 @@ public:
         return m_tabs+i;
     }
 
-    void DrawPassiveTab(unsigned long i,CDC& dc,const CRect& rc,const CSide& side) const
+    void DrawPassiveTab(UINT i,CDC& dc,const CRect& rc,const CSide& side) const
     {
         CRect rcOutput(rc);
         rcOutput.DeflateRect(captionPadding,captionPadding);
@@ -489,7 +489,7 @@ public:
             DrawEllipsisText(dc,text,-1,&rcOutput,side.IsHorizontal());
         }
     }
-    void DrawActiveTab(unsigned long i,CDC& dc,const CRect& rc,const CSide& side) const
+    void DrawActiveTab(UINT i,CDC& dc,const CRect& rc,const CSide& side) const
     {
         m_tabs[i].DrawLabel(dc,rc,side.IsHorizontal());
     }
@@ -517,7 +517,7 @@ public:
             px=&rcOutput.right;
             py=&rcOutput.top;
         }
-        for(unsigned long i=0;i<m_n;i++)
+        for(UINT i=0;i<m_n;i++)
         {
             if(i==m_activeTab)
             {
@@ -539,7 +539,7 @@ public:
 
     virtual bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        unsigned long i=Locate(pHdr->hdr.hWnd);
+        UINT i=Locate(pHdr->hdr.hWnd);
         bool bRes=(i!=npos);
         if(bRes)
         {
@@ -554,13 +554,13 @@ public:
         return bRes;
     }
 protected:
-    unsigned long    m_n;
+    UINT    m_n;
     CPinnedWindow*    m_tabs;
     long            m_width;
 
     mutable  long   m_passiveTabWidth;
-    unsigned long    m_activeTab;
-    unsigned long    m_longestTextTab;
+    UINT    m_activeTab;
+    UINT    m_longestTextTab;
 };
 
 class CAutoHideBar: protected CRect
@@ -834,7 +834,7 @@ public:
             }
             for(const_iterator i=m_bunch.begin();i!=m_bunch.end();++i)
             {
-                unsigned long vLeft=vRight;
+                UINT vLeft=vRight;
                 vRight+=(*i)->Width();
                 if(vRight>x)
                 {

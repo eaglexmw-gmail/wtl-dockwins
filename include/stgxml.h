@@ -14,7 +14,7 @@ class CStgXML
     : public IStorge
 {
 public:
-    CStgXML(void)
+    CStgXML()
     {
     }
 
@@ -24,16 +24,16 @@ public:
 //        node->QueryInterface(__uuidof(IID_IXMLDOMElement),reinterpret_cast<void**>(&m_key));
     }
 
-    virtual ~CStgXML(void)
+    virtual ~CStgXML()
     {
     }
 
-    IXMLDOMElement* Root(void)
+    IXMLDOMElement* Root()
     {
         return m_key;
     }
 
-    bool operator !(void) const
+    bool operator !() const
     {
         return !m_key;
     }

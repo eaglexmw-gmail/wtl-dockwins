@@ -19,7 +19,7 @@ class IStorge
 public:
     enum Modes{Read,Write,ReadWrite};
 public:
-    virtual ~IStorge(void){}
+    virtual ~IStorge(){}
     virtual long Open(IStorge& /*parent*/,LPCTSTR /*name*/,Modes /*mode*/)=0;
     virtual long Create(IStorge& /*parent*/,LPCTSTR /*name*/,Modes /*mode*/)=0;
     virtual long SetString(LPCTSTR /*name*/,LPCTSTR /*data*/)=0;

@@ -49,7 +49,7 @@ public:
         public sstate::CStgXML
     {
     public:
-        CConfig(void)
+        CConfig()
         {
             TCHAR name[_MAX_PATH];
             int len=::GetModuleFileName(_Module.GetModuleInstance(), name,_MAX_PATH);
@@ -62,7 +62,7 @@ public:
             if(Root()==0)
                 Create();
         }
-        ~CConfig(void)
+        ~CConfig()
         {
             if(!m_filename.empty()
                 && (Root()!=0))
@@ -76,7 +76,7 @@ public:
 #endif //STORE_PRIVATE_DATA_IN_XML
 
 
-    CMainFrame(void)
+    CMainFrame()
         : m_sampleDockWnd1(IDI_ICON1),
             m_sampleDockWnd2(IDI_ICON2),
             m_sampleDockWnd3(IDI_ICON3)

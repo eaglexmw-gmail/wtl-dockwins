@@ -164,7 +164,7 @@ protected:
             std::list<HWND>                m_wnds;
             dockwins::DFPINUP            m_pinHdr;
             const dockwins::CDocker&    m_docker;
-            unsigned long                m_nBar;
+            UINT                m_nBar;
             int                            m_width;
         };
 

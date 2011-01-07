@@ -221,7 +221,7 @@ protected:
         CSize m_ghostRectSideSize;
     };
 public:
-    CDockingWindowBaseImpl(void)
+    CDockingWindowBaseImpl()
         :m_hBarOwner(HNONDOCKBAR)
     {
         m_rcUndock.SetRectEmpty();
@@ -236,12 +236,12 @@ public:
                                     dwStyle , dwExStyle , nID , lpCreateParam);
     }
 
-    HWND OwnerFrameWindow(void) const
+    HWND OwnerFrameWindow() const
     {
         return m_docker;
     }
 
-    bool IsVisible(void) const
+    bool IsVisible() const
     {
         bool bRes;
 #ifdef DF_AUTO_HIDE_FEATURES
@@ -252,7 +252,7 @@ public:
         return bRes;
     }
 #ifdef DF_AUTO_HIDE_FEATURES
-    bool IsPinned(void) const
+    bool IsPinned() const
     {
         bool bRes=IsDocking();
         if(bRes)
@@ -266,7 +266,7 @@ public:
         return bRes;
     }
 #endif
-    HDOCKBAR GetOwnerDockingBar(void) const
+    HDOCKBAR GetOwnerDockingBar() const
     {
         return m_hBarOwner;
     }
@@ -330,7 +330,7 @@ public:
         return bRes;
     }
 
-    bool IsDocking(void) const
+    bool IsDocking() const
     {
         return GetOwnerDockingBar()!=HNONDOCKBAR;
     }
@@ -346,7 +346,7 @@ public:
         return bRes;
     }
 
-    bool Float(void)
+    bool Float()
     {
         bool bRes=!m_rcUndock.IsRectEmpty();
         if(bRes)
@@ -354,7 +354,7 @@ public:
         return bRes;
     }
 
-    virtual bool Undock(void)
+    virtual bool Undock()
     {
         ATLASSERT(IsDocking());
         DFMHDR dockHdr;
@@ -364,7 +364,7 @@ public:
         return m_docker.Undock(&dockHdr);
     }
 
-    bool OnClosing(void)
+    bool OnClosing()
     {
         bool bRes=true;
         if(IsDocking())
@@ -513,12 +513,12 @@ class CVirtualButton
 {
     enum {Normal=0,Hotted=1,Pressed=2};
 public:
-    CVirtualButton(void)
+    CVirtualButton()
         :m_state(Normal)
     {
 
     }
-    virtual void Draw(CDCHandle dc)=0
+    virtual void Draw(CDC& dc)=0
     {
         if(m_state!=Normal)
         {
@@ -542,7 +542,7 @@ public:
             else
                 ::KillTimer(hwnd,reinterpret_cast<UINT_PTR>(this));
             CWindowDC dc(hwnd);
-            Draw(dc.m_hDC);
+            Draw(dc);
         }
     }
 
@@ -554,7 +554,7 @@ public:
         else
             m_state&=~Pressed;
         CWindowDC dc(hwnd);
-        Draw(dc.m_hDC);
+        Draw(dc);
     }
 protected:
     static void CALLBACK TimeTrack(HWND hwnd,UINT /*msg*/,UINT_PTR id,    DWORD /*time*/)
@@ -581,7 +581,7 @@ public:
         :COrientedRect(bHorizontal,::GetSystemMetrics(SM_CYSMCAPTION))
     {
     }
-    CCaptionBase(unsigned long thickness,bool bHorizontal=true)
+    CCaptionBase(UINT thickness,bool bHorizontal=true)
         :COrientedRect(bHorizontal,thickness)
     {
     }
@@ -598,7 +598,7 @@ public:
     {
         dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
     }
-    void UpdateMetrics(void)
+    void UpdateMetrics()
     {
         // Override in derived class if it depends on system metrics
     }
@@ -711,7 +711,7 @@ public:
         m_caption.SetOrientation(true);
         baseClass::OnUndocked(hBar);
     }
-    bool CloseBtnPress(void)
+    bool CloseBtnPress()
     {
         PostMessage(WM_CLOSE);
         return false;
@@ -727,7 +727,7 @@ public:
         return pThis->PinUp(side,(side.IsHorizontal() ? rc.Width() : rc.Height()));
     }
 
-    bool PinUp(const CDockingSide& side,unsigned long width,bool bVisualize=false)
+    bool PinUp(const CDockingSide& side,UINT width,bool bVisualize=false)
     {
         if(IsDocking())
                     Undock();
@@ -742,7 +742,7 @@ public:
         return m_docker.PinUp(&pinHdr);
     }
 
-    bool PinBtnPress(void)
+    bool PinBtnPress()
     {
         ATLASSERT(IsDocking());
         DFDOCKPOS dockHdr;
@@ -834,7 +834,7 @@ protected:
 */
     LRESULT OnWindowPosChanging(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
-        return NULL;
+        return 0;
     }
 
     LRESULT OnNcActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
@@ -851,7 +851,7 @@ protected:
         (*pRc)-=ptTop;
         pThis->NcCalcSize(pRc);
         (*pRc)+=ptTop;
-        return NULL;
+        return 0;
     }
 
     LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
@@ -864,14 +864,14 @@ protected:
         CWindowDC dc(m_hWnd);
         T* pThis=static_cast<T*>(this);
         pThis->NcDraw(dc);
-        return NULL;
+        return 0;
     }
 
     LRESULT OnNcMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
     {
         T* pThis=static_cast<T*>(this);
         pThis->NcMouseMove(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)),wParam);
-        return NULL;
+        return 0;
     }
 
     LRESULT OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -915,17 +915,17 @@ class ATL_NO_VTABLE CTitleDockingWindowImpl
     typedef CTitleDockingWindowBaseImpl< T, TBase, TDockingWinTraits >    baseClass;
     typedef CTitleDockingWindowImpl< T, TBase, TDockingWinTraits >        thisClass;
 public:
-    CTitleDockingWindowImpl(void)
+    CTitleDockingWindowImpl()
     {
         m_pos.hdr.hBar=HNONDOCKBAR;
     }
-    virtual bool Undock(void)
+    virtual bool Undock()
     {
         ATLASSERT(IsDocking());
         GetDockingPosition(&m_pos);
         return baseClass::Undock();
     }
-    virtual bool Hide(void)
+    virtual bool Hide()
     {
         bool bRes=true;
         if(IsDocking())
@@ -941,7 +941,7 @@ public:
             m_pos.hdr.hBar=HNONDOCKBAR;
         return (bRes && ShowWindow(SW_HIDE));
     }
-    virtual bool Show(void)
+    virtual bool Show()
     {
         bool bRes=true;
         if(m_pos.hdr.hBar!=HNONDOCKBAR)
@@ -952,7 +952,7 @@ public:
         return bRes;
     }
 
-    bool Toggle(void)
+    bool Toggle()
     {
         bool bRes=(static_cast<T*>(this)->IsVisible()!=FALSE);
         if(bRes)
