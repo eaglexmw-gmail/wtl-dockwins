@@ -1,7 +1,10 @@
-glob:*.ncb
-glob:*.suo
-glob:*.user
-glob:*.orig
-glob:*~
-glob:Debug
-glob:Release
+syntax: glob
+
+*.ncb
+*.orig
+*.rej
+*.suo
+*.user
+*~
+Debug
+Release
