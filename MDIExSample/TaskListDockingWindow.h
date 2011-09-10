@@ -65,14 +65,14 @@ public:
         bHandled = FALSE;
         return 1;
     }
-    void OnDocked(HDOCKBAR hBar,bool bHorizontal)
+    void OnDocked(dockwins::HDOCKBAR hBar,bool bHorizontal)
     {
         DWORD dwStyle = GetWindowLong(GWL_STYLE)&(~WS_SIZEBOX);
         SetWindowLong( GWL_STYLE, dwStyle);
 
         baseClass::OnDocked(hBar,bHorizontal);
     }
-    void OnUndocked(HDOCKBAR hBar)
+    void OnUndocked(dockwins::HDOCKBAR hBar)
     {
         DWORD dwStyle = GetWindowLong(GWL_STYLE) | WS_SIZEBOX;
         SetWindowLong( GWL_STYLE , dwStyle);

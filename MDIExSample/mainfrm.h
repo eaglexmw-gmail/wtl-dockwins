@@ -23,7 +23,7 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#define CWM_INITIALIZE    (WMDF_LAST+1)
+const UINT CWM_INITIALIZE = dockwins::WMDF_LAST+1;
 
 class CMainFrame :
         public dockwins::CMDIDockingFrameImpl<CMainFrame>,

@@ -288,7 +288,7 @@ public:
         dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
 #endif
         int len=GetWindowTextLength(hWnd)+1;
-        CString sText;
+        _CSTRING_NS::CString sText;
         int result = GetWindowText(hWnd,sText.GetBufferSetLength(len),len);
         sText.ReleaseBuffer(result);
         if(result!=0)

@@ -17,6 +17,10 @@
 
 #pragma once
 
+#include <atlgdix.h>
+
+#include "CustomTabCtrl.h"
+#include "DotNetTabCtrl.h"
 #include "DockingBox.h"
 #include "FlyingTabs.h"
 

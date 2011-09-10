@@ -198,6 +198,14 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\include\atlgdix.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\CustomTabCtrl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\dbstate.h"
 				>
 			</File>
@@ -222,11 +230,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\DotNetTabCtrl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\DWAutoHide.h"
 				>
 			</File>
 			<File
 				RelativePath="..\include\dwstate.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\DynamicDialogTemplate.h"
 				>
 			</File>
 			<File
@@ -238,11 +254,31 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\ImageUtil.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ListViewNoFlicker.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\PackageWindow.h"
 				>
 			</File>
 			<File
+				RelativePath="..\include\PlainTextView.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\SimpleDlgTabCtrls.h"
+				>
+			</File>
+			<File
 				RelativePath="..\include\SimpleSplitterBar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\SimpleTabCtrls.h"
 				>
 			</File>
 			<File
@@ -267,6 +303,26 @@
 			</File>
 			<File
 				RelativePath="..\include\stgxml.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TabbedDockingWindow.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TabbedFrame.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TabbedMDI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TabbedMDIMessages.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TabbedMDISave.h"
 				>
 			</File>
 			<File
