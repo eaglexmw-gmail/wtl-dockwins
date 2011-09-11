@@ -1,10 +1,13 @@
 syntax: glob
 
 *.ncb
+*.opensdf
 *.orig
 *.rej
+*.sdf
 *.suo
 *.user
 *~
 Debug
+ipch
 Release
