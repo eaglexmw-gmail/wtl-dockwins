@@ -436,7 +436,7 @@ public:
     {
         SIZE sz;
         LPCTSTR text=m_tabs[m_longestTextTab].Text();
-        bool bRes=(GetTextExtentPoint32(dc, text,-1,&sz)!=FALSE);
+        bool bRes=dc.GetTextExtent(text, -1, &sz)!=FALSE;
         ATLASSERT(bRes);
         bRes;
         long width=sz.cx+2*captionPadding;
