@@ -68,26 +68,10 @@ struct IPinnedLabel
     {
     public:
         CPinnedWindow()
-            :m_hWnd(NULL),m_icon(0),m_txt(0),m_width(0)
+            :m_hWnd(NULL),m_icon(0),m_width(0)
         {
         }
-        CPinnedWindow(const CPinnedWindow& ref)
-        {
-            this->operator=(ref);
-        }
-        ~CPinnedWindow()
-        {
-            delete [] m_txt;
-        }
-        CPinnedWindow& operator = (const CPinnedWindow& ref)
-        {
-            m_hWnd=ref.m_hWnd;
-            m_icon=ref.m_icon;
-            m_width=ref.m_width;
-            m_txt=ref.m_txt;
-            ref.m_txt=0;
-            return *this;
-        }
+
         int Assign(HWND hWnd,UINT width)
         {
             ATLASSERT(::IsWindow(hWnd));
@@ -96,18 +80,9 @@ struct IPinnedLabel
             m_icon=reinterpret_cast<HICON>(::SendMessage(hWnd, WM_GETICON, FALSE, 0));
             if(m_icon == NULL)
                 m_icon = reinterpret_cast<HICON>(::GetClassLong(hWnd, GCLP_HICONSM));
-            delete [] m_txt;
-            int len=0;
-            try
-            {
-                len=::GetWindowTextLength(hWnd)+1;
-                m_txt=new TCHAR[len];
-                ::GetWindowText(hWnd,m_txt,len);
-            } catch(std::bad_alloc& /*e*/)
-            {
-                m_txt=0;
-            }
-            return len;
+
+            ATL::CWindow(hWnd).GetWindowText(m_txt);
+            return m_txt.GetLength();
 
         }
         HWND Wnd() const
@@ -118,7 +93,7 @@ struct IPinnedLabel
         {
             return m_icon;
         }
-        LPCTSTR Text() const
+        const _CSTRING_NS::CString& Text() const
         {
             return m_txt;
         }
@@ -180,13 +155,13 @@ struct IPinnedLabel
                     }
                 }
             }
-            DrawEllipsisText(dc,m_txt,-1,&rcOutput,side.IsHorizontal());
+            DrawEllipsisText(dc,m_txt,m_txt.GetLength(),&rcOutput,side.IsHorizontal());
         }
     protected:
         UINT    m_width;
         HWND            m_hWnd;
         HICON            m_icon;
-        mutable LPTSTR    m_txt;
+        _CSTRING_NS::CString    m_txt;
     };
 
     class CCmp
@@ -266,17 +241,14 @@ public:
     virtual long DesiredWidth(CDC& dc) const
     {
         SIZE sz;
-        LPCTSTR text=m_wnd.Text();
-        bool bRes=(GetTextExtentPoint32(dc, text,
-            static_cast<int>(_tcslen(text)),&sz)!=FALSE);
-        ATLASSERT(bRes);
+        const _CSTRING_NS::CString& text=m_wnd.Text();
+        ATLVERIFY(dc.GetTextExtent(text, text.GetLength(), &sz));
         UINT width=sz.cx+2*captionPadding;
         if(m_wnd.Icon()!=NULL)
         {
             CDWSettings settings;
             width+=settings.CXMinIcon()+captionPadding;
         }
-        bRes;
         return width;
     }
 
@@ -435,10 +407,8 @@ public:
     virtual long DesiredWidth(CDC& dc) const
     {
         SIZE sz;
-        LPCTSTR text=m_tabs[m_longestTextTab].Text();
-        bool bRes=dc.GetTextExtent(text, -1, &sz)!=FALSE;
-        ATLASSERT(bRes);
-        bRes;
+        const _CSTRING_NS::CString& text=m_tabs[m_longestTextTab].Text();
+        ATLVERIFY(dc.GetTextExtent(text, text.GetLength(), &sz));
         long width=sz.cx+2*captionPadding;
         CDWSettings settings;
         width+=settings.CXMinIcon()+captionPadding;
