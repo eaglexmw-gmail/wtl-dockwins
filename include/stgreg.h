@@ -8,76 +8,77 @@
 
 #include "stg.h"
 
-namespace sstate {
+namespace sstate
+{
 
-namespace{
-REGSAM ModesMap[]={KEY_READ,KEY_WRITE,KEY_ALL_ACCESS};
+namespace
+{
+REGSAM ModesMap[] = {KEY_READ, KEY_WRITE, KEY_ALL_ACCESS};
 }
 
 class CStgRegistry
     : public IStorge
 {
 public:
-    CStgRegistry(HKEY key=0)
-        :m_key(key)
+    CStgRegistry(HKEY key = 0)
+        : m_key(key)
     {
-
     }
 
     virtual ~CStgRegistry()
     {
-        if(m_key!=0)
+        if (m_key != 0)
             ::RegCloseKey(m_key);
     }
 
-    virtual long Create(IStorge& parent,LPCTSTR name,Modes mode)
+    virtual long Create(IStorge& parent, LPCTSTR name, Modes mode)
     {
         DWORD disposition;
-        return RegCreateKeyEx(static_cast<CStgRegistry&>(parent).m_key,name,0,0,
-                                REG_OPTION_NON_VOLATILE,ModesMap[mode],0,&m_key,&disposition);
+        return RegCreateKeyEx(static_cast<CStgRegistry&>(parent).m_key, name, 0, 0,
+                              REG_OPTION_NON_VOLATILE, ModesMap[mode], 0, &m_key, &disposition);
     }
 
-    virtual long Open(IStorge& parent,LPCTSTR name,Modes mode)
+    virtual long Open(IStorge& parent, LPCTSTR name, Modes mode)
     {
-        return RegOpenKeyEx(static_cast<CStgRegistry&>(parent).m_key,name,0,ModesMap[mode],&m_key);
+        return RegOpenKeyEx(static_cast<CStgRegistry&>(parent).m_key, name, 0, ModesMap[mode], &m_key);
     }
 
-    virtual long SetBinary(LPCTSTR name,const void* data,size_t size)
+    virtual long SetBinary(LPCTSTR name, const void* data, size_t size)
     {
-        ATLASSERT(m_key!=0);
-        DWORD type=(size==sizeof(DWORD) ? REG_DWORD : REG_BINARY);
-        return ::RegSetValueEx(m_key,name,0,type,static_cast<const BYTE*>(data),size);
+        ATLASSERT(m_key != 0);
+        DWORD type = (size == sizeof(DWORD) ? REG_DWORD : REG_BINARY);
+        return ::RegSetValueEx(m_key, name, 0, type, static_cast<const BYTE*>(data), size);
     }
 
-    virtual long GetBinary(LPCTSTR name,void* data,size_t& size)
+    virtual long GetBinary(LPCTSTR name, void* data, size_t& size)
     {
-        ATLASSERT(m_key!=0);
+        ATLASSERT(m_key != 0);
         DWORD type;
-        DWORD cbData=DWORD(size);
-        long res=::RegQueryValueEx(m_key,name,0,&type,static_cast<LPBYTE>(data),&cbData);
-        size=size_t(cbData);
+        DWORD cbData = DWORD(size);
+        long res =::RegQueryValueEx(m_key, name, 0, &type, static_cast<LPBYTE>(data), &cbData);
+        size = size_t(cbData);
         return res;
     }
 
-    virtual long SetString(LPCTSTR name,LPCTSTR data)
+    virtual long SetString(LPCTSTR name, LPCTSTR data)
     {
-        ATLASSERT(m_key!=0);
+        ATLASSERT(m_key != 0);
         ATLASSERT(data);
-        return ::RegSetValueEx(m_key,name,0,REG_SZ,
-            reinterpret_cast<const BYTE*>(data),std::char_traits<TCHAR>::length(data)*sizeof(TCHAR));
+        return ::RegSetValueEx(m_key, name, 0, REG_SZ,
+                               reinterpret_cast<const BYTE*>(data), std::char_traits<TCHAR>::length(data) * sizeof(TCHAR));
     }
 
-    virtual long GetString(LPCTSTR name,LPTSTR data,size_t& size)
+    virtual long GetString(LPCTSTR name, LPTSTR data, size_t& size)
     {
-        ATLASSERT(m_key!=0);
+        ATLASSERT(m_key != 0);
         DWORD type;
-        DWORD cbData=DWORD(size);
-        long res=::RegQueryValueEx(m_key,name,0,&type,reinterpret_cast<LPBYTE>(data),&cbData);
-        ATLASSERT( res!=ERROR_SUCCESS
-                || (type==REG_SZ)
-                || (type==REG_EXPAND_SZ)
-                );
-        size=size_t(cbData);
+        DWORD cbData = DWORD(size);
+        long res =::RegQueryValueEx(m_key, name, 0, &type, reinterpret_cast<LPBYTE>(data), &cbData);
+        ATLASSERT(res != ERROR_SUCCESS
+                  || (type == REG_SZ)
+                  || (type == REG_EXPAND_SZ)
+                 );
+        size = size_t(cbData);
         return res;
     }
 

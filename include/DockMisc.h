@@ -18,12 +18,13 @@
 #pragma once
 
 #ifndef __ATLMISC_H__
-        #error dockmisk.h requires atlmisc.h to be included first
+#error dockmisk.h requires atlmisc.h to be included first
 #endif
 
 #include "SimpleSplitterBar.h"
 
-namespace dockwins {
+namespace dockwins
+{
 
 //////////////////messages///////////////////////////
 enum
@@ -70,20 +71,20 @@ const UINT HTPIN = HTOBJECT;
 #endif
 
 #ifndef DF_AUTO_HIDE_FEATURES
-template <class TSplitterBar,/* DWORD TDockFrameStyle=0,*/
-            DWORD t_dwStyle = 0, DWORD t_dwExStyle = 0>
-struct CDockingFrameTraitsT : CWinTraits <t_dwStyle,t_dwExStyle>
+template < class TSplitterBar, /* DWORD TDockFrameStyle=0,*/
+         DWORD t_dwStyle = 0, DWORD t_dwExStyle = 0 >
+struct CDockingFrameTraitsT : CWinTraits <t_dwStyle, t_dwExStyle>
 {
     typedef TSplitterBar CSplitterBar;
 };
 
-typedef CDockingFrameTraitsT< CSimpleSplitterBar<5>,
+typedef CDockingFrameTraitsT < CSimpleSplitterBar<5>,
         WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-        WS_EX_APPWINDOW | WS_EX_WINDOWEDGE> CDockingFrameTraits;
+        WS_EX_APPWINDOW | WS_EX_WINDOWEDGE > CDockingFrameTraits;
 
 
-typedef CDockingFrameTraitsT< CSimpleSplitterBarEx<6>,
-        WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,0> CDockingSiteTraits;
+typedef CDockingFrameTraitsT < CSimpleSplitterBarEx<6>,
+        WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0 > CDockingSiteTraits;
 
 #endif
 
@@ -148,55 +149,55 @@ class CDockingSide
 {
     enum
     {
-        mskVertical=1,    //horizontal or vertical
-        mskTop=2,            //top or bottom
-        mskSide=3
+        mskVertical = 1,  //horizontal or vertical
+        mskTop = 2,          //top or bottom
+        mskSide = 3
     };
 public:
     enum
     {
-        sTop=2,sBottom=0,
-        sLeft=3,sRight=1,
-        sSingle=4,            // only one window in row (or col)
-        sInvalid=8,
-        sActive=16,
-        sPinned=32
+        sTop = 2, sBottom = 0,
+        sLeft = 3, sRight = 1,
+        sSingle = 4,          // only one window in row (or col)
+        sInvalid = 8,
+        sActive = 16,
+        sPinned = 32
     };
-    CDockingSide(DWORD side=sInvalid):m_side(side)
+    CDockingSide(DWORD side = sInvalid): m_side(side)
     {
     }
     bool IsHorizontal() const
     {
         ATLASSERT(IsValid());
-        return ((m_side&mskVertical)==0);
+        return ((m_side & mskVertical) == 0);
     }
     bool IsTop() const
     {
         ATLASSERT(IsValid());
-        return ((m_side&mskTop)!=0);
+        return ((m_side & mskTop) != 0);
     }
     DWORD Side() const
     {
         ATLASSERT(IsValid());
-        return m_side&mskSide;
+        return m_side & mskSide;
     }
     bool IsSingle() const
     {
         ATLASSERT(IsValid());
-        return ((m_side&sSingle)!=0);
+        return ((m_side & sSingle) != 0);
     }
     bool IsPinned() const
     {
         ATLASSERT(IsValid());
-        return ((m_side&sPinned)!=0);
+        return ((m_side & sPinned) != 0);
     }
     bool IsActive() const
     {
-        return ((m_side&sActive)!=0);
+        return ((m_side & sActive) != 0);
     }
     bool IsValid() const
     {
-        return ((m_side&sInvalid)==0);
+        return ((m_side & sInvalid) == 0);
     }
     bool Invalidate()
     {
@@ -204,7 +205,7 @@ public:
     }
     static void Invalidate(DWORD& side)
     {
-        side|=sInvalid;
+        side |= sInvalid;
     }
     operator DWORD() const
     {
@@ -217,13 +218,13 @@ protected:
 class COrientedRect : public CRect
 {
 public:
-    COrientedRect(bool bHorizontal,UINT thickness)
-        :m_thickness(thickness),m_bHorizontal(bHorizontal)
+    COrientedRect(bool bHorizontal, UINT thickness)
+        : m_thickness(thickness), m_bHorizontal(bHorizontal)
     {
     }
     void SetOrientation(bool bHorizontal)
     {
-        m_bHorizontal=bHorizontal;
+        m_bHorizontal = bHorizontal;
     }
     bool GetOrientation() const
     {
@@ -237,23 +238,25 @@ public:
     {
         return m_thickness;
     }
-    bool CalculateRect(CRect& rc,bool bTop)
+    bool CalculateRect(CRect& rc, bool bTop)
     {
         CopyRect(rc);
-        if(IsHorizontal())
+
+        if (IsHorizontal())
         {
-            if(bTop)
-                rc.top=bottom=top+GetThickness();
+            if (bTop)
+                rc.top = bottom = top + GetThickness();
             else
-                rc.bottom=top=bottom-GetThickness();
+                rc.bottom = top = bottom - GetThickness();
         }
         else
         {
-            if(bTop)
-                rc.left=right=left+GetThickness();
+            if (bTop)
+                rc.left = right = left + GetThickness();
             else
-                rc.right=left=right-GetThickness();
+                rc.right = left = right - GetThickness();
         }
+
         return true;
     }
 protected:
@@ -266,51 +269,51 @@ class CDWStyle
 public:
     enum
     {
-        mskIgnoreSysSettings=0x00000001,//depend on system setings (Show window contents while dragging)
-        mskGhostDrag=0x00000002,        //Show window contents while dragging
-        mskAnimation=0x00000004            //Animate pinned window
+        mskIgnoreSysSettings = 0x00000001, //depend on system setings (Show window contents while dragging)
+        mskGhostDrag = 0x00000002,      //Show window contents while dragging
+        mskAnimation = 0x00000004          //Animate pinned window
     };
     enum
     {
-        sIgnoreSysSettings=mskIgnoreSysSettings,
-        sUseSysSettings=0,
-        sFullDrag=0,
-        sGhostDrag=mskGhostDrag,
-        sAnimation=mskAnimation,
-        sNoAnimation=0
+        sIgnoreSysSettings = mskIgnoreSysSettings,
+        sUseSysSettings = 0,
+        sFullDrag = 0,
+        sGhostDrag = mskGhostDrag,
+        sAnimation = mskAnimation,
+        sNoAnimation = 0
     };
-    CDWStyle(DWORD style=0)
-        :m_style(style)
+    CDWStyle(DWORD style = 0)
+        : m_style(style)
     {
     }
     bool IgnoreSystemSettings() const
     {
-        return ((m_style&mskIgnoreSysSettings)!=0);
+        return ((m_style & mskIgnoreSysSettings) != 0);
     }
     bool GhostDrag() const
     {
-        return ((m_style&mskGhostDrag)!=0);
+        return ((m_style & mskGhostDrag) != 0);
     }
     bool IsAnimationEnabled() const
     {
-        return ((m_style&mskAnimation)!=0);
+        return ((m_style & mskAnimation) != 0);
     }
     CDWStyle Set(const CDWStyle& style)
     {
-        m_style=style;
+        m_style = style;
         return *this;
     }
-    CDWStyle Set(DWORD mask,const CDWStyle& style)
+    CDWStyle Set(DWORD mask, const CDWStyle& style)
     {
-        m_style&=(~mask);
-        m_style|=style;
+        m_style &= (~mask);
+        m_style |= style;
         return *this;
     }
     CDWStyle Toggle(DWORD mask)
     {
-        DWORD imask=~mask;
-        DWORD tmask=(~m_style)&mask;
-        m_style=(m_style&imask)|tmask;
+        DWORD imask = ~mask;
+        DWORD tmask = (~m_style)&mask;
+        m_style = (m_style & imask) | tmask;
         return *this;
     }
     operator DWORD() const
@@ -348,19 +351,22 @@ protected:
             if (m_vfont)
                 m_vfont.DeleteObject();
 
-            if(!m_style.IgnoreSystemSettings())
+            if (!m_style.IgnoreSystemSettings())
             {
                 BOOL bFullDrag;
-                BOOL bRes=::SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, &bFullDrag, 0);
-                if(bRes)
+                BOOL bRes =::SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, &bFullDrag, 0);
+
+                if (bRes)
                     m_style.Set(CStyle::mskGhostDrag | CStyle::mskAnimation,
-                                        bFullDrag
-                                            ? ( CStyle::sFullDrag | CStyle::sAnimation)
-                                            : ( CStyle::sGhostDrag | CStyle::sNoAnimation));
+                                bFullDrag
+                                ? (CStyle::sFullDrag | CStyle::sAnimation)
+                                : (CStyle::sGhostDrag | CStyle::sNoAnimation));
             }
+
             ::ZeroMemory(&m_ncm, sizeof(m_ncm));
             m_ncm.cbSize = sizeof(m_ncm);
-            if(::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(m_ncm), &m_ncm, 0))
+
+            if (::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(m_ncm), &m_ncm, 0))
             {
                 LOGFONT lf = m_ncm.lfSmCaptionFont;
                 m_hfontSmCaption.CreateFontIndirect(&lf);
@@ -374,7 +380,6 @@ protected:
 
             m_hfont.CreateFontIndirect(&m_ncm.lfMessageFont);
             ATLASSERT(m_hfont);
-
             LOGFONT lf;
             m_hfont.GetLogFont(&lf);
             //lf.lfOutPrecision = OUT_TT_ONLY_PRECIS;
@@ -382,24 +387,21 @@ protected:
             lf.lfOrientation  = 2700;
             m_vfont.CreateFontIndirect(&lf);
             ATLASSERT(m_vfont);
-
-            m_hHResizeCursor=::LoadCursor(NULL, IDC_SIZENS );
-            m_hVResizeCursor=::LoadCursor(NULL, IDC_SIZEWE );
-            m_colorCoolCtrlBackground=CreateCoolCtrlBackgroundColor();
-            m_colorAutoHideBarText=CreateCoolCtrlTextColor();
+            m_hHResizeCursor =::LoadCursor(NULL, IDC_SIZENS);
+            m_hVResizeCursor =::LoadCursor(NULL, IDC_SIZEWE);
+            m_colorCoolCtrlBackground = CreateCoolCtrlBackgroundColor();
+            m_colorAutoHideBarText = CreateCoolCtrlTextColor();
         }
         static COLORREF CreateCoolCtrlTextColor()
         {
-            COLORREF clrBtnTxt=::GetSysColor(COLOR_BTNTEXT);
-            COLORREF clrGrayTxt=::GetSysColor(COLOR_GRAYTEXT);
+            COLORREF clrBtnTxt =::GetSysColor(COLOR_BTNTEXT);
+            COLORREF clrGrayTxt =::GetSysColor(COLOR_GRAYTEXT);
             int red =   GetRValue(clrBtnTxt);
             int green = GetGValue(clrBtnTxt);
             int blue =  GetBValue(clrBtnTxt);
-
-            red+=(GetRValue(clrGrayTxt)-red)/3*2;
-            green+=(GetGValue(clrGrayTxt)-green)/3*2;
-            blue+=(GetBValue(clrGrayTxt)-blue)/3*2;
-
+            red += (GetRValue(clrGrayTxt) - red) / 3 * 2;
+            green += (GetGValue(clrGrayTxt) - green) / 3 * 2;
+            blue += (GetBValue(clrGrayTxt) - blue) / 3 * 2;
             return RGB(red, green, blue);
         }
         // I stole the code for background brush color from the cool Daniel
@@ -414,7 +416,6 @@ protected:
             // inactive tab color. The other colors that VS.Net uses seems to be
             // standard ones, but these two colors are calculated.
             BYTE nRed = 0, nGreen = 0, nBlue = 0, nMax = 0;
-
             // Early experiments seemed to reveal that the background color is
             // dependent on COLOR_BTNFACE. The following algorithm is just an
             // attempt to match several empirical results.  I tested with 20
@@ -422,14 +423,13 @@ protected:
             // background became. I then brought the numbers into Excel, and
             // started crunching on the numbers until I came up with a formula
             // that seems to pretty well match.
-
             nRed = GetRValue(clrBtnFace);
             nGreen = GetGValue(clrBtnFace);
             nBlue = GetBValue(clrBtnFace);
-
             nMax = (nRed > nGreen) ? ((nRed > nBlue) ? nRed : nBlue) : ((nGreen > nBlue) ? nGreen : nBlue);
             const BYTE nMagicBackgroundOffset = (nMax > (0xFF - 35)) ? (BYTE)(0xFF - nMax) : (BYTE)35;
-            if(nMax == 0)
+
+            if (nMax == 0)
             {
                 nRed = (BYTE)(nRed + nMagicBackgroundOffset);
                 nGreen = (BYTE)(nGreen + nMagicBackgroundOffset);
@@ -437,16 +437,16 @@ protected:
             }
             else
             {
-                nRed = (BYTE)(nRed + (nMagicBackgroundOffset*(nRed/(double)nMax) + 0.5));
-                nGreen = (BYTE)(nGreen + (nMagicBackgroundOffset*(nGreen/(double)nMax) + 0.5));
-                nBlue = (BYTE)(nBlue + (nMagicBackgroundOffset*(nBlue/(double)nMax) + 0.5));
+                nRed = (BYTE)(nRed + (nMagicBackgroundOffset * (nRed / (double)nMax) + 0.5));
+                nGreen = (BYTE)(nGreen + (nMagicBackgroundOffset * (nGreen / (double)nMax) + 0.5));
+                nBlue = (BYTE)(nBlue + (nMagicBackgroundOffset * (nBlue / (double)nMax) + 0.5));
             }
 
             return RGB(nRed, nGreen, nBlue);
         }
         CStyle SetStyle(const CStyle& style)
         {
-            m_style=style;
+            m_style = style;
             return m_style;
         }
         CStyle GetStyle() const
@@ -606,7 +606,7 @@ protected:
     static CSettings settings;
 };
 
-void DrawEllipsisText(CDC& dc,LPCTSTR sText,int n,LPRECT prc,bool bHorizontal);
+void DrawEllipsisText(CDC& dc, LPCTSTR sText, int n, LPRECT prc, bool bHorizontal);
 
 }//namespace dockwins
 #endif // WTL_DW_DOCKMISC_H_INCLUDED_

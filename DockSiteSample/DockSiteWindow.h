@@ -29,6 +29,7 @@ public:
         MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
         CHAIN_MSG_MAP(baseClass)
     END_MSG_MAP()
+
     LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
     {
         InitializeDockingFrame();

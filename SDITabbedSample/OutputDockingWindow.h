@@ -18,11 +18,13 @@ class COutputDockingWindow :
     typedef dockwins::CTitleDockingWindowImpl< COutputDockingWindow,CWindow,dockwins::CVC6LikeTitleDockingWindowTraits> baseClass;
 public:
     DECLARE_WND_CLASS(_T("COutputDockingWindow"))
+
     BEGIN_MSG_MAP(thisClass)
         MESSAGE_HANDLER(WM_CREATE, OnCreate)
         MESSAGE_HANDLER(WM_SIZE, OnSize)
         CHAIN_MSG_MAP(baseClass)
     END_MSG_MAP()
+
     LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         m_edit.Create(m_hWnd,NULL, NULL, WS_CHILD | WS_VISIBLE );

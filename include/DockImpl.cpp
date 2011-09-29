@@ -17,7 +17,8 @@
 
 #include <string>
 
-namespace dockwins{
+namespace dockwins
+{
 
 CDWSettings::CSettings CDWSettings::settings;
 
@@ -30,26 +31,26 @@ CVC6LikeCaption::CPinButton::CIcons CVC6LikeCaption::CPinButton::m_icons;
 
 #endif
 
-void DrawEllipsisText(CDC& dc,LPCTSTR sText, int n,LPRECT prc,bool bHorizontal)
+void DrawEllipsisText(CDC& dc, LPCTSTR sText, int n, LPRECT prc, bool bHorizontal)
 {
     if (n < 0)
         n = lstrlen(sText);
 
-    long width=bHorizontal ? prc->right - prc->left : prc->bottom - prc->top;
+    long width = bHorizontal ? prc->right - prc->left : prc->bottom - prc->top;
     CSize size;
     std::basic_string<TCHAR> sTmp;
-
     ATLVERIFY(dc.GetTextExtent(sText, n, &size));
 
-    if(width<size.cx)
+    if (width < size.cx)
     {
-        const std::basic_string<TCHAR> sEllipsis=_T("...");
-        sTmp.reserve(sEllipsis.size()+n);
+        const std::basic_string<TCHAR> sEllipsis = _T("...");
+        sTmp.reserve(sEllipsis.size() + n);
         sTmp.append(sEllipsis);
         sTmp.append(sText, n);
-        bool bRes=(GetTextExtentExPoint(dc,sTmp.c_str(),static_cast<int>
-            (sTmp.size()),width,&n,NULL,&size)!=FALSE);
-        if(bRes)
+        bool bRes = (GetTextExtentExPoint(dc, sTmp.c_str(), static_cast<int>
+                                          (sTmp.size()), width, &n, NULL, &size) != FALSE);
+
+        if (bRes)
         {
             int newLegnth = static_cast<int>(sEllipsis.size() + 1);
 
@@ -63,12 +64,14 @@ void DrawEllipsisText(CDC& dc,LPCTSTR sText, int n,LPRECT prc,bool bHorizontal)
     }
 
 //    UINT prevAlign=dc.SetTextAlign(TA_LEFT | TA_TOP | TA_NOUPDATECP);
-    CPoint pt(prc->left,prc->top);
-    if(bHorizontal)
-        pt.y = (prc->bottom - prc->top-size.cy)/2+prc->top;
+    CPoint pt(prc->left, prc->top);
+
+    if (bHorizontal)
+        pt.y = (prc->bottom - prc->top - size.cy) / 2 + prc->top;
     else
-        pt.x = prc->right-(prc->right - prc->left-size.cy)/2;
-    dc.ExtTextOut(pt.x,pt.y,ETO_CLIPPED,prc,sText,n,NULL);
+        pt.x = prc->right - (prc->right - prc->left - size.cy) / 2;
+
+    dc.ExtTextOut(pt.x, pt.y, ETO_CLIPPED, prc, sText, n, NULL);
 //    dc.SetTextAlign(prevAlign);
 }
 

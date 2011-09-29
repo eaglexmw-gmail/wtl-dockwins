@@ -18,6 +18,7 @@ class CSampleDockingWindow :
     typedef dockwins::CTitleDockingWindowImpl< CSampleDockingWindow,CWindow,dockwins::COutlookLikeTitleDockingWindowTraits> baseClass;
 public:
     DECLARE_WND_CLASS(_T("CSampleDockingWindow"))
+
     BEGIN_MSG_MAP(thisClass)
         MESSAGE_HANDLER(WM_PAINT, OnPaint)
         CHAIN_MSG_MAP(baseClass)

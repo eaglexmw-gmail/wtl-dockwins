@@ -18,25 +18,25 @@
 #pragma once
 
 #ifndef __ATLMISC_H__
-    #error SimpleSplitterBar.h requires atlmisc.h to be included first
+#error SimpleSplitterBar.h requires atlmisc.h to be included first
 #endif
 
-namespace dockwins {
+namespace dockwins
+{
 
-template<long TThickness=5>
+template<long TThickness = 5>
 class CSimpleSplitterBar :  public CRect
 {
 public:
-    enum{sbThickness=TThickness};
+    enum {sbThickness = TThickness};
 
-    CSimpleSplitterBar(bool bHorizontal=true)
-        :m_bHorizontal(bHorizontal)
+    CSimpleSplitterBar(bool bHorizontal = true)
+        : m_bHorizontal(bHorizontal)
     {
     }
     CSimpleSplitterBar(const CSimpleSplitterBar& ref)
-        :CRect(ref),m_bHorizontal(ref.IsHorizontal())
+        : CRect(ref), m_bHorizontal(ref.IsHorizontal())
     {
-
     }
     static long GetThickness()
     {
@@ -44,7 +44,7 @@ public:
     }
     void SetOrientation(bool bHorizontal)
     {
-        m_bHorizontal=bHorizontal;
+        m_bHorizontal = bHorizontal;
     }
     bool IsHorizontal() const
     {
@@ -53,19 +53,21 @@ public:
 
     bool IsPtIn(const CPoint& pt) const
     {
-        return (PtInRect(pt)!=FALSE);
+        return (PtInRect(pt) != FALSE);
     }
 
     HCURSOR GetCursor(const CPoint& pt) const
     {
-        HCURSOR hCursor=NULL;
-        if(IsPtIn(pt))
+        HCURSOR hCursor = NULL;
+
+        if (IsPtIn(pt))
         {
             CDWSettings settings;
-             hCursor=((IsHorizontal())
-                                ?settings.HResizeCursor()
-                                :settings.VResizeCursor());
+            hCursor = ((IsHorizontal())
+                       ? settings.HResizeCursor()
+                       : settings.VResizeCursor());
         }
+
         return hCursor;
     }
 
@@ -76,14 +78,13 @@ public:
     void DrawGhostBar(CDC& dc) const
     {
         CBrush brush = CDCHandle::GetHalftoneBrush();
-        if(brush.m_hBrush != NULL)
+
+        if (brush.m_hBrush != NULL)
         {
             HBRUSH hBrushOld = dc.SelectBrush(brush);
-            dc.PatBlt(this->left, this->top,this->Width(),this->Height(), PATINVERT);
+            dc.PatBlt(this->left, this->top, this->Width(), this->Height(), PATINVERT);
             dc.SelectBrush(hBrushOld);
-
         }
-
     }
     void CleanGhostBar(CDC& dc) const
     {
@@ -94,19 +95,18 @@ protected:
 };
 
 
-template<long TThickness=5>
+template<long TThickness = 5>
 class CSimpleSplitterBarEx: public CSimpleSplitterBar<TThickness>
 {
     typedef CSimpleSplitterBar<TThickness> baseClass;
 public:
-    CSimpleSplitterBarEx(bool bHorizontal=true)
-        :baseClass(bHorizontal)
+    CSimpleSplitterBarEx(bool bHorizontal = true)
+        : baseClass(bHorizontal)
     {
     }
     CSimpleSplitterBarEx(const CSimpleSplitterBarEx& ref)
-        :baseClass(ref)
+        : baseClass(ref)
     {
-
     }
 
     void Draw(CDC& dc) const
@@ -114,8 +114,7 @@ public:
         dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
         CRect rc(*this);
 //        dc.DrawEdge(&rc, EDGE_RAISED, (IsHorizontal()) ? (BF_TOP | BF_BOTTOM) : (BF_LEFT | BF_RIGHT) );
-        dc.DrawEdge(&rc, BDR_RAISEDINNER, (IsHorizontal()) ? (BF_TOP | BF_BOTTOM) : (BF_LEFT | BF_RIGHT) );
-
+        dc.DrawEdge(&rc, BDR_RAISEDINNER, (IsHorizontal()) ? (BF_TOP | BF_BOTTOM) : (BF_LEFT | BF_RIGHT));
     }
 
 };
@@ -127,17 +126,17 @@ class CSimpleSplitterBarSlider
     typedef CSimpleSplitterBarSlider<CSplitter> thisClass;
 public:
     CSimpleSplitterBarSlider(CSplitter& splitter)
-        :m_splitter(splitter)
+        : m_splitter(splitter)
     {
-        if(!m_splitter.IsHorizontal())
+        if (!m_splitter.IsHorizontal())
         {
-            m_pTop=&m_splitter.left;
-            m_pDependant=&m_splitter.right;
+            m_pTop = &m_splitter.left;
+            m_pDependant = &m_splitter.right;
         }
         else
         {
-            m_pTop=&m_splitter.top;
-            m_pDependant=&m_splitter.bottom;
+            m_pTop = &m_splitter.top;
+            m_pDependant = &m_splitter.bottom;
         }
     }
     operator long() const
@@ -147,25 +146,25 @@ public:
 
     long operator=(long val)
     {
-        *m_pDependant=val+m_splitter.GetThickness();
-        return *m_pTop=val;
+        *m_pDependant = val + m_splitter.GetThickness();
+        return *m_pTop = val;
     }
 
     thisClass& operator += (long val)
     {
-        *this=*this+val;
+        *this = *this + val;
         return *this;
     }
     thisClass& operator -= (long val)
     {
-        *this=*this-val;
+        *this = *this - val;
         return *this;
     }
 
 protected:
     CSplitter& m_splitter;
-    long    *m_pTop;
-    long    *m_pDependant;
+    long*    m_pTop;
+    long*    m_pDependant;
 };
 
 }//namespace dockwins

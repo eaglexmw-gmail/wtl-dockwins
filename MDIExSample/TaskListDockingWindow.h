@@ -38,6 +38,7 @@ protected:
     }
 public:
     DECLARE_WND_CLASS(_T("CTaskListDockingWindow"))
+
     BEGIN_MSG_MAP(thisClass)
         MESSAGE_HANDLER(WM_CREATE, OnCreate)
         MESSAGE_HANDLER(WM_SIZE, OnSize)

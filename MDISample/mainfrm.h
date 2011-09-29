@@ -94,13 +94,11 @@ public:
         COMMAND_ID_HANDLER(ID_WINDOW_TILE_HORZ, OnWindowTile)
         COMMAND_ID_HANDLER(ID_WINDOW_ARRANGE, OnWindowArrangeIcons)
 
-
         COMMAND_TOGGLE_MEMBER_HANDLER(ID_VIEW_FOLDERS,m_foldersDockWnd)
         COMMAND_TOGGLE_MEMBER_HANDLER(ID_VIEW_OUTPUT,m_outputDockWnd)
 
         CHAIN_MSG_MAP(CUpdateUI<CMainFrame>)
         CHAIN_MSG_MAP(baseClass)
-
     END_MSG_MAP()
 
     BEGIN_UPDATE_UI_MAP(CMainFrame)

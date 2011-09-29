@@ -19,7 +19,8 @@
 
 #include "DockingWindow.h"
 
-namespace dockwins {
+namespace dockwins
+{
 
 #ifdef DF_AUTO_HIDE_FEATURES
 class CPinIcons
@@ -27,75 +28,79 @@ class CPinIcons
 public:
     enum States
     {
-        sUnPinned=0,
-        sPinned=1
+        sUnPinned = 0,
+        sPinned = 1
     };
     CPinIcons()
     {
-        static BYTE pinnedIconData[]={
-                0x28, 0000, 0000, 0000, 0x0b, 0000, 0000, 0000,
-                0x16, 0000, 0000, 0000, 0x01, 0000, 0x04, 0000,
-                0000, 0000, 0000, 0000, 0x84, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0x10, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0x80, 0000,
-                0000, 0x80, 0000, 0000, 0000, 0x80, 0x80, 0000,
-                0x80, 0000, 0000, 0000, 0x80, 0000, 0x80, 0000,
-                0x80, 0x80, 0000, 0000, 0x80, 0x80, 0x80, 0000,
-                0xc0, 0xc0, 0xc0, 0000, 0000, 0000, 0xff, 0000,
-                0000, 0xff, 0000, 0000, 0000, 0xff, 0xff, 0000,
-                0xff, 0000, 0000, 0000, 0xff, 0000, 0xff, 0000,
-                0xff, 0xff, 0000, 0000, 0xff, 0xff, 0xff, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0x07, 0x70, 0000, 0000, 0000, 0000, 0000,
-                0000, 0x77, 0x77, 0000, 0000, 0000, 0000, 0000,
-                0000, 0x7f, 0x80, 0000, 0000, 0000, 0000, 0000,
-                0000, 0xf0, 0x07, 0x77, 0000, 0000, 0000, 0000,
-                0000, 0x0f, 0000, 0xf7, 0x70, 0000, 0000, 0000,
-                0000, 0000, 0x0f, 0x0f, 0x70, 0000, 0000, 0000,
-                0000, 0000, 0000, 0xf0, 0x70, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0x7f, 0xff, 0xff, 0xff, 0x81, 0xff, 0xff, 0xff,
-                0x80, 0xff, 0xff, 0xff, 0x80, 0x7f, 0xff, 0xff,
-                0x80, 0x7f, 0xff, 0xff, 0x90, 0x3f, 0xff, 0xff,
-                0xa4, 0x3f, 0xff, 0xff, 0xd2, 0x3f, 0xff, 0xff,
-                0xe5, 0x3f, 0xff, 0xff, 0xf8, 0x7f, 0xff, 0xff,
-                0xff, 0xff, 0xff, 0xff};
-        static BYTE unpinnedIconData[]={
-                0x28, 0000, 0000, 0000, 0x0b, 0000, 0000, 0000,
-                0x16, 0000, 0000, 0000, 0x01, 0000, 0x04, 0000,
-                0000, 0000, 0000, 0000, 0x84, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0x10, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0x80, 0000,
-                0000, 0x80, 0000, 0000, 0000, 0x80, 0x80, 0000,
-                0x80, 0000, 0000, 0000, 0x80, 0000, 0x80, 0000,
-                0x80, 0x80, 0000, 0000, 0x80, 0x80, 0x80, 0000,
-                0xc0, 0xc0, 0xc0, 0000, 0000, 0000, 0xff, 0000,
-                0000, 0xff, 0000, 0000, 0000, 0xff, 0xff, 0000,
-                0xff, 0000, 0000, 0000, 0xff, 0000, 0xff, 0000,
-                0xff, 0xff, 0000, 0000, 0xff, 0xff, 0xff, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0x08, 0000, 0x08, 0000, 0000, 0000,
-                0000, 0000, 0000, 0x08, 0000, 0000, 0000, 0000,
-                0000, 0000, 0x0f, 0x0f, 0x8f, 0000, 0000, 0000,
-                0000, 0000, 0000, 0xf0, 0000, 0000, 0000, 0000,
-                0000, 0000, 0x0f, 0000, 0x0f, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
-                0xff, 0xff, 0xff, 0xff, 0xf7, 0xff, 0xff, 0xff,
-                0xf3, 0x9f, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xff,
-                0xf4, 0x5f, 0xff, 0xff, 0x02, 0x1f, 0xff, 0xff,
-                0xf5, 0xdf, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xff,
-                0xf3, 0x9f, 0xff, 0xff, 0xf7, 0xff, 0xff, 0xff,
-                0xff, 0xff, 0xff, 0xff};
-        m_icons[0]=CreateIconFromResourceEx(unpinnedIconData, 0xec, TRUE, 0x00030000, 11, 11, LR_DEFAULTCOLOR);
-        m_icons[1]=CreateIconFromResourceEx(pinnedIconData, 0xec, TRUE, 0x00030000, 11, 11, LR_DEFAULTCOLOR);
+        static BYTE pinnedIconData[] =
+        {
+            0x28, 0000, 0000, 0000, 0x0b, 0000, 0000, 0000,
+            0x16, 0000, 0000, 0000, 0x01, 0000, 0x04, 0000,
+            0000, 0000, 0000, 0000, 0x84, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0x10, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0x80, 0000,
+            0000, 0x80, 0000, 0000, 0000, 0x80, 0x80, 0000,
+            0x80, 0000, 0000, 0000, 0x80, 0000, 0x80, 0000,
+            0x80, 0x80, 0000, 0000, 0x80, 0x80, 0x80, 0000,
+            0xc0, 0xc0, 0xc0, 0000, 0000, 0000, 0xff, 0000,
+            0000, 0xff, 0000, 0000, 0000, 0xff, 0xff, 0000,
+            0xff, 0000, 0000, 0000, 0xff, 0000, 0xff, 0000,
+            0xff, 0xff, 0000, 0000, 0xff, 0xff, 0xff, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0x07, 0x70, 0000, 0000, 0000, 0000, 0000,
+            0000, 0x77, 0x77, 0000, 0000, 0000, 0000, 0000,
+            0000, 0x7f, 0x80, 0000, 0000, 0000, 0000, 0000,
+            0000, 0xf0, 0x07, 0x77, 0000, 0000, 0000, 0000,
+            0000, 0x0f, 0000, 0xf7, 0x70, 0000, 0000, 0000,
+            0000, 0000, 0x0f, 0x0f, 0x70, 0000, 0000, 0000,
+            0000, 0000, 0000, 0xf0, 0x70, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0x7f, 0xff, 0xff, 0xff, 0x81, 0xff, 0xff, 0xff,
+            0x80, 0xff, 0xff, 0xff, 0x80, 0x7f, 0xff, 0xff,
+            0x80, 0x7f, 0xff, 0xff, 0x90, 0x3f, 0xff, 0xff,
+            0xa4, 0x3f, 0xff, 0xff, 0xd2, 0x3f, 0xff, 0xff,
+            0xe5, 0x3f, 0xff, 0xff, 0xf8, 0x7f, 0xff, 0xff,
+            0xff, 0xff, 0xff, 0xff
+        };
+        static BYTE unpinnedIconData[] =
+        {
+            0x28, 0000, 0000, 0000, 0x0b, 0000, 0000, 0000,
+            0x16, 0000, 0000, 0000, 0x01, 0000, 0x04, 0000,
+            0000, 0000, 0000, 0000, 0x84, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0x10, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0x80, 0000,
+            0000, 0x80, 0000, 0000, 0000, 0x80, 0x80, 0000,
+            0x80, 0000, 0000, 0000, 0x80, 0000, 0x80, 0000,
+            0x80, 0x80, 0000, 0000, 0x80, 0x80, 0x80, 0000,
+            0xc0, 0xc0, 0xc0, 0000, 0000, 0000, 0xff, 0000,
+            0000, 0xff, 0000, 0000, 0000, 0xff, 0xff, 0000,
+            0xff, 0000, 0000, 0000, 0xff, 0000, 0xff, 0000,
+            0xff, 0xff, 0000, 0000, 0xff, 0xff, 0xff, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0x08, 0000, 0x08, 0000, 0000, 0000,
+            0000, 0000, 0000, 0x08, 0000, 0000, 0000, 0000,
+            0000, 0000, 0x0f, 0x0f, 0x8f, 0000, 0000, 0000,
+            0000, 0000, 0000, 0xf0, 0000, 0000, 0000, 0000,
+            0000, 0000, 0x0f, 0000, 0x0f, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000,
+            0xff, 0xff, 0xff, 0xff, 0xf7, 0xff, 0xff, 0xff,
+            0xf3, 0x9f, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xff,
+            0xf4, 0x5f, 0xff, 0xff, 0x02, 0x1f, 0xff, 0xff,
+            0xf5, 0xdf, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xff,
+            0xf3, 0x9f, 0xff, 0xff, 0xf7, 0xff, 0xff, 0xff,
+            0xff, 0xff, 0xff, 0xff
+        };
+        m_icons[0] = CreateIconFromResourceEx(unpinnedIconData, 0xec, TRUE, 0x00030000, 11, 11, LR_DEFAULTCOLOR);
+        m_icons[1] = CreateIconFromResourceEx(pinnedIconData, 0xec, TRUE, 0x00030000, 11, 11, LR_DEFAULTCOLOR);
     }
     ~CPinIcons()
     {
@@ -124,28 +129,27 @@ class COutlookLikeExCaption : public CCaptionBase
     typedef COutlookLikeExCaption    thisClass;
     typedef CCaptionBase            baseClass;
 public:
-    enum{fntSpace=8,cFrameSpace=2,btnSpace=1};
+    enum {fntSpace = 8, cFrameSpace = 2, btnSpace = 1};
 protected:
     typedef baseClass::CButton CButtonBase;
     struct CButton
-        : CButtonBase
+            : CButtonBase
     {
-        virtual void CalculateRect(CRect& rc,bool bHorizontal=true)
+        virtual void CalculateRect(CRect& rc, bool bHorizontal = true)
         {
             CopyRect(rc);
-
-            const int cx = cFrameSpace+btnSpace;
+            const int cx = cFrameSpace + btnSpace;
             DeflateRect(cx, cx);
 
-            if(bHorizontal)
+            if (bHorizontal)
             {
-                left=right-Height();
-                rc.right=left;
+                left = right - Height();
+                rc.right = left;
             }
             else
             {
-                bottom=top+Width();
-                rc.top=bottom;
+                bottom = top + Width();
+                rc.top = bottom;
             }
         }
     };
@@ -159,25 +163,22 @@ protected:
             CPen pen;
 #ifdef DF_FOCUS_FEATURES
             CCaptionFocus cf(dc);
-            dc.FillRect(this,cf.GetCaptionBgBrush());
+            dc.FillRect(this, cf.GetCaptionBgBrush());
             pen.CreatePen(PS_SOLID, 0, cf.GetCaptionTextColor());
 #else
-            dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
+            dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
             pen.CreatePen(PS_SOLID, 0, ::GetSysColor(COLOR_BTNTEXT));
 #endif
-
             HPEN hPenOld = dc.SelectPen(pen);
-            const int sp=5;
-            dc.MoveTo(left+sp, top+sp);
-            dc.LineTo(right-sp, bottom-sp);
-            dc.MoveTo(left + sp+1, top+sp);
+            const int sp = 5;
+            dc.MoveTo(left + sp, top + sp);
+            dc.LineTo(right - sp, bottom - sp);
+            dc.MoveTo(left + sp + 1, top + sp);
             dc.LineTo(right - sp + 1, bottom - sp);
-
-            dc.MoveTo(left+sp, bottom - sp-1);
-            dc.LineTo(right-sp, top +sp -1 );
-            dc.MoveTo(left + sp +1, bottom - sp -1);
-            dc.LineTo(right - sp +1, top + sp -1);
-
+            dc.MoveTo(left + sp, bottom - sp - 1);
+            dc.LineTo(right - sp, top + sp - 1);
+            dc.MoveTo(left + sp + 1, bottom - sp - 1);
+            dc.LineTo(right - sp + 1, top + sp - 1);
             dc.SelectPen(hPenOld);
             CButton::Draw(dc);
         }
@@ -189,39 +190,42 @@ protected:
     public:
         typedef CPinIcons CIcons;
         CPinButton()
-            :m_sicon(CIcons::sPinned)
+            : m_sicon(CIcons::sPinned)
         {
         }
 
         void State(CIcons::States state)
         {
-            m_sicon=state;
+            m_sicon = state;
         }
 
         virtual void Draw(CDC& dc)
         {
 #ifdef DF_FOCUS_FEATURES
             CCaptionFocus cf(dc);
-            dc.FillRect(this,cf.GetCaptionBgBrush());
+            dc.FillRect(this, cf.GetCaptionBgBrush());
 #else
-            dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
+            dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
 #endif
-            CPoint pt(left,top);
-            CSize sz(Width(),Height());
-            int dif = sz.cx-m_icons.Width();
-            if(dif>0)
+            CPoint pt(left, top);
+            CSize sz(Width(), Height());
+            int dif = sz.cx - m_icons.Width();
+
+            if (dif > 0)
             {
-                pt.x+=dif/2;
-                sz.cx=m_icons.Width();
+                pt.x += dif / 2;
+                sz.cx = m_icons.Width();
             }
 
-            dif = sz.cy-m_icons.Height();
-            if(dif>0)
+            dif = sz.cy - m_icons.Height();
+
+            if (dif > 0)
             {
-                pt.y+=dif/2;
-                sz.cy=m_icons.Height();
+                pt.y += dif / 2;
+                sz.cy = m_icons.Height();
             }
-            dc.DrawIconEx(pt,m_icons.GetIcon(m_sicon),sz);
+
+            dc.DrawIconEx(pt, m_icons.GetIcon(m_sicon), sz);
             CButton::Draw(dc);
         }
     protected:
@@ -235,26 +239,30 @@ public:
     }
 #endif
 public:
-    COutlookLikeExCaption():baseClass(0,false)
+    COutlookLikeExCaption(): baseClass(0, false)
     {
         SetOrientation(!IsHorizontal());
     }
 
     void UpdateMetrics()
     {
-        m_thickness=23;
+        m_thickness = 23;
         CDWSettings settings;
         HFONT hFont = IsHorizontal() ? settings.HSysFont() : settings.VSysFont();
         ATLASSERT(hFont);
         CWindowDC dc(NULL);
-        if(dc)
+
+        if (dc)
         {
             HFONT hOldFont = dc.SelectFont(hFont);
-            if(hOldFont!=NULL)
+
+            if (hOldFont != NULL)
             {
                 TEXTMETRIC tm;
-                if(dc.GetTextMetrics(&tm))
-                    m_thickness=tm.tmHeight+fntSpace;
+
+                if (dc.GetTextMetrics(&tm))
+                    m_thickness = tm.tmHeight + fntSpace;
+
                 dc.SelectFont(hOldFont);
             }
         }
@@ -262,60 +270,63 @@ public:
 
     void SetOrientation(bool bHorizontal)
     {
-        if(IsHorizontal()!=bHorizontal)
+        if (IsHorizontal() != bHorizontal)
         {
             baseClass::SetOrientation(bHorizontal);
             UpdateMetrics();
         }
     }
 
-    bool CalculateRect(CRect& rc,bool bTop)
+    bool CalculateRect(CRect& rc, bool bTop)
     {
-        bool bRes=baseClass::CalculateRect(rc,bTop);
+        bool bRes = baseClass::CalculateRect(rc, bTop);
         CRect rcSpace(*this);
-        m_btnClose.CalculateRect(rcSpace,IsHorizontal());
+        m_btnClose.CalculateRect(rcSpace, IsHorizontal());
 #ifdef DF_AUTO_HIDE_FEATURES
-        m_btnPin.CalculateRect(rcSpace,IsHorizontal());
+        m_btnPin.CalculateRect(rcSpace, IsHorizontal());
 #endif
         return bRes;
     }
-    void Draw(HWND hWnd,CDC& dc)
+    void Draw(HWND hWnd, CDC& dc)
     {
 #ifdef DF_FOCUS_FEATURES
         CCaptionFocus cf(dc);
-        dc.FillRect(this,cf.GetCaptionBgBrush());
+        dc.FillRect(this, cf.GetCaptionBgBrush());
 #else
-        dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
+        dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
 #endif
-        int len=GetWindowTextLength(hWnd)+1;
+        int len = GetWindowTextLength(hWnd) + 1;
         _CSTRING_NS::CString sText;
-        int result = GetWindowText(hWnd,sText.GetBufferSetLength(len),len);
+        int result = GetWindowText(hWnd, sText.GetBufferSetLength(len), len);
         sText.ReleaseBuffer(result);
-        if(result!=0)
+
+        if (result != 0)
         {
             HFONT hFont;
             CDWSettings settings;
             CRect rc(this);
-            if(IsHorizontal())
+
+            if (IsHorizontal())
             {
-                rc.left+=fntSpace+cFrameSpace;
+                rc.left += fntSpace + cFrameSpace;
 #ifdef DF_AUTO_HIDE_FEATURES
-                rc.right=m_btnPin.left-cFrameSpace-btnSpace;
+                rc.right = m_btnPin.left - cFrameSpace - btnSpace;
 #else
-                rc.right=m_btnClose.left-cFrameSpace-btnSpace;
+                rc.right = m_btnClose.left - cFrameSpace - btnSpace;
 #endif
                 hFont = settings.HSysFont();
             }
             else
             {
-                rc.bottom-=fntSpace-cFrameSpace;
+                rc.bottom -= fntSpace - cFrameSpace;
 #ifdef DF_AUTO_HIDE_FEATURES
-                rc.top=m_btnPin.bottom+cFrameSpace+btnSpace;
+                rc.top = m_btnPin.bottom + cFrameSpace + btnSpace;
 #else
-                rc.top=m_btnClose.bottom+cFrameSpace+btnSpace;
+                rc.top = m_btnClose.bottom + cFrameSpace + btnSpace;
 #endif
-                 hFont = settings.VSysFont();
+                hFont = settings.VSysFont();
             }
+
 #ifdef DF_FOCUS_FEATURES
             dc.SetTextColor(cf.GetCaptionTextColor());
 #else
@@ -323,72 +334,84 @@ public:
 #endif
             dc.SetBkMode(TRANSPARENT);
             HFONT hFontOld = dc.SelectFont(hFont);
-            if( (rc.left<rc.right) && (rc.top<rc.bottom))
-                DrawEllipsisText(dc,sText,sText.GetLength(),&rc,IsHorizontal());
+
+            if ((rc.left < rc.right) && (rc.top < rc.bottom))
+                DrawEllipsisText(dc, sText, sText.GetLength(), &rc, IsHorizontal());
+
             dc.SelectFont(hFontOld);
         }
+
         m_btnClose.Draw(dc);
 #ifdef DF_AUTO_HIDE_FEATURES
         m_btnPin.Draw(dc);
 #endif
-        dc.DrawEdge(this,EDGE_ETCHED,BF_RECT);
+        dc.DrawEdge(this, EDGE_ETCHED, BF_RECT);
     }
 
     LRESULT HitTest(const CPoint& pt) const
     {
-        LRESULT lRes=HTNOWHERE;
-        if(PtInRect(pt))
+        LRESULT lRes = HTNOWHERE;
+
+        if (PtInRect(pt))
         {
-            lRes=HTCAPTION;
-            if(m_btnClose.PtInRect(pt))
-                lRes=HTCLOSE;
+            lRes = HTCAPTION;
+
+            if (m_btnClose.PtInRect(pt))
+                lRes = HTCLOSE;
+
 #ifdef DF_AUTO_HIDE_FEATURES
             else
             {
-                if(m_btnPin.PtInRect(pt))
-                    lRes=HTPIN;
+                if (m_btnPin.PtInRect(pt))
+                    lRes = HTPIN;
             }
+
 #endif
         }
+
         return lRes;
     }
 
     void HotTrack(HWND hWnd, WPARAM nHitTest)
     {
-        m_btnClose.Hot(hWnd,nHitTest==HTCLOSE);
+        m_btnClose.Hot(hWnd, nHitTest == HTCLOSE);
 #ifdef DF_AUTO_HIDE_FEATURES
-        m_btnPin.Hot(hWnd,nHitTest==HTPIN);
+        m_btnPin.Hot(hWnd, nHitTest == HTPIN);
 #endif
     }
 
-    bool Action(HWND hWnd,const CPoint& /*pt*/, WPARAM nHitTest)
+    bool Action(HWND hWnd, const CPoint& /*pt*/, WPARAM nHitTest)
     {
-        bool res=false;
-        switch(nHitTest)
+        bool res = false;
+
+        switch (nHitTest)
         {
             case HTCLOSE:
-                m_btnClose.Press(hWnd,true);
-                res=true;
+                m_btnClose.Press(hWnd, true);
+                res = true;
                 break;
 #ifdef DF_AUTO_HIDE_FEATURES
+
             case HTPIN:
-                m_btnPin.Press(hWnd,true);
-                res=true;
+                m_btnPin.Press(hWnd, true);
+                res = true;
                 break;
 #endif
         }
+
         return res;
     }
-    void ActionDone(HWND hWnd, WPARAM nHitTest,bool /*ok*/)
+    void ActionDone(HWND hWnd, WPARAM nHitTest, bool /*ok*/)
     {
-        switch(nHitTest)
+        switch (nHitTest)
         {
             case HTCLOSE:
-                m_btnClose.Press(hWnd,false);
+                m_btnClose.Press(hWnd, false);
                 break;
 #ifdef DF_AUTO_HIDE_FEATURES
+
             case HTPIN:
-                m_btnPin.Press(hWnd,false);
+                m_btnPin.Press(hWnd, false);
                 break;
 #endif
         }
@@ -407,39 +430,40 @@ struct COutlookLikeCaption :  COutlookLikeExCaption
     }
 };
 
-typedef CDockingWindowTraits<COutlookLikeCaption,
-                                WS_OVERLAPPEDWINDOW | WS_POPUP | WS_VISIBLE |
-                                WS_CLIPCHILDREN | WS_CLIPSIBLINGS,WS_EX_TOOLWINDOW>
-                            COutlookLikeTitleDockingWindowTraits;
+typedef CDockingWindowTraits < COutlookLikeCaption,
+        WS_OVERLAPPEDWINDOW | WS_POPUP | WS_VISIBLE |
+        WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_TOOLWINDOW >
+        COutlookLikeTitleDockingWindowTraits;
 
-typedef CDockingWindowTraits<COutlookLikeExCaption,
-                                WS_OVERLAPPEDWINDOW | WS_POPUP | WS_VISIBLE |
-                                WS_CLIPCHILDREN | WS_CLIPSIBLINGS,WS_EX_TOOLWINDOW>
-                            COutlookLikeExTitleDockingWindowTraits;
+typedef CDockingWindowTraits < COutlookLikeExCaption,
+        WS_OVERLAPPEDWINDOW | WS_POPUP | WS_VISIBLE |
+        WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_TOOLWINDOW >
+        COutlookLikeExTitleDockingWindowTraits;
 
 class CVC6LikeCaption : public CCaptionBase
 {
     typedef CVC6LikeCaption thisClass;
     typedef CCaptionBase    baseClass;
 public:
-    enum{btnSpace=2,grThick=3};
+    enum {btnSpace = 2, grThick = 3};
 protected:
     typedef baseClass::CButton CButtonBase;
     struct CButton : CButtonBase
     {
-        virtual void CalculateRect(CRect& rc,bool bHorizontal)
+        virtual void CalculateRect(CRect& rc, bool bHorizontal)
         {
             CopyRect(rc);
-            DeflateRect(btnSpace,btnSpace);
-            if(bHorizontal)
+            DeflateRect(btnSpace, btnSpace);
+
+            if (bHorizontal)
             {
-                left=right-Height();
-                rc.right=left+btnSpace;
+                left = right - Height();
+                rc.right = left + btnSpace;
             }
             else
             {
-                bottom=top+Width();
-                rc.top=bottom+btnSpace;
+                bottom = top + Width();
+                rc.top = bottom + btnSpace;
             }
         }
     };
@@ -449,30 +473,25 @@ protected:
     public:
         virtual void Draw(CDC& dc)
         {
-
             CPen pen;
 #ifdef DF_FOCUS_FEATURES
             CCaptionFocus cf(dc);
-            dc.FillRect(this,cf.GetCaptionBgBrush());
+            dc.FillRect(this, cf.GetCaptionBgBrush());
             pen.CreatePen(PS_SOLID, 0, cf.GetCaptionTextColor());
 #else
-            dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
+            dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
             pen.CreatePen(PS_SOLID, 0, ::GetSysColor(COLOR_BTNTEXT));
 #endif
-
             HPEN hPenOld = dc.SelectPen(pen);
-            const int sp=3;
-            dc.MoveTo(left+sp, top+sp);
-            dc.LineTo(right-sp, bottom-sp);
-            dc.MoveTo(left + sp+1, top+sp);
+            const int sp = 3;
+            dc.MoveTo(left + sp, top + sp);
+            dc.LineTo(right - sp, bottom - sp);
+            dc.MoveTo(left + sp + 1, top + sp);
             dc.LineTo(right - sp + 1, bottom - sp);
-
-            dc.MoveTo(left+sp, bottom - sp-1);
-            dc.LineTo(right-sp, top +sp -1 );
-            dc.MoveTo(left + sp +1, bottom - sp -1);
-            dc.LineTo(right - sp +1, top + sp -1);
-
-
+            dc.MoveTo(left + sp, bottom - sp - 1);
+            dc.LineTo(right - sp, top + sp - 1);
+            dc.MoveTo(left + sp + 1, bottom - sp - 1);
+            dc.LineTo(right - sp + 1, top + sp - 1);
             dc.SelectPen(hPenOld);
             CButton::Draw(dc);
         }
@@ -483,37 +502,40 @@ protected:
     public:
         typedef CPinIcons CIcons;
         CPinButton()
-            :m_sicon(CIcons::sPinned)
+            : m_sicon(CIcons::sPinned)
         {
         }
         void State(CIcons::States state)
         {
-            m_sicon=state;
+            m_sicon = state;
         }
         virtual void Draw(CDC& dc)
         {
 #ifdef DF_FOCUS_FEATURES
             CCaptionFocus cf(dc);
-            dc.FillRect(this,cf.GetCaptionBgBrush());
+            dc.FillRect(this, cf.GetCaptionBgBrush());
 #else
-            dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
+            dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
 #endif
+            CPoint pt(left, top);
+            CSize sz(Width(), Height());
+            int dif = sz.cx - m_icons.Width();
 
-            CPoint pt(left,top);
-            CSize sz(Width(),Height());
-            int dif = sz.cx-m_icons.Width();
-            if(dif>0)
+            if (dif > 0)
             {
-                pt.x+=dif/2;
-                sz.cx=m_icons.Width();
+                pt.x += dif / 2;
+                sz.cx = m_icons.Width();
             }
-            dif = sz.cy-m_icons.Height();
-            if(dif>0)
+
+            dif = sz.cy - m_icons.Height();
+
+            if (dif > 0)
             {
-                pt.y+=dif/2;
-                sz.cy=m_icons.Height();
+                pt.y += dif / 2;
+                sz.cy = m_icons.Height();
             }
-            dc.DrawIconEx(pt,m_icons.GetIcon(m_sicon),sz);
+
+            dc.DrawIconEx(pt, m_icons.GetIcon(m_sicon), sz);
             CButton::Draw(dc);
         }
     protected:
@@ -527,70 +549,73 @@ public:
     }
 #endif
 public:
-    bool CalculateRect(CRect& rc,bool bTop)
+    bool CalculateRect(CRect& rc, bool bTop)
     {
-        bool bRes=baseClass::CalculateRect(rc,bTop);
+        bool bRes = baseClass::CalculateRect(rc, bTop);
         CRect rcSpace(*this);
-        m_btnClose.CalculateRect(rcSpace,IsHorizontal());
+        m_btnClose.CalculateRect(rcSpace, IsHorizontal());
 #ifdef DF_AUTO_HIDE_FEATURES
-        m_btnPin.CalculateRect(rcSpace,IsHorizontal());
+        m_btnPin.CalculateRect(rcSpace, IsHorizontal());
 #endif
         return bRes;
     }
-    void Draw(HWND /*hWnd*/,CDC& dc)
+    void Draw(HWND /*hWnd*/, CDC& dc)
     {
 #ifdef DF_FOCUS_FEATURES
         CCaptionFocus cf(dc);
-        dc.FillRect(this,cf.GetCaptionBgBrush());
+        dc.FillRect(this, cf.GetCaptionBgBrush());
 #else
-        dc.FillRect(this,(HBRUSH)LongToPtr(COLOR_3DFACE + 1));
+        dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
 #endif
         CRect rc;
-        if(IsHorizontal())
+
+        if (IsHorizontal())
         {
-            rc.left=left+btnSpace;
+            rc.left = left + btnSpace;
 #ifdef DF_AUTO_HIDE_FEATURES
-            rc.right=m_btnPin.left-btnSpace;
+            rc.right = m_btnPin.left - btnSpace;
 #else
-            rc.right=m_btnClose.left-btnSpace;
+            rc.right = m_btnClose.left - btnSpace;
 #endif
-            if(rc.left<rc.right)
+
+            if (rc.left < rc.right)
             {
 #ifdef DF_AUTO_HIDE_FEATURES
-                long offset=(m_btnPin.Height()-grThick*2/*+btnSpace*/)/2;
-                rc.top=m_btnPin.top+offset;
+                long offset = (m_btnPin.Height() - grThick * 2/*+btnSpace*/) / 2;
+                rc.top = m_btnPin.top + offset;
 #else
-                long offset=(m_btnClose.Height()-grThick*2/*+btnSpace*/)/2;
-                rc.top=m_btnClose.top+offset;
+                long offset = (m_btnClose.Height() - grThick * 2/*+btnSpace*/) / 2;
+                rc.top = m_btnClose.top + offset;
 #endif
-                rc.bottom=rc.top+grThick;
+                rc.bottom = rc.top + grThick;
                 dc.Draw3dRect(&rc, ::GetSysColor(COLOR_BTNHIGHLIGHT), ::GetSysColor(COLOR_BTNSHADOW));
-                rc.top=rc.bottom/*+btnSpace*/;
-                rc.bottom=rc.top+grThick;
+                rc.top = rc.bottom/*+btnSpace*/;
+                rc.bottom = rc.top + grThick;
                 dc.Draw3dRect(&rc, ::GetSysColor(COLOR_BTNHIGHLIGHT), ::GetSysColor(COLOR_BTNSHADOW));
             }
         }
         else
         {
 #ifdef DF_AUTO_HIDE_FEATURES
-            rc.top=m_btnPin.bottom+btnSpace;
+            rc.top = m_btnPin.bottom + btnSpace;
 #else
-            rc.top=m_btnClose.bottom+btnSpace;
+            rc.top = m_btnClose.bottom + btnSpace;
 #endif
-            rc.bottom=bottom-btnSpace;
-            if(rc.top<rc.bottom)
+            rc.bottom = bottom - btnSpace;
+
+            if (rc.top < rc.bottom)
             {
 #ifdef DF_AUTO_HIDE_FEATURES
-                long offset=(m_btnPin.Width()-grThick*2/*+btnSpace*/)/2;
-                rc.left=m_btnPin.left+offset;
+                long offset = (m_btnPin.Width() - grThick * 2/*+btnSpace*/) / 2;
+                rc.left = m_btnPin.left + offset;
 #else
-                long offset=(m_btnClose.Width()-grThick*2/*+btnSpace*/)/2;
-                rc.left=m_btnClose.left+offset;
+                long offset = (m_btnClose.Width() - grThick * 2/*+btnSpace*/) / 2;
+                rc.left = m_btnClose.left + offset;
 #endif
-                rc.right=rc.left+grThick;
+                rc.right = rc.left + grThick;
                 dc.Draw3dRect(&rc, ::GetSysColor(COLOR_BTNHIGHLIGHT), ::GetSysColor(COLOR_BTNSHADOW));
-                rc.left=rc.right/*+btnSpace*/;
-                rc.right=rc.left+grThick;
+                rc.left = rc.right/*+btnSpace*/;
+                rc.right = rc.left + grThick;
                 dc.Draw3dRect(&rc, ::GetSysColor(COLOR_BTNHIGHLIGHT), ::GetSysColor(COLOR_BTNSHADOW));
             }
         }
@@ -603,59 +628,68 @@ public:
 
     LRESULT HitTest(const CPoint& pt) const
     {
-        LRESULT lRes=HTNOWHERE;
-        if(PtInRect(pt))
+        LRESULT lRes = HTNOWHERE;
+
+        if (PtInRect(pt))
         {
-            lRes=HTCAPTION;
-            if(m_btnClose.PtInRect(pt))
-                lRes=HTCLOSE;
+            lRes = HTCAPTION;
+
+            if (m_btnClose.PtInRect(pt))
+                lRes = HTCLOSE;
+
 #ifdef DF_AUTO_HIDE_FEATURES
             else
             {
-                if(m_btnPin.PtInRect(pt))
-                    lRes=HTPIN;
+                if (m_btnPin.PtInRect(pt))
+                    lRes = HTPIN;
             }
+
 #endif
         }
+
         return lRes;
     }
 
     void HotTrack(HWND hWnd, WPARAM nHitTest)
     {
-        m_btnClose.Hot(hWnd,nHitTest==HTCLOSE);
+        m_btnClose.Hot(hWnd, nHitTest == HTCLOSE);
 #ifdef DF_AUTO_HIDE_FEATURES
-        m_btnPin.Hot(hWnd,nHitTest==HTPIN);
+        m_btnPin.Hot(hWnd, nHitTest == HTPIN);
 #endif
     }
 
-    bool Action(HWND hWnd,const CPoint& /*pt*/, WPARAM nHitTest)
+    bool Action(HWND hWnd, const CPoint& /*pt*/, WPARAM nHitTest)
     {
-        bool res=false;
-        switch(nHitTest)
+        bool res = false;
+
+        switch (nHitTest)
         {
             case HTCLOSE:
-                m_btnClose.Press(hWnd,true);
-                res=true;
+                m_btnClose.Press(hWnd, true);
+                res = true;
                 break;
 #ifdef DF_AUTO_HIDE_FEATURES
+
             case HTPIN:
-                m_btnPin.Press(hWnd,true);
-                res=true;
+                m_btnPin.Press(hWnd, true);
+                res = true;
                 break;
 #endif
         }
+
         return res;
     }
-    void ActionDone(HWND hWnd, WPARAM nHitTest,bool /*ok*/)
+    void ActionDone(HWND hWnd, WPARAM nHitTest, bool /*ok*/)
     {
-        switch(nHitTest)
+        switch (nHitTest)
         {
             case HTCLOSE:
-                m_btnClose.Press(hWnd,false);
+                m_btnClose.Press(hWnd, false);
                 break;
 #ifdef DF_AUTO_HIDE_FEATURES
+
             case HTPIN:
-                m_btnPin.Press(hWnd,false);
+                m_btnPin.Press(hWnd, false);
                 break;
 #endif
         }
@@ -668,9 +702,9 @@ protected:
 };
 
 
-typedef CDockingWindowTraits<CVC6LikeCaption,
-                                WS_OVERLAPPEDWINDOW | WS_POPUP | WS_VISIBLE |
-                                WS_CLIPCHILDREN | WS_CLIPSIBLINGS,WS_EX_TOOLWINDOW>
-                             CVC6LikeTitleDockingWindowTraits;
+typedef CDockingWindowTraits < CVC6LikeCaption,
+        WS_OVERLAPPEDWINDOW | WS_POPUP | WS_VISIBLE |
+        WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_TOOLWINDOW >
+        CVC6LikeTitleDockingWindowTraits;
 }//namespace dockwins
 #endif // WTL_DW_EXTDOCKINGWINDOW_H_INCLUDED_

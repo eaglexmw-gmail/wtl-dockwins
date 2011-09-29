@@ -18,6 +18,7 @@ class COutputDockingWindow :
     typedef dockwins::CBoxedDockingWindowImpl<  COutputDockingWindow,CWindow,dockwins::CVC6LikeBoxedDockingWindowTraits> baseClass;
 public:
     DECLARE_WND_CLASS(_T("COutputDockingWindow"))
+
     BEGIN_MSG_MAP(thisClass)
         MESSAGE_HANDLER(WM_CREATE, OnCreate)
         MESSAGE_HANDLER(WM_SIZE, OnSize)
@@ -26,6 +27,7 @@ public:
         MESSAGE_HANDLER(WM_MOUSEACTIVATE, OnMouseActivate)
         CHAIN_MSG_MAP(baseClass)
     END_MSG_MAP()
+
     LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         HICON hIconSmall = (HICON)::LoadImage(_Module.GetResourceInstance(), MAKEINTRESOURCE(IDI_OUTPUT),
@@ -35,6 +37,7 @@ public:
         m_edit.AppendText(_T("some text here..."));
         return 0;
     }
+
     LRESULT OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
     {
         if(wParam != SIZE_MINIMIZED )
@@ -46,16 +49,19 @@ public:
         bHandled = FALSE;
         return 1;
     }
+
     LRESULT OnSetFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
     {
         bHandled=FALSE;
         m_edit.SetFocus();
         return 0;
     }
+
     LRESULT OnKillFocus(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         return 0;
     }
+
     LRESULT OnMouseActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
     {
         bHandled=FALSE;
@@ -63,6 +69,7 @@ public:
         ATLASSERT(GetFocus()==m_edit.m_hWnd);
         return MA_ACTIVATE;   // activation already done
     }
+
 protected:
     CEdit m_edit;
 };

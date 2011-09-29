@@ -22,12 +22,15 @@
 #include "dwstate.h"
 #include "DockingBox.h"
 
-namespace sstate {
+namespace sstate
+{
 
-class CDockWndMgrEx: public CDockWndMgr
+class CDockWndMgrEx
+    : public CDockWndMgr
 {
 protected:
-    class CImpl : public CDockWndMgr::CImpl
+    class CImpl
+        : public CDockWndMgr::CImpl
     {
     public:
         class CQLoader
@@ -35,61 +38,64 @@ protected:
         protected:
             typedef CDockWndMgr::CImpl::CRestPos CRestPos;
         public:
-            CQLoader(CRestQueue& q,IStorge& stgTop,const std::pair<long,long>& xratio,const std::pair<long,long>& yratio)
-                    :m_queue(q),m_stgTop(stgTop)
-                    ,m_xratio(xratio),m_yratio(yratio)
+            CQLoader(CRestQueue& q, IStorge& stgTop, const std::pair<long, long>& xratio, const std::pair<long, long>& yratio)
+                : m_queue(q), m_stgTop(stgTop)
+                , m_xratio(xratio), m_yratio(yratio)
             {
             }
-            void operator() (std::pair<const ID,CItem>& x) const
+            void operator()(std::pair<const ID, CItem>& x) const
             {
                 CRestPos dpos;
                 std::basic_ostringstream<TCHAR> sstrKey;
-                sstrKey.flags(std::ios::hex | std::ios::showbase );
-                sstrKey<<ctxtWndPrefix<<x.first;
-                dockwins::DFDOCKPOSEX* ptr=static_cast<dockwins::DFDOCKPOSEX*>(&dpos);
-/*
-                DWORD dwType;
-                DWORD cbData=sizeof(dockwins::DFDOCKPOSEX);
-                if((::RegQueryValueEx(m_keyTop,sstrKey.str().c_str(),NULL,&dwType,
-                                     reinterpret_cast<LPBYTE>(ptr),&cbData)==ERROR_SUCCESS)
-                                     &&(dwType==REG_BINARY))
-*/
-                size_t size=sizeof(dockwins::DFDOCKPOSEX);
-                bool restored=(m_stgTop.GetBinary(sstrKey.str().c_str(),ptr,size)==ERROR_SUCCESS
-                                                                && (size==sizeof(dockwins::DFDOCKPOSEX)));
-                if(restored)
+                sstrKey.flags(std::ios::hex | std::ios::showbase);
+                sstrKey << ctxtWndPrefix << x.first;
+                dockwins::DFDOCKPOSEX* ptr = static_cast<dockwins::DFDOCKPOSEX*>(&dpos);
+                /*
+                                DWORD dwType;
+                                DWORD cbData=sizeof(dockwins::DFDOCKPOSEX);
+                                if((::RegQueryValueEx(m_keyTop,sstrKey.str().c_str(),NULL,&dwType,
+                                                     reinterpret_cast<LPBYTE>(ptr),&cbData)==ERROR_SUCCESS)
+                                                     &&(dwType==REG_BINARY))
+                */
+                size_t size = sizeof(dockwins::DFDOCKPOSEX);
+                bool restored = (m_stgTop.GetBinary(sstrKey.str().c_str(), ptr, size) == ERROR_SUCCESS
+                                 && (size == sizeof(dockwins::DFDOCKPOSEX)));
+
+                if (restored)
                 {
-                    if(dpos.bDocking)
+                    if (dpos.bDocking)
                     {
-                        dpos.id=x.first;
+                        dpos.id = x.first;
                         dockwins::CDockingSide dside(dpos.dockPos.dwDockSide);
-                        if(dside.IsValid())
+
+                        if (dside.IsValid())
                         {
 /////////////////////////////3<<30+0x3f8<<20+0x3fff<<9+0x1ff
                             ATLASSERT(dpos.bDocking);
 //                            dpos.weight=0;
-                            dpos.weight=dpos.dockPos.nIndex&0x1ff;
-                            dpos.weight|=(DWORD(dpos.dockPos.fPctPos*0x3fff)&0x3fff)<<9;
-                            dpos.weight|=(dpos.dockPos.nBar&0x7f)<<20;
-                            dpos.weight|=((~dpos.dockPos.dwDockSide)&3)<<30;
+                            dpos.weight = dpos.dockPos.nIndex & 0x1ff;
+                            dpos.weight |= (DWORD(dpos.dockPos.fPctPos * 0x3fff) & 0x3fff) << 9;
+                            dpos.weight |= (dpos.dockPos.nBar & 0x7f) << 20;
+                            dpos.weight |= ((~dpos.dockPos.dwDockSide) & 3) << 30;
 ///////////////////////////////////////////////////
                         }
                         else
-                            dpos.weight=reinterpret_cast<DWORD>(dpos.dockPos.hdr.hBar) | 0xe0000000;
+                            dpos.weight = reinterpret_cast<DWORD>(dpos.dockPos.hdr.hBar) | 0xe0000000;
+
                         m_queue.push(dpos);
                     }
                     else
-                        restored=x.second->Restore(&dpos,m_xratio,m_yratio);
+                        restored = x.second->Restore(&dpos, m_xratio, m_yratio);
                 }
 
-                if(!restored)
+                if (!restored)
                     x.second->RestoreDefault();
             }
         protected:
             CRestQueue& m_queue;
             IStorge&    m_stgTop;
-            std::pair<long,long> m_xratio;
-            std::pair<long,long> m_yratio;
+            std::pair<long, long> m_xratio;
+            std::pair<long, long> m_yratio;
         };
 
         class CPinner
@@ -97,68 +103,76 @@ protected:
         protected:
             void PinUp()
             {
-                m_pinHdr.n=m_wnds.size();
-                if(m_pinHdr.n>0)
+                m_pinHdr.n = m_wnds.size();
+
+                if (m_pinHdr.n > 0)
                 {
                     try
                     {
-                        if(m_pinHdr.n>1)
+                        if (m_pinHdr.n > 1)
                         {
                             m_pinHdr.phWnds = new HWND [m_pinHdr.n];
-                            std::copy(m_wnds.begin(),m_wnds.end(),m_pinHdr.phWnds);
+                            std::copy(m_wnds.begin(), m_wnds.end(), m_pinHdr.phWnds);
                         }
-                        if(m_pinHdr.hdr.hWnd==NULL)
+
+                        if (m_pinHdr.hdr.hWnd == NULL)
                         {
-                            m_pinHdr.hdr.hWnd=*(m_wnds.begin());
-                            m_pinHdr.nWidth=m_width;
+                            m_pinHdr.hdr.hWnd = *(m_wnds.begin());
+                            m_pinHdr.nWidth = m_width;
                         }
+
                         m_docker.PinUp(&m_pinHdr);
                         delete [] m_pinHdr.phWnds;
                         m_pinHdr.phWnds = 0;
-                    } catch(std::bad_alloc& /*E*/)
+                    }
+                    catch (std::bad_alloc& /*E*/)
                     {
                     }
-                    m_pinHdr.hdr.hWnd=NULL;
+
+                    m_pinHdr.hdr.hWnd = NULL;
                     m_wnds.clear();
                 }
             }
         public:
             CPinner(const dockwins::CDocker& docker)
-                :m_docker(docker)
+                : m_docker(docker)
             {
                 //m_pinHdr.hdr=HNONDOCKBAR;
                 //m_pinHdr.hdr.code=DC_PINUP;
-                ZeroMemory(&m_pinHdr,sizeof(dockwins::DFPINUP));
+                ZeroMemory(&m_pinHdr, sizeof(dockwins::DFPINUP));
             }
             ~CPinner()
             {
 //                PinUp();
-                if(!m_wnds.empty())
+                if (!m_wnds.empty())
                     PinUp();
             }
             void PinUp(const CRestPos& dpos)
             {
-                dockwins::CDockingSide side (dpos.dockPos.dwDockSide);
+                dockwins::CDockingSide side(dpos.dockPos.dwDockSide);
                 ATLASSERT(side.IsPinned());
-                dockwins::CDockingSide curSide (m_pinHdr.dwDockSide);
-                if(curSide.Side()!=side.Side()
-                    || (dpos.dockPos.nBar!=m_nBar) )
-                                        PinUp();
+                dockwins::CDockingSide curSide(m_pinHdr.dwDockSide);
+
+                if (curSide.Side() != side.Side()
+                        || (dpos.dockPos.nBar != m_nBar))
+                    PinUp();
+
                 m_wnds.push_back(dpos.dockPos.hdr.hWnd);
-                m_pinHdr.dwDockSide=side;
-                m_nBar=dpos.dockPos.nBar;
-                m_width=dpos.dockPos.nWidth;
-                if(side.IsActive())
+                m_pinHdr.dwDockSide = side;
+                m_nBar = dpos.dockPos.nBar;
+                m_width = dpos.dockPos.nWidth;
+
+                if (side.IsActive())
                 {
-                    m_pinHdr.hdr.hWnd=dpos.dockPos.hdr.hWnd;
-                    m_pinHdr.nWidth=dpos.dockPos.nWidth;
+                    m_pinHdr.hdr.hWnd = dpos.dockPos.hdr.hWnd;
+                    m_pinHdr.nWidth = dpos.dockPos.nWidth;
                 }
             }
             static void PrepareForRestoring(CRestPos& dpos)
             {
                 ::SetRectEmpty(&dpos.rect);
-                dpos.bDocking=FALSE;
-                dpos.bVisible=FALSE;
+                dpos.bDocking = FALSE;
+                dpos.bVisible = FALSE;
             }
         protected:
             std::list<HWND>                m_wnds;
@@ -169,29 +183,31 @@ protected:
         };
 
         CImpl(HWND hDockingFrameWnd)
-            :m_docker(hDockingFrameWnd)
+            : m_docker(hDockingFrameWnd)
         {
         }
-        virtual bool Restore(IStorge& stg,const std::pair<long,long>& xratio,const std::pair<long,long>& yratio)
+        virtual bool Restore(IStorge& stg, const std::pair<long, long>& xratio, const std::pair<long, long>& yratio)
         {
 //bad style, probably I'll fix it later
-            std::for_each(m_bunch.begin(),m_bunch.end(),CResetter());
-            std::for_each(m_bunch.begin(),m_bunch.end(),CQLoader(m_queue,stg,xratio,yratio));
-            DWORD weight=0;
-            dockwins::HDOCKBAR hBar=dockwins::HNONDOCKBAR;
-            BOOL bVisible=TRUE;
-            HWND hActiveWnd=NULL;
-            CPinner pinner (m_docker);
-            while(!m_queue.empty())
+            std::for_each(m_bunch.begin(), m_bunch.end(), CResetter());
+            std::for_each(m_bunch.begin(), m_bunch.end(), CQLoader(m_queue, stg, xratio, yratio));
+            DWORD weight = 0;
+            dockwins::HDOCKBAR hBar = dockwins::HNONDOCKBAR;
+            BOOL bVisible = TRUE;
+            HWND hActiveWnd = NULL;
+            CPinner pinner(m_docker);
+
+            while (!m_queue.empty())
             {
 //                CRestPos& dpos=const_cast<CRestPos&>(m_queue.top());
-                CRestPos dpos=m_queue.top();
-                ATLASSERT(m_bunch.find(dpos.id)!=m_bunch.end());
+                CRestPos dpos = m_queue.top();
+                ATLASSERT(m_bunch.find(dpos.id) != m_bunch.end());
                 dockwins::CDockingSide side(dpos.dockPos.dwDockSide);
-                if(side.IsValid() && side.IsPinned())
+
+                if (side.IsValid() && side.IsPinned())
                 {
                     CPinner::PrepareForRestoring(dpos);
-                    m_bunch[dpos.id]->Restore(&dpos,xratio,yratio);
+                    m_bunch[dpos.id]->Restore(&dpos, xratio, yratio);
                     pinner.PinUp(dpos);
                 }
                 else
@@ -199,43 +215,51 @@ protected:
 //                    dpos.dockPos.hdr.hBar=((dpos.weight&0xfffffe00)==weight) ? hBar : HNONDOCKBAR;
 ////////////////////////
 //very ugly :(
-                    if((dpos.weight&0xfffffe00)!=weight)
+                    if ((dpos.weight & 0xfffffe00) != weight)
                     {
-                        if(hBar!=dockwins::HNONDOCKBAR)
+                        if (hBar != dockwins::HNONDOCKBAR)
                         {
-                            if(dockwins::CDockingBox::IsWindowBox(hBar) && (hActiveWnd!=NULL))
+                            if (dockwins::CDockingBox::IsWindowBox(hBar) && (hActiveWnd != NULL))
                             {
                                 dockwins::CDockingBox box(hBar);
                                 box.Activate(hActiveWnd);
                             }
-                            if(!bVisible )
-                                ::SendMessage(::GetParent(hBar),WM_CLOSE,0,0);
-                        }
-                        hActiveWnd=NULL;
-                        hBar=dockwins::HNONDOCKBAR;
-                    }
-                    bVisible=dpos.bVisible;
-                    dpos.bVisible=TRUE;
-                    dpos.dockPos.hdr.hBar=hBar;
-                    m_bunch[dpos.id]->Restore(&dpos,xratio,yratio);
 
-                    if(side.IsActive())
-                        hActiveWnd=dpos.dockPos.hdr.hWnd;
-                    hBar=dpos.dockPos.hdr.hWnd;
-                    weight=dpos.weight&0xfffffe00;
+                            if (!bVisible)
+                                ::SendMessage(::GetParent(hBar), WM_CLOSE, 0, 0);
+                        }
+
+                        hActiveWnd = NULL;
+                        hBar = dockwins::HNONDOCKBAR;
+                    }
+
+                    bVisible = dpos.bVisible;
+                    dpos.bVisible = TRUE;
+                    dpos.dockPos.hdr.hBar = hBar;
+                    m_bunch[dpos.id]->Restore(&dpos, xratio, yratio);
+
+                    if (side.IsActive())
+                        hActiveWnd = dpos.dockPos.hdr.hWnd;
+
+                    hBar = dpos.dockPos.hdr.hWnd;
+                    weight = dpos.weight & 0xfffffe00;
                 }
+
                 m_queue.pop();
             }
-            if(hBar!=dockwins::HNONDOCKBAR)
+
+            if (hBar != dockwins::HNONDOCKBAR)
             {
-                if(dockwins::CDockingBox::IsWindowBox(hBar) && (hActiveWnd!=NULL))
+                if (dockwins::CDockingBox::IsWindowBox(hBar) && (hActiveWnd != NULL))
                 {
                     dockwins::CDockingBox box(hBar);
                     box.Activate(hActiveWnd);
                 }
-                if(!bVisible )
-                    ::SendMessage(::GetParent(hBar),WM_CLOSE,0,0);
+
+                if (!bVisible)
+                    ::SendMessage(::GetParent(hBar), WM_CLOSE, 0, 0);
             }
+
             return true;
         }
     protected:
@@ -243,7 +267,7 @@ protected:
     };
 public:
     CDockWndMgrEx(HWND hDockingFrameWnd)
-        :CDockWndMgr(new CImpl(hDockingFrameWnd))
+        : CDockWndMgr(new CImpl(hDockingFrameWnd))
     {
     }
 };
@@ -251,8 +275,8 @@ public:
 template<class T>
 struct CDockingWindowStateAdapterEx : CDockingWindowStateAdapter<T>
 {
-    CDockingWindowStateAdapterEx(T& x,int nDefCmdShow=SW_SHOWNOACTIVATE)
-        : CDockingWindowStateAdapter<T>(new CImpl(x,nDefCmdShow))
+    CDockingWindowStateAdapterEx(T& x, int nDefCmdShow = SW_SHOWNOACTIVATE)
+        : CDockingWindowStateAdapter<T>(new CImpl(x, nDefCmdShow))
     {
     }
 };

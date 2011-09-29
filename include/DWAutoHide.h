@@ -29,61 +29,62 @@
 #include "DockMisc.h"
 #include "ExtDockingWindow.h"
 
-namespace dockwins {
+namespace dockwins
+{
 
-typedef CDockingWindowTraits<COutlookLikeCaption,
-                                WS_CAPTION | WS_CHILD |
-                                WS_CLIPCHILDREN | WS_CLIPSIBLINGS,WS_EX_TOOLWINDOW>
-                                COutlookLikeAutoHidePaneTraits;
+typedef CDockingWindowTraits < COutlookLikeCaption,
+        WS_CAPTION | WS_CHILD |
+        WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_TOOLWINDOW >
+        COutlookLikeAutoHidePaneTraits;
 
 
-template <class TAutoHidePaneTraits,class TSplitterBar,/* DWORD TDockFrameStyle=0,*/
-            DWORD t_dwStyle = 0, DWORD t_dwExStyle = 0>
-struct CDockingFrameTraitsT : CWinTraits <t_dwStyle,t_dwExStyle>
+template < class TAutoHidePaneTraits, class TSplitterBar, /* DWORD TDockFrameStyle=0,*/
+         DWORD t_dwStyle = 0, DWORD t_dwExStyle = 0 >
+struct CDockingFrameTraitsT : CWinTraits <t_dwStyle, t_dwExStyle>
 {
     typedef TSplitterBar        CSplitterBar;
     typedef TAutoHidePaneTraits CAutoHidePaneTraits;
 };
 
-typedef CDockingFrameTraitsT< COutlookLikeAutoHidePaneTraits,CSimpleSplitterBar<5>,
+typedef CDockingFrameTraitsT < COutlookLikeAutoHidePaneTraits, CSimpleSplitterBar<5>,
         WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-        WS_EX_APPWINDOW | WS_EX_WINDOWEDGE> CDockingFrameTraits;
+        WS_EX_APPWINDOW | WS_EX_WINDOWEDGE > CDockingFrameTraits;
 
-typedef CDockingFrameTraitsT<COutlookLikeAutoHidePaneTraits, CSimpleSplitterBarEx<6>,
-        WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,0> CDockingSiteTraits;
+typedef CDockingFrameTraitsT < COutlookLikeAutoHidePaneTraits, CSimpleSplitterBarEx<6>,
+        WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0 > CDockingSiteTraits;
 
 struct IPinnedLabel
 {
     typedef CDockingSide    CSide;
     enum
     {
-        leftBorder=3,
-        rightBorder=3,
-        labelEdge=2,
-        labelPadding=5,            // padding between the labels
-        captionPadding=3        // padding between border of the label and the lable caption
+        leftBorder = 3,
+        rightBorder = 3,
+        labelEdge = 2,
+        labelPadding = 5,          // padding between the labels
+        captionPadding = 3      // padding between border of the label and the lable caption
     };
 
     class CPinnedWindow
     {
     public:
         CPinnedWindow()
-            :m_hWnd(NULL),m_icon(0),m_width(0)
+            : m_hWnd(NULL), m_icon(0), m_width(0)
         {
         }
 
-        int Assign(HWND hWnd,UINT width)
+        int Assign(HWND hWnd, UINT width)
         {
             ATLASSERT(::IsWindow(hWnd));
-            m_hWnd=hWnd;
-            m_width=width;
-            m_icon=reinterpret_cast<HICON>(::SendMessage(hWnd, WM_GETICON, FALSE, 0));
-            if(m_icon == NULL)
+            m_hWnd = hWnd;
+            m_width = width;
+            m_icon = reinterpret_cast<HICON>(::SendMessage(hWnd, WM_GETICON, FALSE, 0));
+
+            if (m_icon == NULL)
                 m_icon = reinterpret_cast<HICON>(::GetClassLong(hWnd, GCLP_HICONSM));
 
             ATL::CWindow(hWnd).GetWindowText(m_txt);
             return m_txt.GetLength();
-
         }
         HWND Wnd() const
         {
@@ -103,59 +104,62 @@ struct IPinnedLabel
         }
         void Width(UINT width)
         {
-            m_width=width;
+            m_width = width;
         }
-        void PrepareForDock(HDOCKBAR hBar,bool bHorizontal)
+        void PrepareForDock(HDOCKBAR hBar, bool bHorizontal)
         {
-            ::ShowWindow(m_hWnd,SW_HIDE);
-            DWORD style = ::GetWindowLong(m_hWnd,GWL_STYLE);
-            DWORD newStyle = style&(~(WS_POPUP | WS_CAPTION))|WS_CHILD;
+            ::ShowWindow(m_hWnd, SW_HIDE);
+            DWORD style = ::GetWindowLong(m_hWnd, GWL_STYLE);
+            DWORD newStyle = style & (~(WS_POPUP | WS_CAPTION)) | WS_CHILD;
             ::SetWindowLong(m_hWnd, GWL_STYLE, newStyle);
-            ::SetParent(m_hWnd,hBar);
-            ::SendMessage(m_hWnd,WM_NCACTIVATE,TRUE,NULL);
-            ::SendMessage(m_hWnd,WMDF_NDOCKSTATECHANGED,
-                                    MAKEWPARAM(TRUE,bHorizontal),
-                                    reinterpret_cast<LPARAM>(hBar));
+            ::SetParent(m_hWnd, hBar);
+            ::SendMessage(m_hWnd, WM_NCACTIVATE, TRUE, NULL);
+            ::SendMessage(m_hWnd, WMDF_NDOCKSTATECHANGED,
+                          MAKEWPARAM(TRUE, bHorizontal),
+                          reinterpret_cast<LPARAM>(hBar));
         }
         void PrepareForUndock(HDOCKBAR    hBar)
         {
-            ::ShowWindow(m_hWnd,SW_HIDE);
-            DWORD style = ::GetWindowLong(m_hWnd,GWL_STYLE);
-            DWORD newStyle = style&(~WS_CHILD) | WS_POPUP | WS_CAPTION;
+            ::ShowWindow(m_hWnd, SW_HIDE);
+            DWORD style = ::GetWindowLong(m_hWnd, GWL_STYLE);
+            DWORD newStyle = style & (~WS_CHILD) | WS_POPUP | WS_CAPTION;
             ::SetWindowLong(m_hWnd, GWL_STYLE, newStyle);
-            ::SetParent(m_hWnd,NULL);
-            ::SendMessage(m_hWnd,WMDF_NDOCKSTATECHANGED,
-                    FALSE,
-                    reinterpret_cast<LPARAM>(hBar));
+            ::SetParent(m_hWnd, NULL);
+            ::SendMessage(m_hWnd, WMDF_NDOCKSTATECHANGED,
+                          FALSE,
+                          reinterpret_cast<LPARAM>(hBar));
         }
-        void DrawLabel(CDC& dc,const CRect& rc,const CSide& side) const
+        void DrawLabel(CDC& dc, const CRect& rc, const CSide& side) const
         {
             CRect rcOutput(rc);
-            rcOutput.DeflateRect(captionPadding,captionPadding);
-            if(m_icon!=NULL)
+            rcOutput.DeflateRect(captionPadding, captionPadding);
+
+            if (m_icon != NULL)
             {
                 CDWSettings settings;
-                CSize  szIcon(settings.CXMinIcon(),settings.CYMinIcon());
-                if(side.IsHorizontal())
+                CSize  szIcon(settings.CXMinIcon(), settings.CYMinIcon());
+
+                if (side.IsHorizontal())
                 {
-                    if(rc.Width()>szIcon.cx+2*captionPadding)
+                    if (rc.Width() > szIcon.cx + 2 * captionPadding)
                     {
-                        POINT pt={rcOutput.left,rc.top+(rc.Height()-szIcon.cx)/2};
-                        rcOutput.left+=szIcon.cx+captionPadding;
-                        dc.DrawIconEx(pt,m_icon,szIcon);
+                        POINT pt = {rcOutput.left, rc.top + (rc.Height() - szIcon.cx) / 2};
+                        rcOutput.left += szIcon.cx + captionPadding;
+                        dc.DrawIconEx(pt, m_icon, szIcon);
                     }
                 }
                 else
                 {
-                    if(rc.Height()>szIcon.cy+2*captionPadding)
+                    if (rc.Height() > szIcon.cy + 2 * captionPadding)
                     {
-                        POINT pt={rc.left+(rc.Width()-szIcon.cy)/2,rcOutput.top};
-                        rcOutput.top+=szIcon.cy+captionPadding;
-                        dc.DrawIconEx(pt,m_icon,szIcon);
+                        POINT pt = {rc.left + (rc.Width() - szIcon.cy) / 2, rcOutput.top};
+                        rcOutput.top += szIcon.cy + captionPadding;
+                        dc.DrawIconEx(pt, m_icon, szIcon);
                     }
                 }
             }
-            DrawEllipsisText(dc,m_txt,m_txt.GetLength(),&rcOutput,side.IsHorizontal());
+
+            DrawEllipsisText(dc, m_txt, m_txt.GetLength(), &rcOutput, side.IsHorizontal());
         }
     protected:
         UINT    m_width;
@@ -167,10 +171,10 @@ struct IPinnedLabel
     class CCmp
     {
     public:
-        CCmp(HWND hWnd):m_hWnd(hWnd)
+        CCmp(HWND hWnd): m_hWnd(hWnd)
         {
         }
-        bool operator() (const IPinnedLabel* ptr) const
+        bool operator()(const IPinnedLabel* ptr) const
         {
             return ptr->IsOwner(m_hWnd);
         }
@@ -178,54 +182,56 @@ struct IPinnedLabel
         HWND m_hWnd;
     };
 
-    virtual ~IPinnedLabel(){}
+    virtual ~IPinnedLabel() {}
 
-    virtual IPinnedLabel* Remove(HWND hWnd,HDOCKBAR hBar)=0;
-    virtual bool UnPin(HWND hWnd,HDOCKBAR hBar,DFDOCKPOS* pHdr)=0;
+    virtual IPinnedLabel* Remove(HWND hWnd, HDOCKBAR hBar) = 0;
+    virtual bool UnPin(HWND hWnd, HDOCKBAR hBar, DFDOCKPOS* pHdr) = 0;
 
-    virtual long Width() const=0;
-    virtual void Width(long width)=0;
-    virtual long DesiredWidth(CDC& dc) const=0;
+    virtual long Width() const = 0;
+    virtual void Width(long width) = 0;
+    virtual long DesiredWidth(CDC& dc) const = 0;
 
-    virtual bool GetDockingPosition(DFDOCKPOS* pHdr) const=0;
+    virtual bool GetDockingPosition(DFDOCKPOS* pHdr) const = 0;
 
-    virtual CPinnedWindow* ActivePinnedWindow()=0;
-    virtual CPinnedWindow* FromPoint(long x,bool bActivate)=0;
-    virtual bool IsOwner(HWND hWnd) const=0;
-    virtual void Draw(CDC& dc,const CRect& rc,const CSide& side) const=0;
+    virtual CPinnedWindow* ActivePinnedWindow() = 0;
+    virtual CPinnedWindow* FromPoint(long x, bool bActivate) = 0;
+    virtual bool IsOwner(HWND hWnd) const = 0;
+    virtual void Draw(CDC& dc, const CRect& rc, const CSide& side) const = 0;
 
 };
 
 class CSinglePinnedLabel : public IPinnedLabel
 {
 public:
-    CSinglePinnedLabel(DFPINUP* pHdr,bool bHorizontal)
-        :m_width(0)
+    CSinglePinnedLabel(DFPINUP* pHdr, bool bHorizontal)
+        : m_width(0)
     {
-        ATLASSERT( (pHdr->n==0) || (pHdr->n==1) );
-        m_wnd.Assign(pHdr->hdr.hWnd,pHdr->nWidth);
-        m_wnd.PrepareForDock(pHdr->hdr.hBar,bHorizontal);
+        ATLASSERT((pHdr->n == 0) || (pHdr->n == 1));
+        m_wnd.Assign(pHdr->hdr.hWnd, pHdr->nWidth);
+        m_wnd.PrepareForDock(pHdr->hdr.hBar, bHorizontal);
     }
     CSinglePinnedLabel(const CPinnedWindow& wnd)
-        :m_wnd(wnd),m_width(0)
+        : m_wnd(wnd), m_width(0)
     {
     }
 
-    virtual IPinnedLabel* Remove(HWND hWnd,HDOCKBAR hBar)
+    virtual IPinnedLabel* Remove(HWND hWnd, HDOCKBAR hBar)
     {
         ATLASSERT(IsOwner(hWnd));
         m_wnd.PrepareForUndock(hBar);
         return 0;
     }
-    virtual bool UnPin(HWND hWnd,HDOCKBAR hBar,DFDOCKPOS* pHdr)
+    virtual bool UnPin(HWND hWnd, HDOCKBAR hBar, DFDOCKPOS* pHdr)
     {
         GetDockingPosition(pHdr);
-        bool bRes=(Remove(hWnd,hBar)==0);
-        if(bRes)
+        bool bRes = (Remove(hWnd, hBar) == 0);
+
+        if (bRes)
         {
-            pHdr->hdr.code=DC_SETDOCKPOSITION;
-            ::SendMessage(pHdr->hdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr));
+            pHdr->hdr.code = DC_SETDOCKPOSITION;
+            ::SendMessage(pHdr->hdr.hBar, WMDF_DOCK, NULL, reinterpret_cast<LPARAM>(pHdr));
         }
+
         return bRes;
     }
     virtual long Width() const
@@ -235,20 +241,22 @@ public:
 
     virtual void Width(long width)
     {
-        m_width=width;
+        m_width = width;
     }
 
     virtual long DesiredWidth(CDC& dc) const
     {
         SIZE sz;
-        const _CSTRING_NS::CString& text=m_wnd.Text();
+        const _CSTRING_NS::CString& text = m_wnd.Text();
         ATLVERIFY(dc.GetTextExtent(text, text.GetLength(), &sz));
-        UINT width=sz.cx+2*captionPadding;
-        if(m_wnd.Icon()!=NULL)
+        UINT width = sz.cx + 2 * captionPadding;
+
+        if (m_wnd.Icon() != NULL)
         {
             CDWSettings settings;
-            width+=settings.CXMinIcon()+captionPadding;
+            width += settings.CXMinIcon() + captionPadding;
         }
+
         return width;
     }
 
@@ -256,30 +264,30 @@ public:
     {
         return &m_wnd;
     }
-    virtual CPinnedWindow* FromPoint(long x,bool /*bActivate*/)
+    virtual CPinnedWindow* FromPoint(long x, bool /*bActivate*/)
     {
-        ATLASSERT(x>=0 && x<Width() );
+        ATLASSERT(x >= 0 && x < Width());
         return ActivePinnedWindow();
     }
 
-    virtual void Draw(CDC& dc,const CRect& rc,const CSide& side) const
+    virtual void Draw(CDC& dc, const CRect& rc, const CSide& side) const
     {
         dc.Rectangle(&rc);
-        m_wnd.DrawLabel(dc,rc,side);
+        m_wnd.DrawLabel(dc, rc, side);
     }
 
     virtual bool IsOwner(HWND hWnd) const
     {
-        return m_wnd.Wnd()==hWnd;
+        return m_wnd.Wnd() == hWnd;
     }
     virtual bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        ATLASSERT(pHdr->hdr.hWnd==m_wnd.Wnd());
-        pHdr->nBar=0;
-        pHdr->nWidth=m_wnd.Width();
-        pHdr->nHeight=1;
-        pHdr->nIndex=0;
-        pHdr->fPctPos=0;
+        ATLASSERT(pHdr->hdr.hWnd == m_wnd.Wnd());
+        pHdr->nBar = 0;
+        pHdr->nWidth = m_wnd.Width();
+        pHdr->nHeight = 1;
+        pHdr->nIndex = 0;
+        pHdr->fPctPos = 0;
         return true;
     }
 protected:
@@ -289,26 +297,29 @@ protected:
 
 class CMultyPinnedLabel : public IPinnedLabel
 {
-    enum {npos=ULONG_MAX/*std::numeric_limits<UINT>::max()*/};
+    enum {npos = ULONG_MAX/*std::numeric_limits<UINT>::max()*/};
 public:
-    CMultyPinnedLabel(DFPINUP* pHdr,bool bHorizontal)
-        :m_width(0)
+    CMultyPinnedLabel(DFPINUP* pHdr, bool bHorizontal)
+        : m_width(0)
     {
-        ATLASSERT(pHdr->n>1);
-        m_n=pHdr->n;
-        m_tabs=new CPinnedWindow[m_n];
-        int maxLen=0;
-        for(UINT i=0;i<m_n;i++)
+        ATLASSERT(pHdr->n > 1);
+        m_n = pHdr->n;
+        m_tabs = new CPinnedWindow[m_n];
+        int maxLen = 0;
+
+        for (UINT i = 0; i < m_n; i++)
         {
-            int len=m_tabs[i].Assign(pHdr->phWnds[i],pHdr->nWidth);
-            m_tabs[i].PrepareForDock(pHdr->hdr.hBar,bHorizontal);
-            if(len>maxLen)
+            int len = m_tabs[i].Assign(pHdr->phWnds[i], pHdr->nWidth);
+            m_tabs[i].PrepareForDock(pHdr->hdr.hBar, bHorizontal);
+
+            if (len > maxLen)
             {
-                maxLen=len;
-                m_longestTextTab=i;
+                maxLen = len;
+                m_longestTextTab = i;
             }
-            if(pHdr->phWnds[i]==pHdr->hdr.hWnd)
-                m_activeTab=i;
+
+            if (pHdr->phWnds[i] == pHdr->hdr.hWnd)
+                m_activeTab = i;
         }
     }
     ~CMultyPinnedLabel()
@@ -316,77 +327,85 @@ public:
         delete [] m_tabs;
     }
 
-    virtual bool UnPin(HWND hWnd,HDOCKBAR hBar,DFDOCKPOS* pHdr)
+    virtual bool UnPin(HWND hWnd, HDOCKBAR hBar, DFDOCKPOS* pHdr)
     {
-        ATLASSERT(pHdr->hdr.hWnd==hWnd);
+        ATLASSERT(pHdr->hdr.hWnd == hWnd);
         GetDockingPosition(pHdr);
-        pHdr->hdr.hWnd=m_tabs[0].Wnd();
-        pHdr->hdr.code=DC_SETDOCKPOSITION;
+        pHdr->hdr.hWnd = m_tabs[0].Wnd();
+        pHdr->hdr.code = DC_SETDOCKPOSITION;
         m_tabs[0].PrepareForUndock(hBar);
-        ::SendMessage(pHdr->hdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr));
+        ::SendMessage(pHdr->hdr.hBar, WMDF_DOCK, NULL, reinterpret_cast<LPARAM>(pHdr));
+        pHdr->hdr.hBar = pHdr->hdr.hWnd;
 
-        pHdr->hdr.hBar=pHdr->hdr.hWnd;
-        for(UINT i=1;i<m_n;i++)
+        for (UINT i = 1; i < m_n; i++)
         {
-            pHdr->nIndex=i;
-            pHdr->hdr.hWnd=m_tabs[i].Wnd();
+            pHdr->nIndex = i;
+            pHdr->hdr.hWnd = m_tabs[i].Wnd();
             m_tabs[i].PrepareForUndock(hBar);
-            ::SendMessage(pHdr->hdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(pHdr));
+            ::SendMessage(pHdr->hdr.hBar, WMDF_DOCK, NULL, reinterpret_cast<LPARAM>(pHdr));
         }
-        pHdr->hdr.code=DC_ACTIVATE;
-        pHdr->hdr.hWnd=m_tabs[m_activeTab].Wnd();
-        ::SendMessage(pHdr->hdr.hBar,WMDF_DOCK,NULL,reinterpret_cast<LPARAM>(&(pHdr->hdr)));
+
+        pHdr->hdr.code = DC_ACTIVATE;
+        pHdr->hdr.hWnd = m_tabs[m_activeTab].Wnd();
+        ::SendMessage(pHdr->hdr.hBar, WMDF_DOCK, NULL, reinterpret_cast<LPARAM>(&(pHdr->hdr)));
         return true;
     }
-    virtual IPinnedLabel* Remove(HWND hWnd,HDOCKBAR hBar)
+    virtual IPinnedLabel* Remove(HWND hWnd, HDOCKBAR hBar)
     {
         ATLASSERT(IsOwner(hWnd));
-        IPinnedLabel* ptr=this;
+        IPinnedLabel* ptr = this;
+
         try
         {
-            if(m_n==2)
+            if (m_n == 2)
             {
-                UINT i=(m_tabs[0].Wnd()!=hWnd);
-                ptr=new CSinglePinnedLabel(m_tabs[i]);
+                UINT i = (m_tabs[0].Wnd() != hWnd);
+                ptr = new CSinglePinnedLabel(m_tabs[i]);
                 m_tabs[!i].PrepareForUndock(hBar);
             }
             else
             {
-                CPinnedWindow* ptr=m_tabs;
-                m_tabs=new CPinnedWindow[m_n-1];
-                UINT j=0;
-                unsigned int maxLen=0;
-                for(UINT i=0;i<m_n;i++)
+                CPinnedWindow* ptr = m_tabs;
+                m_tabs = new CPinnedWindow[m_n - 1];
+                UINT j = 0;
+                unsigned int maxLen = 0;
+
+                for (UINT i = 0; i < m_n; i++)
                 {
-                    if(ptr[i].Wnd()!=hWnd)
+                    if (ptr[i].Wnd() != hWnd)
                     {
-                        if(maxLen<_tcslen(ptr[i].Text()))
-                            m_longestTextTab=j;
-                        m_tabs[j++]=ptr[i];
+                        if (maxLen < _tcslen(ptr[i].Text()))
+                            m_longestTextTab = j;
+
+                        m_tabs[j++] = ptr[i];
                     }
                     else
                         ptr[i].PrepareForUndock(hBar);
                 }
-                if(m_activeTab==--m_n)
-                            --m_activeTab;
+
+                if (m_activeTab == --m_n)
+                    --m_activeTab;
+
                 delete [] ptr;
             }
         }
-        catch(std::bad_alloc& /*e*/)
+        catch (std::bad_alloc& /*e*/)
         {
         }
+
         return ptr;
     }
     UINT Locate(HWND hWnd) const
     {
-        for(UINT i=0;i<m_n;i++)
-            if(m_tabs[i].Wnd()==hWnd)
+        for (UINT i = 0; i < m_n; i++)
+            if (m_tabs[i].Wnd() == hWnd)
                 return i;
-            return (UINT)npos;
+
+        return (UINT)npos;
     }
     virtual bool IsOwner(HWND hWnd) const
     {
-        return (Locate(hWnd)!=npos);
+        return (Locate(hWnd) != npos);
     }
 
     virtual long Width() const
@@ -395,60 +414,66 @@ public:
     }
     virtual void Width(long width)
     {
-        m_width=width;
-        if(m_width<m_passiveTabWidth*long(m_n))
+        m_width = width;
+
+        if (m_width < m_passiveTabWidth * long(m_n))
         {
-            if(m_width<long(m_n))
-                m_passiveTabWidth=0;
+            if (m_width < long(m_n))
+                m_passiveTabWidth = 0;
             else
-                m_passiveTabWidth=m_width/m_n;
+                m_passiveTabWidth = m_width / m_n;
         }
     }
     virtual long DesiredWidth(CDC& dc) const
     {
         SIZE sz;
-        const _CSTRING_NS::CString& text=m_tabs[m_longestTextTab].Text();
+        const _CSTRING_NS::CString& text = m_tabs[m_longestTextTab].Text();
         ATLVERIFY(dc.GetTextExtent(text, text.GetLength(), &sz));
-        long width=sz.cx+2*captionPadding;
+        long width = sz.cx + 2 * captionPadding;
         CDWSettings settings;
-        width+=settings.CXMinIcon()+captionPadding;
-        m_passiveTabWidth=settings.CXMinIcon()+2*captionPadding;
-        width+=m_passiveTabWidth*(m_n-1);
+        width += settings.CXMinIcon() + captionPadding;
+        m_passiveTabWidth = settings.CXMinIcon() + 2 * captionPadding;
+        width += m_passiveTabWidth * (m_n - 1);
         return width;
     }
 
     virtual CPinnedWindow* ActivePinnedWindow()
     {
-        return m_tabs+m_activeTab;
+        return m_tabs + m_activeTab;
     }
-    virtual CPinnedWindow* FromPoint(long x,bool bActivate)
+    virtual CPinnedWindow* FromPoint(long x, bool bActivate)
     {
-        ATLASSERT(x>=0 && x<Width() );
-        UINT i=m_activeTab;
-        if(x<long(m_activeTab)*m_passiveTabWidth)
-            i=x/m_passiveTabWidth;
+        ATLASSERT(x >= 0 && x < Width());
+        UINT i = m_activeTab;
+
+        if (x < long(m_activeTab)*m_passiveTabWidth)
+            i = x / m_passiveTabWidth;
         else
         {
-            long width=Width()-(m_n-m_activeTab-1)*m_passiveTabWidth;
-            if( width<x )
-                i+=(x-width)/m_passiveTabWidth+1;
+            long width = Width() - (m_n - m_activeTab - 1) * m_passiveTabWidth;
+
+            if (width < x)
+                i += (x - width) / m_passiveTabWidth + 1;
         }
-        ATLASSERT(m_activeTab<m_n);
-        if(bActivate)
-            m_activeTab=i;
-        return m_tabs+i;
+
+        ATLASSERT(m_activeTab < m_n);
+
+        if (bActivate)
+            m_activeTab = i;
+
+        return m_tabs + i;
     }
 
-    void DrawPassiveTab(UINT i,CDC& dc,const CRect& rc,const CSide& side) const
+    void DrawPassiveTab(UINT i, CDC& dc, const CRect& rc, const CSide& side) const
     {
         CRect rcOutput(rc);
-        rcOutput.DeflateRect(captionPadding,captionPadding);
-        HICON icon=m_tabs[i].Icon();
+        rcOutput.DeflateRect(captionPadding, captionPadding);
+        HICON icon = m_tabs[i].Icon();
         CDWSettings settings;
-        CSize sz(settings.CXMinIcon(),settings.CYMinIcon());
+        CSize sz(settings.CXMinIcon(), settings.CYMinIcon());
 
-        if (icon && (sz.cx<=(rc.Width()-2*captionPadding))
-                 && (sz.cy<=(rc.Height()-2*captionPadding)))
+        if (icon && (sz.cx <= (rc.Width() - 2 * captionPadding))
+                && (sz.cy <= (rc.Height() - 2 * captionPadding)))
         {
             POINT pt;
 
@@ -467,15 +492,15 @@ public:
         }
         else
         {
-            LPCTSTR text=m_tabs[i].Text();
-            DrawEllipsisText(dc,text,-1,&rcOutput,side.IsHorizontal());
+            LPCTSTR text = m_tabs[i].Text();
+            DrawEllipsisText(dc, text, -1, &rcOutput, side.IsHorizontal());
         }
     }
-    void DrawActiveTab(UINT i,CDC& dc,const CRect& rc,const CSide& side) const
+    void DrawActiveTab(UINT i, CDC& dc, const CRect& rc, const CSide& side) const
     {
-        m_tabs[i].DrawLabel(dc,rc,side.IsHorizontal());
+        m_tabs[i].DrawLabel(dc, rc, side.IsHorizontal());
     }
-    virtual void Draw(CDC& dc,const CRect& rc,const CSide& side) const
+    virtual void Draw(CDC& dc, const CRect& rc, const CSide& side) const
     {
         CRect rcOutput(rc);
         dc.Rectangle(&rcOutput);
@@ -483,56 +508,60 @@ public:
         long* pRight;
         long* px;
         long* py;
-        if(side.IsHorizontal())
-        {
-            pLeft=&rcOutput.left;
-            pRight=&rcOutput.right;
 
-            px=&rcOutput.left;
-            py=&rcOutput.bottom;
+        if (side.IsHorizontal())
+        {
+            pLeft = &rcOutput.left;
+            pRight = &rcOutput.right;
+            px = &rcOutput.left;
+            py = &rcOutput.bottom;
         }
         else
         {
-            pLeft=&rcOutput.top;
-            pRight=&rcOutput.bottom;
-
-            px=&rcOutput.right;
-            py=&rcOutput.top;
+            pLeft = &rcOutput.top;
+            pRight = &rcOutput.bottom;
+            px = &rcOutput.right;
+            py = &rcOutput.top;
         }
-        for(UINT i=0;i<m_n;i++)
+
+        for (UINT i = 0; i < m_n; i++)
         {
-            if(i==m_activeTab)
+            if (i == m_activeTab)
             {
-                *pRight=*pLeft+m_width-m_passiveTabWidth*(m_n-1);
-                ATLASSERT(*pRight<=(side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
-                DrawActiveTab(i,dc,rcOutput,side.IsHorizontal());
+                *pRight = *pLeft + m_width - m_passiveTabWidth * (m_n - 1);
+                ATLASSERT(*pRight <= (side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
+                DrawActiveTab(i, dc, rcOutput, side.IsHorizontal());
             }
             else
             {
-                *pRight=*pLeft+m_passiveTabWidth;
-                ATLASSERT(*pRight<=(side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
-                DrawPassiveTab(i,dc,rcOutput,side);
+                *pRight = *pLeft + m_passiveTabWidth;
+                ATLASSERT(*pRight <= (side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
+                DrawPassiveTab(i, dc, rcOutput, side);
             }
+
             dc.MoveTo(rcOutput.left, rcOutput.top);
-            dc.LineTo(*px,*py);
-            *pLeft=*pRight;
+            dc.LineTo(*px, *py);
+            *pLeft = *pRight;
         }
     }
 
     virtual bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        UINT i=Locate(pHdr->hdr.hWnd);
-        bool bRes=(i!=npos);
-        if(bRes)
+        UINT i = Locate(pHdr->hdr.hWnd);
+        bool bRes = (i != npos);
+
+        if (bRes)
         {
-            if(m_activeTab==i)
-                pHdr->dwDockSide|=CDockingSide::sActive;
-            pHdr->nBar=0;
-            pHdr->nWidth=m_tabs[i].Width();
-            pHdr->nHeight=1;
-            pHdr->nIndex=i;
-            pHdr->fPctPos=0;
+            if (m_activeTab == i)
+                pHdr->dwDockSide |= CDockingSide::sActive;
+
+            pHdr->nBar = 0;
+            pHdr->nWidth = m_tabs[i].Width();
+            pHdr->nHeight = 1;
+            pHdr->nIndex = i;
+            pHdr->fPctPos = 0;
         }
+
         return bRes;
     }
 protected:
@@ -561,7 +590,7 @@ public:
     }
     ~CAutoHideBar()
     {
-        for(CBunch::iterator i=m_bunch.begin();i!=m_bunch.end();++i)
+        for (CBunch::iterator i = m_bunch.begin(); i != m_bunch.end(); ++i)
             delete *i;
     }
     operator const CRect& () const
@@ -570,7 +599,7 @@ public:
     }
     bool IsPtIn(const CPoint& pt) const
     {
-        return (PtInRect(pt)!=FALSE);
+        return (PtInRect(pt) != FALSE);
     }
     const CSide& Orientation() const
     {
@@ -590,205 +619,225 @@ public:
     }
     void Initialize(CSide side)
     {
-        m_side=side;
+        m_side = side;
     }
-    bool CalculateRect(CDC& dc,CRect& rc,long width,long leftPadding,long rightPadding)
+    bool CalculateRect(CDC& dc, CRect& rc, long width, long leftPadding, long rightPadding)
     {
-        if(IsBarVisible())
+        if (IsBarVisible())
         {
             CopyRect(rc);
-            if(IsHorizontal())
+
+            if (IsHorizontal())
             {
-                if(IsTop())
-                    rc.top=bottom=top+width;
+                if (IsTop())
+                    rc.top = bottom = top + width;
                 else
-                    rc.bottom=top=bottom-width;
-                left+=leftPadding;
-                right-=rightPadding;
+                    rc.bottom = top = bottom - width;
+
+                left += leftPadding;
+                right -= rightPadding;
             }
             else
             {
-                if(IsTop())
-                    rc.left=right=left+width;
+                if (IsTop())
+                    rc.left = right = left + width;
                 else
-                    rc.right=left=right-width;
-                top+=leftPadding;
-                bottom-=rightPadding;
+                    rc.right = left = right - width;
+
+                top += leftPadding;
+                bottom -= rightPadding;
             }
+
             UpdateLayout(dc);
         }
+
         return true;
     }
     void UpdateLayout(CDC& dc) const
     {
-        bool bHorizontal=IsHorizontal();
+        bool bHorizontal = IsHorizontal();
         HFONT hPrevFont;
         long availableWidth;
 //        long availableWidth=bHorizontal ? Width() : Height();
         CDWSettings settings;
-        if(bHorizontal)
+
+        if (bHorizontal)
         {
-            availableWidth=Width();
-            hPrevFont=dc.SelectFont(settings.HSysFont());
+            availableWidth = Width();
+            hPrevFont = dc.SelectFont(settings.HSysFont());
         }
         else
         {
-            availableWidth=Height();
-            hPrevFont=dc.SelectFont(settings.VSysFont());
+            availableWidth = Height();
+            hPrevFont = dc.SelectFont(settings.VSysFont());
         }
-        availableWidth+=IPinnedLabel::labelPadding-IPinnedLabel::leftBorder-IPinnedLabel::rightBorder;
 
-        typedef std::priority_queue<long,std::deque<long>,std::greater<long> > CQWidth;
+        availableWidth += IPinnedLabel::labelPadding - IPinnedLabel::leftBorder - IPinnedLabel::rightBorder;
+        typedef std::priority_queue<long, std::deque<long>, std::greater<long> > CQWidth;
         CQWidth widths;
         long width = 0;
-        for(const_iterator i=m_bunch.begin();i!=m_bunch.end();++i)
+
+        for (const_iterator i = m_bunch.begin(); i != m_bunch.end(); ++i)
         {
-            int labelWidth=(*i)->DesiredWidth(dc);
+            int labelWidth = (*i)->DesiredWidth(dc);
             (*i)->Width(labelWidth);
-            labelWidth+=IPinnedLabel::labelPadding;
+            labelWidth += IPinnedLabel::labelPadding;
             widths.push(labelWidth);
-            width+=labelWidth;
+            width += labelWidth;
         }
-        CBunch::difference_type averageLableWidth=width;
-        CBunch::size_type n=m_bunch.size();
-        if(n>0 && (width>availableWidth) )
+
+        CBunch::difference_type averageLableWidth = width;
+        CBunch::size_type n = m_bunch.size();
+
+        if (n > 0 && (width > availableWidth))
         {
-            width=availableWidth;
-            CBunch::difference_type itemsLeft=n;
-            averageLableWidth=width/itemsLeft;
-            CBunch::difference_type diffrence=width%itemsLeft;
-            while(!widths.empty())
+            width = availableWidth;
+            CBunch::difference_type itemsLeft = n;
+            averageLableWidth = width / itemsLeft;
+            CBunch::difference_type diffrence = width % itemsLeft;
+
+            while (!widths.empty())
             {
-                CBunch::difference_type itemWidth=widths.top();
-                CBunch::difference_type diff=static_cast<CBunch::difference_type>(averageLableWidth-itemWidth);
-                if(diff>0)
+                CBunch::difference_type itemWidth = widths.top();
+                CBunch::difference_type diff = static_cast<CBunch::difference_type>(averageLableWidth - itemWidth);
+
+                if (diff > 0)
                 {
-                    diffrence+=diff;
+                    diffrence += diff;
                     --itemsLeft;
                     widths.pop();
                 }
                 else
                 {
-                    if(diffrence<itemsLeft)
+                    if (diffrence < itemsLeft)
                         break;
-                    averageLableWidth+=diffrence/itemsLeft;
-                    diffrence=diffrence%itemsLeft;
+
+                    averageLableWidth += diffrence / itemsLeft;
+                    diffrence = diffrence % itemsLeft;
                 }
             }
 
-            averageLableWidth-=IPinnedLabel::labelPadding;
-            if(averageLableWidth<IPinnedLabel::labelPadding)
-                averageLableWidth=0;
-            for(const_iterator i=m_bunch.begin();i!=m_bunch.end();++i)
+            averageLableWidth -= IPinnedLabel::labelPadding;
+
+            if (averageLableWidth < IPinnedLabel::labelPadding)
+                averageLableWidth = 0;
+
+            for (const_iterator i = m_bunch.begin(); i != m_bunch.end(); ++i)
             {
-                CBunch::difference_type labelWidth=(*i)->Width();
-                if( labelWidth>averageLableWidth )
-                            labelWidth=static_cast<CBunch::difference_type>(averageLableWidth);
+                CBunch::difference_type labelWidth = (*i)->Width();
+
+                if (labelWidth > averageLableWidth)
+                    labelWidth = static_cast<CBunch::difference_type>(averageLableWidth);
+
                 (*i)->Width(static_cast<long>(labelWidth));
             }
         }
+
         dc.SelectFont(hPrevFont);
     }
 
-    void Draw(CDC& dc,bool bEraseBackground=true)
+    void Draw(CDC& dc, bool bEraseBackground = true)
     {
-        if(IsBarVisible())
+        if (IsBarVisible())
         {
-            if(bEraseBackground)
+            if (bEraseBackground)
             {
                 CDWSettings settings;
                 CBrush bgrBrush;
                 bgrBrush.CreateSolidBrush(settings.CoolCtrlBackgroundColor());
-                HBRUSH hOldBrush=dc.SelectBrush(bgrBrush);
+                HBRUSH hOldBrush = dc.SelectBrush(bgrBrush);
                 dc.PatBlt(left, top, Width(), Height(), PATCOPY);
                 dc.SelectBrush(hOldBrush);
             }
 
             CDWSettings settings;
             CPen pen;
-            pen.CreatePen(PS_SOLID,1,::GetSysColor(COLOR_BTNSHADOW));
-            HPEN hOldPen=dc.SelectPen(pen);
+            pen.CreatePen(PS_SOLID, 1, ::GetSysColor(COLOR_BTNSHADOW));
+            HPEN hOldPen = dc.SelectPen(pen);
             CPen penEraser;
-            penEraser.CreatePen(PS_SOLID,1,::GetSysColor(COLOR_BTNFACE));
-            COLORREF oldColor=dc.SetTextColor(settings.AutoHideBarTextColor());
+            penEraser.CreatePen(PS_SOLID, 1, ::GetSysColor(COLOR_BTNFACE));
+            COLORREF oldColor = dc.SetTextColor(settings.AutoHideBarTextColor());
             CBrush brush;
             brush.CreateSolidBrush(::GetSysColor(COLOR_BTNFACE));
-            HBRUSH hOldBrush=dc.SelectBrush(brush);
-            int oldBkMode=dc.SetBkMode(TRANSPARENT);
-
+            HBRUSH hOldBrush = dc.SelectBrush(brush);
+            int oldBkMode = dc.SetBkMode(TRANSPARENT);
             HFONT hOldFont;
             long* pLeft;
             long* pRight;
             CRect rcLabel(this);
-            long *xELine,*yELine;
+            long* xELine, *yELine;
             long tmp;
-            if(IsHorizontal())
+
+            if (IsHorizontal())
             {
-                xELine=&rcLabel.right;
-                if(IsTop())
+                xELine = &rcLabel.right;
+
+                if (IsTop())
                 {
-                    rcLabel.bottom-=IPinnedLabel::labelEdge;
-                    yELine=&rcLabel.top;
+                    rcLabel.bottom -= IPinnedLabel::labelEdge;
+                    yELine = &rcLabel.top;
                 }
                 else
                 {
-                    rcLabel.top+=IPinnedLabel::labelEdge;
-                    tmp=rcLabel.bottom-1;
-                    yELine=&tmp;
+                    rcLabel.top += IPinnedLabel::labelEdge;
+                    tmp = rcLabel.bottom - 1;
+                    yELine = &tmp;
                 }
-                hOldFont=dc.SelectFont(settings.HSysFont());
-                pLeft=&rcLabel.left;
-                pRight=&rcLabel.right;
+
+                hOldFont = dc.SelectFont(settings.HSysFont());
+                pLeft = &rcLabel.left;
+                pRight = &rcLabel.right;
             }
             else
             {
-                yELine=&rcLabel.bottom;
-                if(IsTop())
+                yELine = &rcLabel.bottom;
+
+                if (IsTop())
                 {
-                    rcLabel.right-=IPinnedLabel::labelEdge;
-                    xELine=&rcLabel.left;
+                    rcLabel.right -= IPinnedLabel::labelEdge;
+                    xELine = &rcLabel.left;
                 }
                 else
                 {
-                    rcLabel.left+=IPinnedLabel::labelEdge;
-                    tmp=rcLabel.right-1;
-                    xELine=&tmp;
+                    rcLabel.left += IPinnedLabel::labelEdge;
+                    tmp = rcLabel.right - 1;
+                    xELine = &tmp;
                 }
 
-                hOldFont=dc.SelectFont(settings.VSysFont());
-                pLeft=&rcLabel.top;
-                pRight=&rcLabel.bottom;
+                hOldFont = dc.SelectFont(settings.VSysFont());
+                pLeft = &rcLabel.top;
+                pRight = &rcLabel.bottom;
             }
-            *pLeft+=IPinnedLabel::leftBorder;
-            *pRight-=IPinnedLabel::rightBorder;
 
-            CBunch::difference_type minSize=m_bunch.size()*IPinnedLabel::labelPadding-IPinnedLabel::labelPadding;
+            *pLeft += IPinnedLabel::leftBorder;
+            *pRight -= IPinnedLabel::rightBorder;
+            CBunch::difference_type minSize = m_bunch.size() * IPinnedLabel::labelPadding - IPinnedLabel::labelPadding;
 
-            if(minSize<(*pRight-*pLeft))
+            if (minSize < (*pRight - *pLeft))
             {
-                *pRight=*pLeft+1;
+                *pRight = *pLeft + 1;
                 CPoint ptELine;
-                for(const_iterator i=m_bunch.begin();i!=m_bunch.end();++i)
+
+                for (const_iterator i = m_bunch.begin(); i != m_bunch.end(); ++i)
                 {
-                    ptELine.x=*xELine;
-                    ptELine.y=*yELine;
-                    *pRight=*pLeft+(*i)->Width();
-                    ATLASSERT( m_side.IsHorizontal() ? *pRight<=right : *pRight<=bottom);
-                    (*i)->Draw(dc,rcLabel,m_side);
-
-                    *pLeft=*pRight+IPinnedLabel::labelPadding;
+                    ptELine.x = *xELine;
+                    ptELine.y = *yELine;
+                    *pRight = *pLeft + (*i)->Width();
+                    ATLASSERT(m_side.IsHorizontal() ? *pRight <= right : *pRight <= bottom);
+                    (*i)->Draw(dc, rcLabel, m_side);
+                    *pLeft = *pRight + IPinnedLabel::labelPadding;
                     --*pRight;
-                    HPEN hPrevPen=dc.SelectPen(penEraser);
+                    HPEN hPrevPen = dc.SelectPen(penEraser);
                     dc.MoveTo(ptELine);
-                    dc.LineTo(*xELine,*yELine);
+                    dc.LineTo(*xELine, *yELine);
                     dc.SelectPen(hPrevPen);
-
-                    *pRight=*pLeft+1;
-                    ATLASSERT( m_side.IsHorizontal()
-                                ? (*pLeft>=left && (*pLeft<=right+IPinnedLabel::labelPadding) )
-                                : (*pLeft>=top && (*pLeft<=bottom+IPinnedLabel::labelPadding) ) );
+                    *pRight = *pLeft + 1;
+                    ATLASSERT(m_side.IsHorizontal()
+                              ? (*pLeft >= left && (*pLeft <= right + IPinnedLabel::labelPadding))
+                              : (*pLeft >= top && (*pLeft <= bottom + IPinnedLabel::labelPadding)));
                 }
             }
+
             dc.SelectFont(hOldFont);
             dc.SelectPen(hOldPen);
             dc.SetTextColor(oldColor);
@@ -797,91 +846,110 @@ public:
         }
     }
 
-    IPinnedLabel::CPinnedWindow* MouseEnter(const CPoint& pt,bool bActivate=false) const
+    IPinnedLabel::CPinnedWindow* MouseEnter(const CPoint& pt, bool bActivate = false) const
     {
-        IPinnedLabel::CPinnedWindow* ptr=0;
-        if(IsBarVisible() && IsPtIn(pt))
+        IPinnedLabel::CPinnedWindow* ptr = 0;
+
+        if (IsBarVisible() && IsPtIn(pt))
         {
             int x;
             int vRight;
-            if(IsHorizontal())
+
+            if (IsHorizontal())
             {
-                x=pt.x;
-                vRight=left;
+                x = pt.x;
+                vRight = left;
             }
             else
             {
-                x=pt.y;
-                vRight=top;
+                x = pt.y;
+                vRight = top;
             }
-            for(const_iterator i=m_bunch.begin();i!=m_bunch.end();++i)
+
+            for (const_iterator i = m_bunch.begin(); i != m_bunch.end(); ++i)
             {
-                UINT vLeft=vRight;
-                vRight+=(*i)->Width();
-                if(vRight>x)
+                UINT vLeft = vRight;
+                vRight += (*i)->Width();
+
+                if (vRight > x)
                 {
-                    ptr=(*i)->FromPoint(x-vLeft,bActivate);
+                    ptr = (*i)->FromPoint(x - vLeft, bActivate);
                     break;
                 }
-                vRight+=IPinnedLabel::labelPadding;
-                if(vRight>x)
-                        break;
+
+                vRight += IPinnedLabel::labelPadding;
+
+                if (vRight > x)
+                    break;
             }
         }
+
         return ptr;
     }
     CPinnedLabelPtr Insert(DFPINUP* pHdr)
     {
-        ATLASSERT(m_side.Side()==CSide(pHdr->dwDockSide).Side());
-        CPinnedLabelPtr ptr=0;
-        try{
-            if(pHdr->n>1)
-                ptr=new CMultyPinnedLabel(pHdr,IsHorizontal());
+        ATLASSERT(m_side.Side() == CSide(pHdr->dwDockSide).Side());
+        CPinnedLabelPtr ptr = 0;
+
+        try
+        {
+            if (pHdr->n > 1)
+                ptr = new CMultyPinnedLabel(pHdr, IsHorizontal());
             else
-                ptr=new CSinglePinnedLabel(pHdr,IsHorizontal());
+                ptr = new CSinglePinnedLabel(pHdr, IsHorizontal());
+
             m_bunch.push_back(ptr);
         }
-        catch(std::bad_alloc& /*e*/)
+        catch (std::bad_alloc& /*e*/)
         {
         }
+
         return ptr;
     }
-    bool Remove(HWND hWnd,HDOCKBAR hBar,DFDOCKPOS* pHdr)
+    bool Remove(HWND hWnd, HDOCKBAR hBar, DFDOCKPOS* pHdr)
     {
-        CBunch::iterator i=std::find_if(m_bunch.begin(),m_bunch.end(),
-                                            IPinnedLabel::CCmp(hWnd));
-        bool bRes=(i!=m_bunch.end());
-        if(bRes)
+        CBunch::iterator i = std::find_if(m_bunch.begin(), m_bunch.end(),
+                                          IPinnedLabel::CCmp(hWnd));
+        bool bRes = (i != m_bunch.end());
+
+        if (bRes)
         {
-            CPinnedLabelPtr ptr=*i;
-            if(pHdr==0)
-                (*i)=ptr->Remove(hWnd,hBar);
+            CPinnedLabelPtr ptr = *i;
+
+            if (pHdr == 0)
+                (*i) = ptr->Remove(hWnd, hBar);
             else
             {
-                pHdr->dwDockSide=m_side.Side() | CDockingSide::sSingle | CSide::sPinned;
-                ptr->UnPin(hWnd,hBar,pHdr);
-                (*i)=0;
+                pHdr->dwDockSide = m_side.Side() | CDockingSide::sSingle | CSide::sPinned;
+                ptr->UnPin(hWnd, hBar, pHdr);
+                (*i) = 0;
             }
-            if((*i)!=ptr)
+
+            if ((*i) != ptr)
                 delete ptr;
-            if((*i)==0)
+
+            if ((*i) == 0)
                 m_bunch.erase(i);
-            if(!IsBarVisible())
+
+            if (!IsBarVisible())
                 SetRectEmpty();
         }
+
         return bRes;
     }
     bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        CBunch::const_iterator i=std::find_if(m_bunch.begin(),m_bunch.end(),
-                                            IPinnedLabel::CCmp(pHdr->hdr.hWnd));
-        bool bRes=(i!=m_bunch.end());
-        if(bRes)
+        CBunch::const_iterator i = std::find_if(m_bunch.begin(), m_bunch.end(),
+                                                IPinnedLabel::CCmp(pHdr->hdr.hWnd));
+        bool bRes = (i != m_bunch.end());
+
+        if (bRes)
         {
-            pHdr->dwDockSide=m_side.Side() | CDockingSide::sSingle | CSide::sPinned;
+            pHdr->dwDockSide = m_side.Side() | CDockingSide::sSingle | CSide::sPinned;
             (*i)->GetDockingPosition(pHdr);
-            pHdr->nBar=std::distance(m_bunch.begin(),i);
+            pHdr->nBar = std::distance(m_bunch.begin(), i);
         }
+
         return bRes;
     }
 protected:
@@ -892,11 +960,11 @@ protected:
 const UINT HTSPLITTERH = HTLEFT;
 const UINT HTSPLITTERV = HTTOP;
 
-template <class T,
-          class TBase,
-          class TAutoHidePaneTraits>
+template < class T,
+         class TBase,
+         class TAutoHidePaneTraits >
 class ATL_NO_VTABLE CAutoHidePaneImpl :
-     public CWindowImpl< T, TBase, TAutoHidePaneTraits >
+    public CWindowImpl< T, TBase, TAutoHidePaneTraits >
 {
     typedef CWindowImpl< T, TBase,  TAutoHidePaneTraits >        baseClass;
     typedef CAutoHidePaneImpl< T, TBase, TAutoHidePaneTraits >    thisClass;
@@ -905,25 +973,29 @@ protected:
     typedef typename CAutoHideBar::CSide            CSide;
     struct  CSplitterBar : CSimpleSplitterBarEx<>
     {
-        CSplitterBar(bool bHorizontal=true):CSimpleSplitterBarEx<>(bHorizontal)
+        CSplitterBar(bool bHorizontal = true): CSimpleSplitterBarEx<>(bHorizontal)
         {
         }
-        void CalculateRect(CRect& rc,DWORD side)
+        void CalculateRect(CRect& rc, DWORD side)
         {
             CopyRect(rc);
-            switch(side)
+
+            switch (side)
             {
                 case CSide::sTop:
-                    rc.bottom=top=bottom-GetThickness();
+                    rc.bottom = top = bottom - GetThickness();
                     break;
+
                 case CSide::sBottom:
-                    rc.top=bottom=top+GetThickness();
+                    rc.top = bottom = top + GetThickness();
                     break;
+
                 case CSide::sRight:
-                    rc.left=right=left+GetThickness();
+                    rc.left = right = left + GetThickness();
                     break;
+
                 case CSide::sLeft:
-                    rc.right=left=right-GetThickness();
+                    rc.right = left = right - GetThickness();
                     break;
             };
         }
@@ -940,7 +1012,7 @@ protected:
     }
     void Orientation(const CSide& side)
     {
-        m_side=side;
+        m_side = side;
         m_splitter.SetOrientation(IsHorizontal());
         m_caption.SetOrientation(IsHorizontal());
     }
@@ -957,84 +1029,96 @@ protected:
 public:
     void GetMinMaxInfo(LPMINMAXINFO pMinMaxInfo) const
     {
-        pMinMaxInfo->ptMinTrackSize.x=0;
-        pMinMaxInfo->ptMinTrackSize.y=0;
+        pMinMaxInfo->ptMinTrackSize.x = 0;
+        pMinMaxInfo->ptMinTrackSize.y = 0;
     }
 
     LRESULT NcHitTest(CPoint pt)
     {
-        LRESULT lRes=HTNOWHERE;
+        LRESULT lRes = HTNOWHERE;
         RECT rc;
-        if(GetWindowRect(&rc))
+
+        if (GetWindowRect(&rc))
         {
-            pt.x-=rc.left;
-            pt.y-=rc.top;
-            if(m_splitter.PtInRect(pt))
-                lRes=(IsHorizontal()) ? HTSPLITTERV : HTSPLITTERH;
+            pt.x -= rc.left;
+            pt.y -= rc.top;
+
+            if (m_splitter.PtInRect(pt))
+                lRes = (IsHorizontal()) ? HTSPLITTERV : HTSPLITTERH;
             else
             {
-                lRes=m_caption.HitTest(pt);
-                if(lRes==HTNOWHERE
-                    || lRes==HTCAPTION)
-                    lRes=HTCLIENT;
+                lRes = m_caption.HitTest(pt);
+
+                if (lRes == HTNOWHERE
+                        || lRes == HTCAPTION)
+                    lRes = HTCLIENT;
             }
         }
+
         return lRes;
     }
 
-    void NcMouseMove(const CPoint& /*pt*/,WPARAM nHitTest)
+    void NcMouseMove(const CPoint& /*pt*/, WPARAM nHitTest)
     {
-        m_caption.HotTrack(m_hWnd,nHitTest);
+        m_caption.HotTrack(m_hWnd, nHitTest);
     }
 
-    BOOL NcLButtonDown(const CPoint& pt,WPARAM nHitTest)
+    BOOL NcLButtonDown(const CPoint& pt, WPARAM nHitTest)
     {
-        T* pThis=static_cast<T*>(this);
-        bool res=m_caption.Action(m_hWnd,pt,nHitTest);
-        if(res)
+        T* pThis = static_cast<T*>(this);
+        bool res = m_caption.Action(m_hWnd, pt, nHitTest);
+
+        if (res)
         {
             CDropPointTracker tracker;
-            bool drop=TrackDragAndDrop(tracker,pThis->m_hWnd);
-            if(drop)
+            bool drop = TrackDragAndDrop(tracker, pThis->m_hWnd);
+
+            if (drop)
             {
                 CPoint pt(tracker.DropPoint());
-                drop=ClientToScreen(&pt)
-                        && (unsigned int(NcHitTest(pt))==nHitTest);
+                drop = ClientToScreen(&pt)
+                       && (unsigned int(NcHitTest(pt)) == nHitTest);
             }
-            m_caption.ActionDone(m_hWnd,nHitTest,drop);
-            if(drop)
+
+            m_caption.ActionDone(m_hWnd, nHitTest, drop);
+
+            if (drop)
             {
-                switch(nHitTest)
+                switch (nHitTest)
                 {
                     case HTCLOSE:
                         pThis->CloseBtnPress();
                         break;
 #ifdef DF_AUTO_HIDE_FEATURES
+
                     case HTPIN:
                         pThis->PinBtnPress();
                         break;
 #endif
                 }
             }
-
         }
+
         return res;
     }
 
     void NcCalcSize(CRect* pRc)
     {
-        m_splitter.CalculateRect(*pRc,m_side.Side());
+        m_splitter.CalculateRect(*pRc, m_side.Side());
         DWORD style = GetWindowLong(GWL_STYLE);
-        if((style&WS_CAPTION)==0)
+
+        if ((style & WS_CAPTION) == 0)
             m_caption.SetRectEmpty();
         else
-            m_caption.CalculateRect(*pRc,true);
+            m_caption.CalculateRect(*pRc, true);
     }
     void NcDraw(CDC& dc)
     {
         DWORD style = GetWindowLong(GWL_STYLE);
-        if((style&WS_CAPTION)!=0)
-            m_caption.Draw(m_hWnd,dc);
+
+        if ((style & WS_CAPTION) != 0)
+            m_caption.Draw(m_hWnd, dc);
+
         m_splitter.Draw(dc);
     }
     bool CloseBtnPress()
@@ -1054,119 +1138,130 @@ public:
     {
         return false;
     }
-    bool AnimateWindow(long time,bool bShow)
+    bool AnimateWindow(long time, bool bShow)
     {
-        const int n=10;
+        const int n = 10;
         CRect rc;
         GetWindowRect(&rc);
         CWindow parent(GetParent());
-        if(parent.m_hWnd!=NULL)
+
+        if (parent.m_hWnd != NULL)
             parent.ScreenToClient(&rc);
+
         long* ppoint;
         long  step;
         CRect rcInvalidate(rc);
         long* pipoint;
-        if(m_side.IsHorizontal())
+
+        if (m_side.IsHorizontal())
         {
-            step=rc.Height()/n;
-            if(m_side.IsTop())
+            step = rc.Height() / n;
+
+            if (m_side.IsTop())
             {
-                ppoint=&rc.bottom;
-                pipoint=&rc.bottom;
-                rcInvalidate.bottom=rcInvalidate.top;
+                ppoint = &rc.bottom;
+                pipoint = &rc.bottom;
+                rcInvalidate.bottom = rcInvalidate.top;
             }
             else
             {
-                ppoint=&rc.top;
-                pipoint=&rc.top;
-                rcInvalidate.top=rcInvalidate.bottom;
-                step=-step;
+                ppoint = &rc.top;
+                pipoint = &rc.top;
+                rcInvalidate.top = rcInvalidate.bottom;
+                step = -step;
             }
         }
         else
         {
-            step=rc.Width()/n;
-            if(m_side.IsTop())
+            step = rc.Width() / n;
+
+            if (m_side.IsTop())
             {
-                ppoint=&rc.right;
-                pipoint=&rc.right;
-                rcInvalidate.left=rcInvalidate.right;
+                ppoint = &rc.right;
+                pipoint = &rc.right;
+                rcInvalidate.left = rcInvalidate.right;
             }
             else
             {
-                ppoint=&rc.left;
-                pipoint=&rc.left;
-                rcInvalidate.right=rcInvalidate.left;
-                step=-step;
+                ppoint = &rc.left;
+                pipoint = &rc.left;
+                rcInvalidate.right = rcInvalidate.left;
+                step = -step;
             }
         }
-        if(!bShow)
-            step=-step;
+
+        if (!bShow)
+            step = -step;
         else
         {
-            parent.RedrawWindow(&rc,NULL,RDW_INVALIDATE | RDW_UPDATENOW);
-            *ppoint-=step*n;
-            SetWindowPos(HWND_TOP,&rc,SWP_FRAMECHANGED|SWP_SHOWWINDOW);
+            parent.RedrawWindow(&rc, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+            *ppoint -= step * n;
+            SetWindowPos(HWND_TOP, &rc, SWP_FRAMECHANGED | SWP_SHOWWINDOW);
         }
-        bool bRes=true;
-        for(int i=0;i<n;i++)
+
+        bool bRes = true;
+
+        for (int i = 0; i < n; i++)
         {
-            *ppoint+=step;
-            bRes=(SetWindowPos(HWND_TOP,&rc,NULL)!=FALSE);
-            if(!bShow)
+            *ppoint += step;
+            bRes = (SetWindowPos(HWND_TOP, &rc, NULL) != FALSE);
+
+            if (!bShow)
             {
-                *pipoint+=step;
-                parent.RedrawWindow(&rcInvalidate,NULL,RDW_INVALIDATE | RDW_UPDATENOW);
+                *pipoint += step;
+                parent.RedrawWindow(&rcInvalidate, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
             }
             else
             {
                 CRect rcInvalidateClient(rc);
-                parent.MapWindowPoints(m_hWnd,&rcInvalidateClient);
-                RedrawWindow(&rcInvalidateClient,NULL,RDW_INVALIDATE | RDW_UPDATENOW);
+                parent.MapWindowPoints(m_hWnd, &rcInvalidateClient);
+                RedrawWindow(&rcInvalidateClient, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
             }
-            Sleep(time/n);
+
+            Sleep(time / n);
         }
+
         return bRes;
     }
 protected:
     BEGIN_MSG_MAP(thisClass)
-        MESSAGE_HANDLER(WM_GETMINMAXINFO,OnGetMinMaxInfo)
-        MESSAGE_HANDLER(WM_NCCALCSIZE, OnNcCalcSize)
-        MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
-        MESSAGE_HANDLER(WM_NCHITTEST,OnNcHitTest)
-        MESSAGE_HANDLER(WM_NCPAINT,OnNcPaint)
-        MESSAGE_HANDLER(WM_NCMOUSEMOVE, OnNcMouseMove)
-        MESSAGE_HANDLER(WM_SETTEXT,OnCaptionChange)
-        MESSAGE_HANDLER(WM_SETICON,OnCaptionChange)
-        MESSAGE_HANDLER(WM_NCLBUTTONDOWN, OnNcLButtonDown)
-        MESSAGE_HANDLER(WM_NCLBUTTONDBLCLK,OnNcLButtonDblClk)
-        MESSAGE_HANDLER(WM_CLOSE, OnClose)
-        MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
-        MESSAGE_HANDLER(WM_SYSCOLORCHANGE, OnSettingChange /*OnSysColorChange*/)
+    MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
+    MESSAGE_HANDLER(WM_NCCALCSIZE, OnNcCalcSize)
+    MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
+    MESSAGE_HANDLER(WM_NCHITTEST, OnNcHitTest)
+    MESSAGE_HANDLER(WM_NCPAINT, OnNcPaint)
+    MESSAGE_HANDLER(WM_NCMOUSEMOVE, OnNcMouseMove)
+    MESSAGE_HANDLER(WM_SETTEXT, OnCaptionChange)
+    MESSAGE_HANDLER(WM_SETICON, OnCaptionChange)
+    MESSAGE_HANDLER(WM_NCLBUTTONDOWN, OnNcLButtonDown)
+    MESSAGE_HANDLER(WM_NCLBUTTONDBLCLK, OnNcLButtonDblClk)
+    MESSAGE_HANDLER(WM_CLOSE, OnClose)
+    MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
+    MESSAGE_HANDLER(WM_SYSCOLORCHANGE, OnSettingChange /*OnSysColorChange*/)
     END_MSG_MAP()
 
     LRESULT OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
     {
-        T* pThis=static_cast<T*>(this);
-        LRESULT lRes=pThis->DefWindowProc(uMsg,wParam,lParam);
+        T* pThis = static_cast<T*>(this);
+        LRESULT lRes = pThis->DefWindowProc(uMsg, wParam, lParam);
         pThis->GetMinMaxInfo(reinterpret_cast<LPMINMAXINFO>(lParam));
         return lRes;
     }
 
     LRESULT OnNcActivate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
     {
-        bHandled=IsWindowEnabled();
+        bHandled = IsWindowEnabled();
         return TRUE;
     }
 
     LRESULT OnNcCalcSize(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
     {
-        T* pThis=static_cast<T*>(this);
-        CRect* pRc=reinterpret_cast<CRect*>(lParam);
+        T* pThis = static_cast<T*>(this);
+        CRect* pRc = reinterpret_cast<CRect*>(lParam);
         CPoint ptTop(pRc->TopLeft());
-        (*pRc)-=ptTop;
+        (*pRc) -= ptTop;
         pThis->NcCalcSize(pRc);
-        (*pRc)+=ptTop;
+        (*pRc) += ptTop;
         return NULL;
     }
 
@@ -1178,25 +1273,27 @@ protected:
     LRESULT OnNcPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
         CWindowDC dc(m_hWnd);
-        T* pThis=static_cast<T*>(this);
+        T* pThis = static_cast<T*>(this);
         pThis->NcDraw(dc);
         return NULL;
     }
 
     LRESULT OnNcMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
     {
-        T* pThis=static_cast<T*>(this);
-        pThis->NcMouseMove(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)),wParam);
+        T* pThis = static_cast<T*>(this);
+        pThis->NcMouseMove(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)), wParam);
         return 0;
     }
 
     LRESULT OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
     {
-        T* pThis=static_cast<T*>(this);
-        if( (wParam==HTSPLITTERH) || (wParam==HTSPLITTERV) )
+        T* pThis = static_cast<T*>(this);
+
+        if ((wParam == HTSPLITTERH) || (wParam == HTSPLITTERV))
             pThis->StartResizing(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
         else
-            bHandled=pThis->NcLButtonDown(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)),wParam);
+            bHandled = pThis->NcLButtonDown(CPoint(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)), wParam);
+
         return 0;
     }
 
@@ -1210,12 +1307,12 @@ protected:
     LRESULT OnCaptionChange(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
     {
 //        LockWindowUpdate();
-        DWORD style = ::GetWindowLong(m_hWnd,GWL_STYLE);
-        ::SetWindowLong(m_hWnd, GWL_STYLE, style&(~WS_CAPTION));
-        LRESULT lRes=DefWindowProc(uMsg,wParam,lParam);
+        DWORD style = ::GetWindowLong(m_hWnd, GWL_STYLE);
+        ::SetWindowLong(m_hWnd, GWL_STYLE, style & (~WS_CAPTION));
+        LRESULT lRes = DefWindowProc(uMsg, wParam, lParam);
         ::SetWindowLong(m_hWnd, GWL_STYLE, style);
-        T* pThis=static_cast<T*>(this);
-        pThis->SetWindowPos(NULL,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+        T* pThis = static_cast<T*>(this);
+        pThis->SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 //        CWindowDC dc(m_hWnd);
 //        pThis->NcDraw(dc);
 //        LockWindowUpdate(FALSE);
@@ -1224,8 +1321,8 @@ protected:
 
     LRESULT OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM/* lParam*/, BOOL& bHandled)
     {
-        T* pThis=reinterpret_cast<T*>(this);
-        bHandled=pThis->OnClosing();
+        T* pThis = reinterpret_cast<T*>(this);
+        bHandled = pThis->OnClosing();
         return 0;
     }
 
@@ -1233,12 +1330,9 @@ protected:
     {
         // Note: We can depend on CDWSettings already being updated
         //  since we will always be a descendant of the main frame
-
         m_caption.UpdateMetrics();
-
-        T* pThis=static_cast<T*>(this);
-        pThis->SetWindowPos(NULL,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-
+        T* pThis = static_cast<T*>(this);
+        pThis->SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
         bHandled = FALSE;
         return 1;
     }
@@ -1256,16 +1350,16 @@ protected:
 
 template<class TAutoHidePaneTraits>
 class CAutoHideManager
-    : public CAutoHidePaneImpl<CAutoHideManager<TAutoHidePaneTraits>,CWindow,TAutoHidePaneTraits>
+    : public CAutoHidePaneImpl<CAutoHideManager<TAutoHidePaneTraits>, CWindow, TAutoHidePaneTraits>
 {
-    typedef CAutoHidePaneImpl<CAutoHideManager<TAutoHidePaneTraits>,CWindow,TAutoHidePaneTraits>    baseClass;
+    typedef CAutoHidePaneImpl<CAutoHideManager<TAutoHidePaneTraits>, CWindow, TAutoHidePaneTraits>    baseClass;
     typedef CAutoHideManager                                                                        thisClass;
 protected:
     typedef typename CAutoHideBar::CSide        CSide;
-    enum{ tmID=1,tmTimeout=1300};
-    enum{ animateTimeout=100};
-    enum{ hoverTimeout=50/*HOVER_DEFAULT*/};
-    enum{ barsCount=4 };
+    enum { tmID = 1, tmTimeout = 1300};
+    enum { animateTimeout = 100};
+    enum { hoverTimeout = 50/*HOVER_DEFAULT*/};
+    enum { barsCount = 4 };
 
     class CSizeTrackerFull : public IDDTracker
     {
@@ -1280,50 +1374,55 @@ protected:
         {
             return m_side.IsTop();
         }
-        CSizeTrackerFull(HWND hWnd,CPoint pt,const CSide& side,long minSize,const CRect& rcBound)
-            : m_wnd(hWnd),m_side(side)
+        CSizeTrackerFull(HWND hWnd, CPoint pt, const CSide& side, long minSize, const CRect& rcBound)
+            : m_wnd(hWnd), m_side(side)
         {
             m_wnd.GetWindowRect(&m_rc);
-            CWindow wndParent=m_wnd.GetParent();
+            CWindow wndParent = m_wnd.GetParent();
             wndParent.ScreenToClient(&m_rc);
             wndParent.ScreenToClient(&pt);
-            if(IsHorizontal())
+
+            if (IsHorizontal())
             {
-                if(IsTop())
-                    m_ppos=&m_rc.bottom;
+                if (IsTop())
+                    m_ppos = &m_rc.bottom;
                 else
-                    m_ppos=&m_rc.top;
-                m_bounds.low=rcBound.top;
-                m_bounds.hi=rcBound.bottom;
-                m_offset=pt.y-*m_ppos;
+                    m_ppos = &m_rc.top;
+
+                m_bounds.low = rcBound.top;
+                m_bounds.hi = rcBound.bottom;
+                m_offset = pt.y - *m_ppos;
             }
             else
             {
-                if(IsTop())
-                    m_ppos=&m_rc.right;
+                if (IsTop())
+                    m_ppos = &m_rc.right;
                 else
-                    m_ppos=&m_rc.left;
-                m_bounds.low=rcBound.left;
-                m_bounds.hi=rcBound.right;
-                m_offset=pt.x-*m_ppos;
+                    m_ppos = &m_rc.left;
+
+                m_bounds.low = rcBound.left;
+                m_bounds.hi = rcBound.right;
+                m_offset = pt.x - *m_ppos;
             }
-            m_bounds.low+=minSize;
-            m_bounds.hi-=minSize;
+
+            m_bounds.low += minSize;
+            m_bounds.hi -= minSize;
         }
         void OnMove(long x, long y)
         {
             long pos = IsHorizontal() ? y : x;
-            pos-=m_offset;
-            pos=m_bounds.bind(pos);
-            if(*m_ppos!=pos)
+            pos -= m_offset;
+            pos = m_bounds.bind(pos);
+
+            if (*m_ppos != pos)
             {
-                *m_ppos=pos;
+                *m_ppos = pos;
                 Move();
             }
         }
         void SetPosition()
         {
-            m_wnd.SetWindowPos(NULL,&m_rc,SWP_NOZORDER | SWP_NOACTIVATE);
+            m_wnd.SetWindowPos(NULL, &m_rc, SWP_NOZORDER | SWP_NOACTIVATE);
         }
         virtual void Move()
         {
@@ -1331,7 +1430,7 @@ protected:
         }
         bool ProcessWindowMessage(MSG* pMsg)
         {
-           return (pMsg->message==WM_TIMER);
+            return (pMsg->message == WM_TIMER);
         }
 
     protected:
@@ -1346,11 +1445,11 @@ protected:
     {
         typedef CSimpleSplitterBarSlider<CSplitterBar> CSlider;
     public:
-        CSizeTrackerGhost(HWND hWnd,CPoint pt,const CSide& side,CSplitterBar& splitter,const CRect& rcBound)
-            : CSizeTrackerFull(hWnd,pt,side,splitter.GetThickness(),rcBound),m_dc(::GetWindowDC(NULL))
-            ,m_splitter(splitter),m_slider(splitter)
+        CSizeTrackerGhost(HWND hWnd, CPoint pt, const CSide& side, CSplitterBar& splitter, const CRect& rcBound)
+            : CSizeTrackerFull(hWnd, pt, side, splitter.GetThickness(), rcBound), m_dc(::GetWindowDC(NULL))
+            , m_splitter(splitter), m_slider(splitter)
         {
-            m_spOffset=m_slider-*m_ppos;
+            m_spOffset = m_slider - *m_ppos;
         }
         void BeginDrag()
         {
@@ -1359,13 +1458,14 @@ protected:
         void EndDrag(bool bCanceled)
         {
             m_splitter.CleanGhostBar(m_dc);
-            if(!bCanceled)
+
+            if (!bCanceled)
                 SetPosition();
         }
         virtual void Move()
         {
             m_splitter.CleanGhostBar(m_dc);
-            m_slider=*m_ppos+m_spOffset;
+            m_slider = *m_ppos + m_spOffset;
             m_splitter.DrawGhostBar(m_dc);
         }
     protected:
@@ -1378,7 +1478,7 @@ public:
     CAutoHideManager()
         : m_pActive(0)
     {
-        m_side=0;
+        m_side = 0;
     }
     bool Initialize(HWND hWnd)
     {
@@ -1387,124 +1487,143 @@ public:
         m_bars[CSide::sBottom].Initialize(CSide(CSide::sBottom));
         m_bars[CSide::sLeft].Initialize(CSide(CSide::sLeft));
         m_bars[CSide::sRight].Initialize(CSide(CSide::sRight));
-        RECT rc={0,0,0,0};
-        return (Create(hWnd,rc)!=NULL);
+        RECT rc = {0, 0, 0, 0};
+        return (Create(hWnd, rc) != NULL);
     }
     void ApplySystemSettings(HWND hWnd)
     {
         CClientDC dc(hWnd);
         CDWSettings settings;
-        HFONT hOldFont=dc.SelectFont(settings.VSysFont());
+        HFONT hOldFont = dc.SelectFont(settings.VSysFont());
         TEXTMETRIC tm;
         dc.GetTextMetrics(&tm);
-        m_barThickness=tm.tmHeight;
-
+        m_barThickness = tm.tmHeight;
         dc.SelectFont(settings.HSysFont());
         dc.GetTextMetrics(&tm);
-        if(m_barThickness<tm.tmHeight)
-            m_barThickness=tm.tmHeight;
+
+        if (m_barThickness < tm.tmHeight)
+            m_barThickness = tm.tmHeight;
+
         dc.SelectFont(hOldFont);
-        int widthIcon=settings.CXMinIcon();
-        ATLASSERT(widthIcon==settings.CYMinIcon()); //if it throw let me know ;)
-        if(widthIcon>m_barThickness)
-            m_barThickness=widthIcon;
-        m_barThickness+=2*IPinnedLabel::captionPadding+IPinnedLabel::labelEdge;
+        int widthIcon = settings.CXMinIcon();
+        ATLASSERT(widthIcon == settings.CYMinIcon()); //if it throw let me know ;)
+
+        if (widthIcon > m_barThickness)
+            m_barThickness = widthIcon;
+
+        m_barThickness += 2 * IPinnedLabel::captionPadding + IPinnedLabel::labelEdge;
     }
 
-    void UpdateLayout(CDC& dc,CRect& rc)
+    void UpdateLayout(CDC& dc, CRect& rc)
     {
-        long leftPadding= ( m_bars[CSide::sLeft].IsBarVisible() ) ? m_barThickness : 0;
-        long rightPadding=( m_bars[CSide::sRight].IsBarVisible() ) ? m_barThickness : 0;
-        m_bars[CSide::sTop].CalculateRect( dc,rc,m_barThickness,leftPadding,rightPadding);
-        m_bars[CSide::sBottom].CalculateRect( dc,rc,m_barThickness,leftPadding,rightPadding);
-
-        leftPadding=0;
-        rightPadding=0;
-
-        m_bars[CSide::sLeft].CalculateRect( dc,rc,m_barThickness,leftPadding,rightPadding);
-        m_bars[CSide::sRight].CalculateRect( dc,rc,m_barThickness,leftPadding,rightPadding);
-
+        long leftPadding = (m_bars[CSide::sLeft].IsBarVisible()) ? m_barThickness : 0;
+        long rightPadding = (m_bars[CSide::sRight].IsBarVisible()) ? m_barThickness : 0;
+        m_bars[CSide::sTop].CalculateRect(dc, rc, m_barThickness, leftPadding, rightPadding);
+        m_bars[CSide::sBottom].CalculateRect(dc, rc, m_barThickness, leftPadding, rightPadding);
+        leftPadding = 0;
+        rightPadding = 0;
+        m_bars[CSide::sLeft].CalculateRect(dc, rc, m_barThickness, leftPadding, rightPadding);
+        m_bars[CSide::sRight].CalculateRect(dc, rc, m_barThickness, leftPadding, rightPadding);
         m_rcBound.CopyRect(&rc);
-        if(m_pActive)
+
+        if (m_pActive)
             FitPane();
     }
     long Width() const
     {
-        long width=0;
-        if(m_bars[CSide::sLeft].IsBarVisible())
-            width+=m_barThickness;
-        if(m_bars[CSide::sRight].IsBarVisible())
-            width+=m_barThickness;
+        long width = 0;
+
+        if (m_bars[CSide::sLeft].IsBarVisible())
+            width += m_barThickness;
+
+        if (m_bars[CSide::sRight].IsBarVisible())
+            width += m_barThickness;
+
         return width;
     }
     long Height() const
     {
-        long height=0;
-        if(m_bars[CSide::sTop].IsBarVisible())
-            height+=m_barThickness;
-        if(m_bars[CSide::sBottom].IsBarVisible())
-            height+=m_barThickness;
+        long height = 0;
+
+        if (m_bars[CSide::sTop].IsBarVisible())
+            height += m_barThickness;
+
+        if (m_bars[CSide::sBottom].IsBarVisible())
+            height += m_barThickness;
+
         return height;
     }
     bool FitPane()
     {
         CRect rc(m_rcBound);
-        long spliterWidth=m_splitter.GetThickness();
-        long width=m_pActive->Width()+spliterWidth;
-        if(IsHorizontal())
+        long spliterWidth = m_splitter.GetThickness();
+        long width = m_pActive->Width() + spliterWidth;
+
+        if (IsHorizontal())
         {
-            long maxWidth=rc.Height();
-            maxWidth=(maxWidth<spliterWidth) ? spliterWidth : maxWidth-spliterWidth;
-            if(IsTop())
-                rc.bottom=rc.top+( (maxWidth>width) ? width : maxWidth );
+            long maxWidth = rc.Height();
+            maxWidth = (maxWidth < spliterWidth) ? spliterWidth : maxWidth - spliterWidth;
+
+            if (IsTop())
+                rc.bottom = rc.top + ((maxWidth > width) ? width : maxWidth);
             else
-                rc.top=rc.bottom-( (maxWidth>width) ? width : maxWidth );
+                rc.top = rc.bottom - ((maxWidth > width) ? width : maxWidth);
         }
         else
         {
-            long maxWidth=rc.Width();
-            maxWidth=(maxWidth<spliterWidth) ? spliterWidth : maxWidth-spliterWidth;
-            if(IsTop())
-                rc.right=rc.left+( (maxWidth>width) ? width : maxWidth );
+            long maxWidth = rc.Width();
+            maxWidth = (maxWidth < spliterWidth) ? spliterWidth : maxWidth - spliterWidth;
+
+            if (IsTop())
+                rc.right = rc.left + ((maxWidth > width) ? width : maxWidth);
             else
-                rc.left=rc.right-( (maxWidth>width) ? width : maxWidth );
+                rc.left = rc.right - ((maxWidth > width) ? width : maxWidth);
         }
-        return (SetWindowPos(HWND_TOP,rc,SWP_NOACTIVATE)!=FALSE);
+
+        return (SetWindowPos(HWND_TOP, rc, SWP_NOACTIVATE) != FALSE);
     }
 
     IPinnedLabel::CPinnedWindow* LocatePinnedWindow(const CPoint& pt) const
     {
-        IPinnedLabel::CPinnedWindow* ptr=0;
-        for(int i=0;i<barsCount;i++)
+        IPinnedLabel::CPinnedWindow* ptr = 0;
+
+        for (int i = 0; i < barsCount; i++)
         {
-            ptr=m_bars[i].MouseEnter(pt);
-            if(ptr!=0)
+            ptr = m_bars[i].MouseEnter(pt);
+
+            if (ptr != 0)
                 break;
         }
+
         return ptr;
     }
     bool IsPtIn(const CPoint& pt) const
     {
         bool bRes;
-        for(int i=0;i<barsCount;i++)
+
+        for (int i = 0; i < barsCount; i++)
         {
-            bRes=m_bars[i].IsPtIn(pt);
-            if(bRes)
+            bRes = m_bars[i].IsPtIn(pt);
+
+            if (bRes)
                 break;
         }
+
         return bRes;
     }
-    bool MouseEnter(HWND hWnd,const CPoint& pt)
+    bool MouseEnter(HWND hWnd, const CPoint& pt)
     {
-        IPinnedLabel::CPinnedWindow* ptr=0;
-        for(int i=0;i<barsCount;i++)
+        IPinnedLabel::CPinnedWindow* ptr = 0;
+
+        for (int i = 0; i < barsCount; i++)
         {
-            CAutoHideBar* pbar=m_bars+i;
-            ptr=pbar->MouseEnter(pt);
-            if((ptr!=0)
-                && IsVisualizationNeeded(ptr))
+            CAutoHideBar* pbar = m_bars + i;
+            ptr = pbar->MouseEnter(pt);
+
+            if ((ptr != 0)
+                    && IsVisualizationNeeded(ptr))
             {
-                m_pTracked=ptr;
+                m_pTracked = ptr;
                 TRACKMOUSEEVENT tme = { 0 };
                 tme.cbSize = sizeof(tme);
                 tme.hwndTrack = hWnd;
@@ -1514,111 +1633,125 @@ public:
                 break;
             }
         }
-        return (ptr!=0);
+
+        return (ptr != 0);
     }
 
-    bool MouseHover(HWND hWnd,const CPoint& pt)
+    bool MouseHover(HWND hWnd, const CPoint& pt)
     {
-        IPinnedLabel::CPinnedWindow* ptr=0;
-        for(int i=0;i<barsCount;i++)
+        IPinnedLabel::CPinnedWindow* ptr = 0;
+
+        for (int i = 0; i < barsCount; i++)
         {
-            CAutoHideBar* pbar=m_bars+i;
-            ptr=pbar->MouseEnter(pt,true);
-            if((ptr!=0)
-                && (ptr==m_pTracked)
-                    &&IsVisualizationNeeded(ptr))
+            CAutoHideBar* pbar = m_bars + i;
+            ptr = pbar->MouseEnter(pt, true);
+
+            if ((ptr != 0)
+                    && (ptr == m_pTracked)
+                    && IsVisualizationNeeded(ptr))
             {
                 CClientDC dc(hWnd);
                 pbar->Draw(dc);
-                Visualize(ptr,i,true);
+                Visualize(ptr, i, true);
                 break;
             }
         }
-        return (ptr!=0);
+
+        return (ptr != 0);
     }
 
     void Draw(CDC& dc)
     {
         EraseBackground(dc);
-        for(int i=0;i<barsCount;i++)
-            m_bars[i].Draw(dc,false);
+
+        for (int i = 0; i < barsCount; i++)
+            m_bars[i].Draw(dc, false);
     }
     void EraseBackground(CDC& dc)
     {
         CDWSettings settings;
         CBrush bgrBrush;
         bgrBrush.CreateSolidBrush(settings.CoolCtrlBackgroundColor());
-        HBRUSH hOldBrush=dc.SelectBrush(bgrBrush);
-        CRect rcTop(m_bars[CSide::sTop].operator const CRect&());
-        CRect rcBottom(m_bars[CSide::sBottom].operator const CRect&());
+        HBRUSH hOldBrush = dc.SelectBrush(bgrBrush);
+        CRect rcTop(m_bars[CSide::sTop].operator const CRect & ());
+        CRect rcBottom(m_bars[CSide::sBottom].operator const CRect & ());
 
-        if(m_bars[CSide::sLeft].IsBarVisible())
+        if (m_bars[CSide::sLeft].IsBarVisible())
         {
-            const CRect& rc=m_bars[CSide::sLeft].operator const CRect&();
-            rcTop.left-=rc.Height();
-            rcBottom.left-=rc.Height();
-            dc.PatBlt(rc.left, rc.top, rc.Width(), rc.Height(), PATCOPY);
-        }
-        if(m_bars[CSide::sRight].IsBarVisible())
-        {
-            const CRect& rc=m_bars[CSide::sRight].operator const CRect&();
-            rcTop.right+=rc.Height();
-            rcBottom.right+=rc.Height();
+            const CRect& rc = m_bars[CSide::sLeft].operator const CRect & ();
+            rcTop.left -= rc.Height();
+            rcBottom.left -= rc.Height();
             dc.PatBlt(rc.left, rc.top, rc.Width(), rc.Height(), PATCOPY);
         }
 
-        if(m_bars[CSide::sTop].IsBarVisible())
+        if (m_bars[CSide::sRight].IsBarVisible())
+        {
+            const CRect& rc = m_bars[CSide::sRight].operator const CRect & ();
+            rcTop.right += rc.Height();
+            rcBottom.right += rc.Height();
+            dc.PatBlt(rc.left, rc.top, rc.Width(), rc.Height(), PATCOPY);
+        }
+
+        if (m_bars[CSide::sTop].IsBarVisible())
             dc.PatBlt(rcTop.left, rcTop.top, rcTop.Width(), rcTop.Height(), PATCOPY);
-        if(m_bars[CSide::sBottom].IsBarVisible())
+
+        if (m_bars[CSide::sBottom].IsBarVisible())
             dc.PatBlt(rcBottom.left, rcBottom.top, rcBottom.Width(), rcBottom.Height(), PATCOPY);
 
         dc.SelectBrush(hOldBrush);
     }
 
-    bool PinUp(HWND hWnd,DFPINUP* pHdr,bool& bUpdate)
+    bool PinUp(HWND hWnd, DFPINUP* pHdr, bool& bUpdate)
     {
-        pHdr->hdr.hBar=m_hWnd;
+        pHdr->hdr.hBar = m_hWnd;
         CSide side(pHdr->dwDockSide);
         ATLASSERT(side.IsValid());
-        CAutoHideBar* pbar=m_bars+side.Side();
-        bUpdate=!pbar->IsBarVisible();
-        IPinnedLabel* pLabel=pbar->Insert(pHdr);
-        bool bRes=(pLabel!=0);
-        if(bRes&& ((pHdr->dwFlags&DFPU_VISUALIZE)!=0))
-            Visualize(pLabel->ActivePinnedWindow(),side);
-        if(!bUpdate)
+        CAutoHideBar* pbar = m_bars + side.Side();
+        bUpdate = !pbar->IsBarVisible();
+        IPinnedLabel* pLabel = pbar->Insert(pHdr);
+        bool bRes = (pLabel != 0);
+
+        if (bRes && ((pHdr->dwFlags & DFPU_VISUALIZE) != 0))
+            Visualize(pLabel->ActivePinnedWindow(), side);
+
+        if (!bUpdate)
         {
             CClientDC dc(hWnd);
             pbar->UpdateLayout(dc);
             pbar->Draw(dc);
         }
+
         return bRes;
     }
 
-    bool Remove(HWND hWnd,bool bUnpin=false)
+    bool Remove(HWND hWnd, bool bUnpin = false)
     {
-        if(m_pActive!=0 && (m_pActive->Wnd()==hWnd ) )
-                                                Vanish();
+        if (m_pActive != 0 && (m_pActive->Wnd() == hWnd))
+            Vanish();
 
-        HDOCKBAR hBar=GetParent();
+        HDOCKBAR hBar = GetParent();
         ATLASSERT(::IsWindow(hBar));
-        DFDOCKPOS* pHdr=0;
+        DFDOCKPOS* pHdr = 0;
         DFDOCKPOS dockHdr;
-        if(bUnpin)
+
+        if (bUnpin)
         {
 //            dockHdr.hdr.code=DC_SETDOCKPOSITION;
-            dockHdr.hdr.hWnd=hWnd;
-            dockHdr.hdr.hBar=hBar;
-            pHdr=&dockHdr;
+            dockHdr.hdr.hWnd = hWnd;
+            dockHdr.hdr.hBar = hBar;
+            pHdr = &dockHdr;
         }
-        bool bRes=false;
-        for(int i=0;i<barsCount;i++)
+
+        bool bRes = false;
+
+        for (int i = 0; i < barsCount; i++)
         {
-            CAutoHideBar* pbar=m_bars+i;
-            bRes=pbar->Remove(hWnd,m_hWnd,pHdr);
-            if(bRes)
+            CAutoHideBar* pbar = m_bars + i;
+            bRes = pbar->Remove(hWnd, m_hWnd, pHdr);
+
+            if (bRes)
             {
-                if(pbar->IsBarVisible())
+                if (pbar->IsBarVisible())
                 {
                     CClientDC dc(hBar);
                     pbar->UpdateLayout(dc);
@@ -1627,80 +1760,94 @@ public:
                 else
                 {
                     ::SendMessage(hBar, WM_SIZE, 0, 0);
-                    ::RedrawWindow(hBar,NULL,NULL,
-                                        RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
+                    ::RedrawWindow(hBar, NULL, NULL,
+                                   RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
                 }
+
                 break;
             }
         }
+
         return bRes;
     }
 
     bool GetDockingPosition(DFDOCKPOS* pHdr) const
     {
-        bool bRes=false;
-        for(int i=0;i<barsCount;i++)
+        bool bRes = false;
+
+        for (int i = 0; i < barsCount; i++)
         {
-            bRes=m_bars[i].GetDockingPosition(pHdr);
-            if(bRes)
+            bRes = m_bars[i].GetDockingPosition(pHdr);
+
+            if (bRes)
                 break;
         }
+
         return bRes;
     }
 ///////////////////////////////////////////////////////////
     bool IsVisualizationNeeded(const IPinnedLabel::CPinnedWindow* ptr) const
     {
-        return (ptr!=m_pActive);
+        return (ptr != m_pActive);
     }
 
-    bool Visualize(IPinnedLabel::CPinnedWindow* ptr,const CSide& side,bool bAnimate=false)
+    bool Visualize(IPinnedLabel::CPinnedWindow* ptr, const CSide& side, bool bAnimate = false)
     {
         ATLASSERT(ptr);
         ATLASSERT(IsVisualizationNeeded(ptr));
         Vanish();
         Orientation(side);
-        ATLASSERT(m_pActive==0);
-        m_pActive=ptr;
-        bool bRes=(::SetWindowPos(m_pActive->Wnd(),HWND_TOP,0,0,0,0,
-                            SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW)!=FALSE);
-        if(bRes)
+        ATLASSERT(m_pActive == 0);
+        m_pActive = ptr;
+        bool bRes = (::SetWindowPos(m_pActive->Wnd(), HWND_TOP, 0, 0, 0, 0,
+                                    SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW) != FALSE);
+
+        if (bRes)
         {
-            bRes=FitPane();
-            if(bRes)
+            bRes = FitPane();
+
+            if (bRes)
             {
                 SetWindowText(m_pActive->Text());
                 CDWSettings setting;
-                if(bAnimate && setting.IsAnimationEnabled())
-                    AnimateWindow(animateTimeout,true);
+
+                if (bAnimate && setting.IsAnimationEnabled())
+                    AnimateWindow(animateTimeout, true);
                 else
-                    bRes=(SetWindowPos(HWND_TOP,0,0,0,0,
-                                            SWP_NOMOVE | SWP_NOSIZE |
-                                            SWP_SHOWWINDOW | SWP_FRAMECHANGED )!=FALSE);
-                if(bRes)
+                    bRes = (SetWindowPos(HWND_TOP, 0, 0, 0, 0,
+                                         SWP_NOMOVE | SWP_NOSIZE |
+                                         SWP_SHOWWINDOW | SWP_FRAMECHANGED) != FALSE);
+
+                if (bRes)
                 {
                     BOOL dummy;
-                    OnSize(0,0,0,dummy);
-                    bRes=(SetTimer(tmID,tmTimeout)==tmID);
+                    OnSize(0, 0, 0, dummy);
+                    bRes = (SetTimer(tmID, tmTimeout) == tmID);
                 }
             }
         }
+
         ATLASSERT(bRes);
         return bRes;
     }
 
-    bool Vanish(bool bAnimate=false)
+    bool Vanish(bool bAnimate = false)
     {
-        bool bRes=(m_pActive==0);
-        if(!bRes)
+        bool bRes = (m_pActive == 0);
+
+        if (!bRes)
         {
             KillTimer(tmID);
-            ::ShowWindow(m_pActive->Wnd(),SW_HIDE);
-            m_pActive=0;
+            ::ShowWindow(m_pActive->Wnd(), SW_HIDE);
+            m_pActive = 0;
             CDWSettings setting;
-            if(bAnimate && setting.IsAnimationEnabled())
-                AnimateWindow(animateTimeout,false);
-            bRes=ShowWindow(SW_HIDE)!=FALSE;
+
+            if (bAnimate && setting.IsAnimationEnabled())
+                AnimateWindow(animateTimeout, false);
+
+            bRes = ShowWindow(SW_HIDE) != FALSE;
         }
+
         return bRes;
     }
 ///////////////////////////////////////////////////////////
@@ -1708,46 +1855,47 @@ public:
     {
         std::auto_ptr<CSizeTrackerFull> pTracker;
         CDWSettings settings;
-        if(settings.GhostDrag())
+
+        if (settings.GhostDrag())
         {
             CRect rc;
             GetWindowRect(&rc);
             CSplitterBar splitter(IsHorizontal());
-            splitter.CalculateRect(rc,m_side.Side());
-            pTracker=std::auto_ptr<CSizeTrackerFull>(
-                                new CSizeTrackerGhost(m_hWnd,pt,Orientation(),splitter,m_rcBound));
+            splitter.CalculateRect(rc, m_side.Side());
+            pTracker = std::auto_ptr<CSizeTrackerFull>(
+                           new CSizeTrackerGhost(m_hWnd, pt, Orientation(), splitter, m_rcBound));
         }
         else
-            pTracker=std::auto_ptr<CSizeTrackerFull>(
-                                new CSizeTrackerFull(m_hWnd,pt,Orientation(),m_splitter.GetThickness(),m_rcBound));
+            pTracker = std::auto_ptr<CSizeTrackerFull>(
+                           new CSizeTrackerFull(m_hWnd, pt, Orientation(), m_splitter.GetThickness(), m_rcBound));
 
-        HWND hWndParent=GetParent();
+        HWND hWndParent = GetParent();
         ATLASSERT(hWndParent);
-        TrackDragAndDrop(*pTracker,hWndParent);
+        TrackDragAndDrop(*pTracker, hWndParent);
     }
 
     bool PinBtnPress()
     {
         ATLASSERT(m_pActive);
-        return Remove(m_pActive->Wnd(),true);
+        return Remove(m_pActive->Wnd(), true);
     }
 
     bool OnClosing()
     {
         ATLASSERT(m_pActive);
-        ::PostMessage(m_pActive->Wnd(),WM_CLOSE,NULL,NULL);
+        ::PostMessage(m_pActive->Wnd(), WM_CLOSE, NULL, NULL);
         return true;
     }
 
     DECLARE_WND_CLASS_EX(_T("CAutoHideManager"), 0, COLOR_WINDOW)
 protected:
     BEGIN_MSG_MAP(thisClass)
-        MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-        MESSAGE_HANDLER(WM_TIMER,OnTimer)
-        MESSAGE_HANDLER(WM_SIZE, OnSize)
+    MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
+    MESSAGE_HANDLER(WM_TIMER, OnTimer)
+    MESSAGE_HANDLER(WM_SIZE, OnSize)
 /////////////////
-        MESSAGE_HANDLER(WMDF_DOCK,OnDock)
-        CHAIN_MSG_MAP(baseClass)
+    MESSAGE_HANDLER(WMDF_DOCK, OnDock)
+    CHAIN_MSG_MAP(baseClass)
     END_MSG_MAP()
 
     LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
@@ -1763,59 +1911,67 @@ protected:
         CRect rc;
         GetCursorPos(&pt);
         GetWindowRect(&rc);
-        if(!rc.PtInRect(pt))
-        {
-            CWindow wndParent (GetParent());
-            wndParent.ScreenToClient(&pt);
 
-            IPinnedLabel::CPinnedWindow* ptr=LocatePinnedWindow(pt);
-            if(ptr==0 || IsVisualizationNeeded(ptr))
+        if (!rc.PtInRect(pt))
+        {
+            CWindow wndParent(GetParent());
+            wndParent.ScreenToClient(&pt);
+            IPinnedLabel::CPinnedWindow* ptr = LocatePinnedWindow(pt);
+
+            if (ptr == 0 || IsVisualizationNeeded(ptr))
             {
-                HWND hWnd=GetFocus();
-                while( hWnd!=m_hWnd )
+                HWND hWnd = GetFocus();
+
+                while (hWnd != m_hWnd)
                 {
-                    if(hWnd==NULL)
+                    if (hWnd == NULL)
                     {
                         Vanish(true);
-                            break;
+                        break;
                     }
-                    hWnd=::GetParent(hWnd);
+
+                    hWnd =::GetParent(hWnd);
                 }
             }
         }
+
         return 0;
     }
 
     LRESULT OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
     {
-        if(wParam != SIZE_MINIMIZED && (m_pActive!=0))
+        if (wParam != SIZE_MINIMIZED && (m_pActive != 0))
         {
             CRect rc;
             GetClientRect(&rc);
-            ::SetWindowPos(m_pActive->Wnd(),NULL,
-                             rc.left,rc.top,
-                             rc.Width(),rc.Height(),
-                             SWP_NOZORDER | SWP_NOACTIVATE);
+            ::SetWindowPos(m_pActive->Wnd(), NULL,
+                           rc.left, rc.top,
+                           rc.Width(), rc.Height(),
+                           SWP_NOZORDER | SWP_NOACTIVATE);
             GetWindowRect(&rc);
             long width = (IsHorizontal())    ? rc.Height() : rc.Width();
             width -= m_splitter.GetThickness();
-            if(width>m_caption.GetThickness()/*0*/)
+
+            if (width > m_caption.GetThickness()/*0*/)
                 m_pActive->Width(width);
         }
+
         bHandled = FALSE;
         return 1;
     }
     LRESULT OnDock(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
     {
-        LRESULT lRes=FALSE;
-        DFMHDR* pHdr=reinterpret_cast<DFMHDR*>(lParam);
-        switch(pHdr->code)
+        LRESULT lRes = FALSE;
+        DFMHDR* pHdr = reinterpret_cast<DFMHDR*>(lParam);
+
+        switch (pHdr->code)
         {
             case DC_UNDOCK:
                 ATLASSERT(::IsWindow(pHdr->hWnd));
-                lRes=Remove(pHdr->hWnd);
+                lRes = Remove(pHdr->hWnd);
                 break;
         }
+
         return lRes;
     }
 protected:

@@ -144,8 +144,6 @@ public:
         COMMAND_TOGGLE_MEMBER_HANDLER(ID_VIEW_SAMPLE_WND3,m_sampleDockWnd3)
         COMMAND_TOGGLE_MEMBER_HANDLER(ID_VIEW_SAMPLE_WND4,m_sampleDockWnd4)
 
-
-
         CHAIN_MSG_MAP(CUpdateUI<CMainFrame>)
         CHAIN_MSG_MAP(baseClass)
     END_MSG_MAP()
