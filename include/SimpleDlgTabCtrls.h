@@ -39,8 +39,8 @@ public:
     DECLARE_WND_SUPERCLASS(_T("WTL_ButtonDlgTabCtrl"), CStatic::GetWndClassName())
 
     BEGIN_MSG_MAP(CButtonTabCtrl)
-    MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
-    CHAIN_MSG_MAP(customTabClass)
+        MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
+        CHAIN_MSG_MAP(customTabClass)
     END_MSG_MAP()
 
     LRESULT OnSettingChange(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -112,8 +112,8 @@ public:
     enum { CYBORDER = 1 };     // top border thickness
 
     BEGIN_MSG_MAP(CFolderTabCtrl)
-    MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
-    CHAIN_MSG_MAP(customTabClass)
+        MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
+        CHAIN_MSG_MAP(customTabClass)
     END_MSG_MAP()
 
     LRESULT OnSettingChange(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
@@ -244,8 +244,8 @@ public:
     CBrush m_hbrBack;
 
     BEGIN_MSG_MAP(CSimpleDotNetTabCtrl)
-    MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
-    CHAIN_MSG_MAP(customTabClass)
+        MESSAGE_HANDLER(WM_SETTINGCHANGE, OnSettingChange)
+        CHAIN_MSG_MAP(customTabClass)
     END_MSG_MAP()
 
     LRESULT OnSettingChange(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)

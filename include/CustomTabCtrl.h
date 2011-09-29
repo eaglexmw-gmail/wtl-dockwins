@@ -361,7 +361,7 @@ protected:
 public:
     // NOTE: These are here for backwards compatibility.
     //  Use the new CTFI_NONE, CTFI_RECT, etc.
-    typedef enum FieldFlags
+    enum FieldFlags
     {
         eCustomTabItem_None    = CTFI_NONE,
         eCustomTabItem_Rect    = CTFI_RECT,
@@ -566,7 +566,7 @@ protected:
 public:
     // NOTE: This is here for backwards compatibility.
     //  Use the new CTFI_TABVIEW instead
-    typedef enum FieldFlags
+    enum FieldFlags
     {
         eCustomTabItem_TabView = CTFI_TABVIEW,
     };
