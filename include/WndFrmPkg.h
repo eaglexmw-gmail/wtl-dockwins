@@ -732,8 +732,10 @@ public:
         PrepareForDocking(wnd, pHdr->hdr.hBar);
         CFrame frame(0, pHdr->hdr.hWnd);
         bool bRes = baseClass::Dock(frame, pHdr, rc);
-        wnd.SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-//        wnd.ShowWindow(SW_SHOWNA);
+        wnd.SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE |
+            SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW | SWP_NOACTIVATE);
+        wnd.GetTopLevelParent().SetActiveWindow();
+
         return bRes;
     }
     bool Undock(DFMHDR* pHdr, const CRect& rc)

@@ -984,7 +984,11 @@ public:
         else
             m_pos.hdr.hBar = HNONDOCKBAR;
 
-        return (bRes && ShowWindow(SW_HIDE));
+        bool result =(bRes && ShowWindow(SW_HIDE));
+
+        GetTopLevelParent().SetActiveWindow();
+
+        return result;
     }
     virtual bool Show()
     {

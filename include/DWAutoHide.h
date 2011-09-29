@@ -1711,6 +1711,8 @@ public:
         IPinnedLabel* pLabel = pbar->Insert(pHdr);
         bool bRes = (pLabel != 0);
 
+        CWindow(hWnd).GetTopLevelParent().SetActiveWindow();
+
         if (bRes && ((pHdr->dwFlags & DFPU_VISUALIZE) != 0))
             Visualize(pLabel->ActivePinnedWindow(), side);
 
@@ -1767,6 +1769,8 @@ public:
                 break;
             }
         }
+
+        CWindow(hWnd).GetTopLevelParent().SetActiveWindow();
 
         return bRes;
     }
