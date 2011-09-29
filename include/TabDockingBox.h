@@ -314,7 +314,7 @@ public:
         HICON hIcon = wnd.GetIcon(FALSE);
 
         if (hIcon == NULL)
-            hIcon = (HICON) ::GetClassLong(wnd.m_hWnd, GCL_HICONSM);
+            hIcon = (HICON)GetClassLongPtr(wnd.m_hWnd, GCLP_HICONSM);
 
         if (hIcon)
             image = m_images.AddIcon(hIcon);
@@ -407,7 +407,7 @@ public:
                 Hide();
         }
     }
-    bool CanBeClosed(UINT param)
+    bool CanBeClosed(WPARAM param)
     {
         int n = m_tabs.GetItemCount();
         bool bRes = (param == 0);
@@ -507,7 +507,7 @@ public:
         try
         {
             pinHdr.phWnds = new HWND[pinHdr.n];
-            int n = pinHdr.n;
+            int n = static_cast<int>(pinHdr.n);
 
             while (--n >= 0)
             {

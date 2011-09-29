@@ -141,7 +141,7 @@ struct DFPINUP
     DWORD            dwDockSide;
     UINT    nWidth;
     DWORD            dwFlags;
-    UINT    n;
+    SIZE_T    n;
     HWND*            phWnds;
 };
 

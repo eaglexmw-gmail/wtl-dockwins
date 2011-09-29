@@ -421,7 +421,7 @@ public:
             if (m_width < long(m_n))
                 m_passiveTabWidth = 0;
             else
-                m_passiveTabWidth = m_width / m_n;
+                m_passiveTabWidth = static_cast<long>(m_width / m_n);
         }
     }
     virtual long DesiredWidth(CDC& dc) const
@@ -433,7 +433,7 @@ public:
         CDWSettings settings;
         width += settings.CXMinIcon() + captionPadding;
         m_passiveTabWidth = settings.CXMinIcon() + 2 * captionPadding;
-        width += m_passiveTabWidth * (m_n - 1);
+        width += static_cast<long>(m_passiveTabWidth * (m_n - 1));
         return width;
     }
 
@@ -450,7 +450,8 @@ public:
             i = x / m_passiveTabWidth;
         else
         {
-            long width = Width() - (m_n - m_activeTab - 1) * m_passiveTabWidth;
+            long width = static_cast<long>
+                (Width() - (m_n - m_activeTab - 1) * m_passiveTabWidth);
 
             if (width < x)
                 i += (x - width) / m_passiveTabWidth + 1;
@@ -528,7 +529,8 @@ public:
         {
             if (i == m_activeTab)
             {
-                *pRight = *pLeft + m_width - m_passiveTabWidth * (m_n - 1);
+                *pRight = static_cast<long>
+                    (*pLeft + m_width - m_passiveTabWidth * (m_n - 1));
                 ATLASSERT(*pRight <= (side.IsHorizontal() ? rcOutput.right : rcOutput.bottom));
                 DrawActiveTab(i, dc, rcOutput, side.IsHorizontal());
             }
@@ -565,7 +567,7 @@ public:
         return bRes;
     }
 protected:
-    UINT    m_n;
+    SIZE_T    m_n;
     CPinnedWindow*    m_tabs;
     long            m_width;
 
