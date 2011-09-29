@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 #include "DockingWindow.h"
 
 namespace dockwins
@@ -102,23 +104,28 @@ public:
         m_icons[0] = CreateIconFromResourceEx(unpinnedIconData, 0xec, TRUE, 0x00030000, 11, 11, LR_DEFAULTCOLOR);
         m_icons[1] = CreateIconFromResourceEx(pinnedIconData, 0xec, TRUE, 0x00030000, 11, 11, LR_DEFAULTCOLOR);
     }
+
     ~CPinIcons()
     {
-        DestroyIcon(m_icons[0]);
-        DestroyIcon(m_icons[1]);
+        std::for_each(m_icons, m_icons + sizeof(m_icons) / sizeof(*m_icons),
+            DestroyIcon);
     }
+
     HICON GetIcon(States state) const
     {
         return m_icons[state];
     }
+
     int Width() const
     {
         return 11;
     }
+
     int Height() const
     {
         return 11;
     }
+
 protected:
     HICON m_icons[2];
 };
