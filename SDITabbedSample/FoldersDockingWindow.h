@@ -75,7 +75,7 @@ public:
                         TVS_LINESATROOT | TVS_HASLINES |
                         TVS_EDITLABELS|TVS_SHOWSELALWAYS|
                         TVS_DISABLEDRAGDROP|
-                        WS_CHILD | WS_VISIBLE);
+                        WS_CHILD | WS_VISIBLE, WS_EX_CLIENTEDGE);
         m_tree.SetImageList(m_images, TVSIL_NORMAL);
         FillTree(m_tree);
         return 0;

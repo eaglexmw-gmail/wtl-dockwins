@@ -24,28 +24,51 @@
 namespace dockwins
 {
 
-template<long TThickness = 5>
-class CSimpleSplitterBar :  public CRect
+struct CSimpleSplitterBarTraits
+{
+    static int GetWidth()
+    {
+        return ::GetSystemMetrics(SM_CYSIZEFRAME);
+    }
+
+    static int GetHeight()
+    {
+        return ::GetSystemMetrics(SM_CYSIZEFRAME);
+    }
+
+    static int GetSize(bool vertical)
+    {
+        return vertical ? GetWidth() : GetHeight();
+    }
+};
+
+template<class TTraits = CSimpleSplitterBarTraits>
+class CSimpleSplitterBar
+    : public CRect
 {
 public:
-    enum {sbThickness = TThickness};
+    typedef TTraits Traits;
 
     CSimpleSplitterBar(bool bHorizontal = true)
         : m_bHorizontal(bHorizontal)
     {
     }
+
     CSimpleSplitterBar(const CSimpleSplitterBar& ref)
         : CRect(ref), m_bHorizontal(ref.IsHorizontal())
     {
     }
-    static long GetThickness()
+
+    long GetThickness()
     {
-        return sbThickness;
+        return m_bHorizontal ? TTraits::GetHeight() : TTraits::GetWidth();
     }
+
     void SetOrientation(bool bHorizontal)
     {
         m_bHorizontal = bHorizontal;
     }
+
     bool IsHorizontal() const
     {
         return m_bHorizontal;
@@ -75,6 +98,7 @@ public:
     {
         dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
     }
+
     void DrawGhostBar(CDC& dc) const
     {
         CBrush brush = CDCHandle::GetHalftoneBrush();
@@ -86,19 +110,22 @@ public:
             dc.SelectBrush(hBrushOld);
         }
     }
+
     void CleanGhostBar(CDC& dc) const
     {
         DrawGhostBar(dc);
     }
+
 protected:
     bool m_bHorizontal;
 };
 
 
-template<long TThickness = 5>
-class CSimpleSplitterBarEx: public CSimpleSplitterBar<TThickness>
+template<class TTraits = CSimpleSplitterBarTraits>
+class CSimpleSplitterBarEx
+    : public CSimpleSplitterBar<TTraits>
 {
-    typedef CSimpleSplitterBar<TThickness> baseClass;
+    typedef CSimpleSplitterBar<TTraits> baseClass;
 public:
     CSimpleSplitterBarEx(bool bHorizontal = true)
         : baseClass(bHorizontal)

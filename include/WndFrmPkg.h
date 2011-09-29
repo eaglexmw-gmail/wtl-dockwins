@@ -132,26 +132,26 @@ class CWndFramesPackageBase
     typedef typename CTraits::CSplitterBar            CSplitterBar;
     typedef CWndFramesPackageBase<CFrame, TTraits>    thisClass;
 protected:
-    enum {splitterSize = CSplitterBar::sbThickness};
     typedef typename CFrame::position    position;
 
     template < class T,
 #if _MSC_VER<1300
              const T::distance TMinDist = 0 >
 #else
-             const typename T::distance TMinDist = 0 >
+             class TTraits = CSimpleSplitterBarTraits>
 #endif
-    struct CWndFrameTraits : ssec::spraits < T, typename T::position, typename T::distance/*,TMinDist*/ >
+    struct CWndFrameTraits
+        : ssec::spraits < T, typename T::position, typename T::distance/*,TMinDist*/ >
     {
         typedef ssec::spraits < T, position, position/*,TMinDist*/ > baseClass;
         static distance min_distance(const T& x)
         {
-            const distance dist = TMinDist;
+            const distance dist = TTraits::GetWidth();
             return dist + x.MinDistance();
         }
 
     };
-    typedef CWndFrameTraits<CFrame, splitterSize> CFrameTraits;
+    typedef CWndFrameTraits<CFrame, typename CSplitterBar::Traits> CFrameTraits;
     typedef ssec::ssection<CFrame, CFrameTraits> CFrames;
 
     typedef typename CFrames::iterator                    iterator;
@@ -309,7 +309,7 @@ protected:
         CSlider            m_slider;
         CDC                m_dc;
     };
-    template<long add = 0>
+    template<class TTraits>
     class CMinMaxInfoAccumulator
     {
         typedef LPMINMAXINFO(*CFunPtr)(MINMAXINFO& mmInfo, LPMINMAXINFO pMinMaxInfo);
@@ -331,7 +331,8 @@ protected:
             if (pMinMaxInfo->ptMinTrackSize.y < mmInfo.ptMinTrackSize.y)
                 pMinMaxInfo->ptMinTrackSize.y = mmInfo.ptMinTrackSize.y;
 
-            pMinMaxInfo->ptMinTrackSize.x += mmInfo.ptMinTrackSize.x + add;
+            pMinMaxInfo->ptMinTrackSize.x += mmInfo.ptMinTrackSize.x +
+                TTraits::GetHeight();
             return pMinMaxInfo;
         }
         static LPMINMAXINFO MinMaxInfoV(MINMAXINFO& mmInfo, LPMINMAXINFO pMinMaxInfo)
@@ -339,7 +340,7 @@ protected:
             if (pMinMaxInfo->ptMinTrackSize.x < mmInfo.ptMinTrackSize.x)
                 pMinMaxInfo->ptMinTrackSize.x = mmInfo.ptMinTrackSize.x;
 
-            pMinMaxInfo->ptMinTrackSize.y += mmInfo.ptMinTrackSize.y + add;
+            pMinMaxInfo->ptMinTrackSize.y += mmInfo.ptMinTrackSize.y + TTraits::GetWidth();
             return pMinMaxInfo;
         }
     protected:
@@ -359,7 +360,7 @@ protected:
 
             while ((hdwp != NULL) && (++next != end))
             {
-                long x = (*begin) + splitterSize;
+                long x = (*begin) + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
                 hdwp = begin->DeferFramePos(hdwp,
                                             x,
                                             rc.top,
@@ -370,7 +371,7 @@ protected:
 
             if (hdwp != NULL)
             {
-                long x = (*begin) + splitterSize;
+                long x = (*begin) + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
                 hdwp = begin->DeferFramePos(hdwp,
                                             x,
                                             rc.top,
@@ -398,7 +399,7 @@ protected:
 
             while ((hdwp != NULL) && (++next != end))
             {
-                long y = (*begin) + splitterSize;
+                long y = (*begin) + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
                 hdwp = begin->DeferFramePos(hdwp,
                                             rc.left,
                                             y,
@@ -409,7 +410,7 @@ protected:
 
             if (hdwp != NULL)
             {
-                long y = (*begin) + splitterSize;
+                long y = (*begin) + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
                 hdwp = begin->DeferFramePos(hdwp,
                                             rc.left,
                                             y,
@@ -526,7 +527,7 @@ public:
             bounds.hi = rc.bottom;
         }
 
-        bounds.low -= splitterSize;
+        bounds.low -= typename CSplitterBar::Traits::GetSize(!IsHorizontal());
         CBounds::distance_t limit = m_frames.distance_limit();
 
         if (bounds.distance() < limit)
@@ -556,12 +557,12 @@ public:
         if (m_frames.size() != 0)
         {
             pMinMaxInfo = std::accumulate(m_frames.begin(), m_frames.end(),
-                                          pMinMaxInfo, CMinMaxInfoAccumulator<splitterSize>(IsHorizontal()));
+                                          pMinMaxInfo, CMinMaxInfoAccumulator<typename CSplitterBar::Traits>(IsHorizontal()));
 
             if (IsHorizontal())
-                pMinMaxInfo->ptMinTrackSize.x -= splitterSize;
+                pMinMaxInfo->ptMinTrackSize.x -= typename CSplitterBar::Traits::GetSize(!IsHorizontal());
             else
-                pMinMaxInfo->ptMinTrackSize.y -= splitterSize;
+                pMinMaxInfo->ptMinTrackSize.y -= typename CSplitterBar::Traits::GetSize(!IsHorizontal());
         }
     }
     void Draw(CDC& dc, const CRect& rc) const
@@ -708,7 +709,7 @@ public:
         {
             position pos = *i - m_frames.low();
             pHdr->fPctPos = float(pos) / (m_frames.hi() - m_frames.low());
-            pHdr->nHeight = m_frames.get_frame_size(i) - CSplitterBar::GetThickness();
+            pHdr->nHeight = m_frames.get_frame_size(i) - typename CSplitterBar::Traits::GetSize(!IsHorizontal());
 
 //            pHdr->nWidth=IsHorizontal() ? rc.Height() : rc.Width();
 //            pHdr->nWidth-=CSplitterBar::GetThickness();
@@ -925,7 +926,7 @@ class CSubWndFramesPackage :
     typedef CSubWndFramesPackage<TPackageFrame, TTraits> thisClass;
     typedef CWndFramesPackageBase<CFrame, TTraits >        baseClass;
     typedef TPackageFrame    CPackageFrame;
-    enum {controlledLen = (15 + CSplitterBar::sbThickness)};
+
     struct  CDockOrientationFlag
     {
         enum {low = 0, high = 1};
@@ -1022,7 +1023,7 @@ public:
                 bounds.hi = rc.bottom;
             }
 
-            bounds.low -= splitterSize;
+            bounds.low -= typename CSplitterBar::Traits::GetSize(!IsHorizontal());
             CBounds::distance_t limit = m_frames.distance_limit();
 
             if (bounds.distance() < limit)
@@ -1057,6 +1058,11 @@ public:
         baseClass::Draw(dc, *this);
     }
 
+    int GetControlledLen()
+    {
+        return 15 + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
+    }
+
     bool AcceptDock(DFDOCKRECT* pHdr)
     {
         CPoint pt(pHdr->rect.left, pHdr->rect.top);
@@ -1066,12 +1072,12 @@ public:
         if (IsHorizontal())
         {
             pos = pt.x;
-            sz.cx = controlledLen;
+            sz.cx = GetControlledLen();
         }
         else
         {
             pos = pt.y;
-            sz.cy = controlledLen;
+            sz.cy = GetControlledLen();
         }
 
         bool bRes = PtInRect(pt) == TRUE;
@@ -1081,11 +1087,11 @@ public:
 //            position pos=IsHorizontal() ? pHdr->rect.left :pHdr->rect.top;
             const_iterator i = m_frames.locate(pos);
 
-            if (m_frames.get_frame_low(i) + controlledLen > pos)
+            if (m_frames.get_frame_low(i) + GetControlledLen() > pos)
                 bRes = AcceptDock(i, pHdr, *this);
             else
             {
-                if (m_frames.get_frame_hi(i) - controlledLen < pos)
+                if (m_frames.get_frame_hi(i) - GetControlledLen() < pos)
                     bRes = AcceptDock(++i, pHdr, *this);
                 else
                 {
@@ -1135,7 +1141,7 @@ public:
                 if (CDockOrientationFlag::IsLow(pHdr->flag))
                 {
                     ATLASSERT(i != m_frames.end());
-                    pHdr->rect.left = (*i) + CSplitterBar::GetThickness();
+                    pHdr->rect.left = (*i) + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
                     pHdr->rect.right = pHdr->rect.left + len;
                 }
                 else
@@ -1151,7 +1157,7 @@ public:
                 if (CDockOrientationFlag::IsLow(pHdr->flag))
                 {
                     ATLASSERT(i != m_frames.end());
-                    pHdr->rect.top = (*i) + CSplitterBar::GetThickness();
+                    pHdr->rect.top = (*i) + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
                     pHdr->rect.bottom = pHdr->rect.top + len;
                 }
                 else
@@ -1243,7 +1249,8 @@ public:
 
         if (bRes)
         {
-            pHdr->nWidth = m_frames.get_frame_size(i) - CSplitterBar::GetThickness();
+            pHdr->nWidth = m_frames.get_frame_size(i) -
+                typename CSplitterBar::Traits::GetSize(!IsHorizontal());
             CFrames::size_type dWnd = std::distance(m_frames.begin(), i);
             i = std::find_if(m_frames.begin(), m_frames.end(), CFrame::CCmp(m_pDecl->hwnd()));
             ATLASSERT(i != m_frames.end());
@@ -1350,7 +1357,8 @@ public:
                 if (bRes)
                 {
 //                    i=m_frames.insert(i,CFrame(*i,ptr),pHdr->nWidth);
-                    i = m_frames.insert(i, CFrame::CCmp(m_pDecl->hwnd()), CFrame(*i, ptr), pHdr->nWidth + splitterSize);
+                    i = m_frames.insert(i, CFrame::CCmp(m_pDecl->hwnd()), CFrame(*i, ptr), pHdr->nWidth +
+                        typename CSplitterBar::Traits::GetSize(!IsHorizontal()));
                     bRes = Arrange(*this);
                     ATLASSERT(bRes);
                 }
@@ -1372,13 +1380,13 @@ public:
                 if (bRes)
                 {
                     position pos = (i == m_frames.end()) ? m_frames.hi() : *i;
-                    pos -= pHdr->nWidth + CSplitterBar::GetThickness();
+                    pos -= pHdr->nWidth + typename CSplitterBar::Traits::GetSize(!IsHorizontal());
 
                     if (pos < m_frames.low())
                         pos = m_frames.low();
 
 //                    i=m_frames.insert(i,CFrame(pos,ptr),pHdr->nWidth);
-                    i = m_frames.insert(i, CFrame::CCmp(m_pDecl->hwnd()), CFrame(pos, ptr), pHdr->nWidth + splitterSize);
+                    i = m_frames.insert(i, CFrame::CCmp(m_pDecl->hwnd()), CFrame(pos, ptr), pHdr->nWidth + typename CSplitterBar::Traits::GetSize(!IsHorizontal()));
                     bRes = Arrange(*this);
                     ATLASSERT(bRes);
                     pHdr->hdr.hBar = i->hwnd();

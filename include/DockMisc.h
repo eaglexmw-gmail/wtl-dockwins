@@ -78,12 +78,12 @@ struct CDockingFrameTraitsT : CWinTraits <t_dwStyle, t_dwExStyle>
     typedef TSplitterBar CSplitterBar;
 };
 
-typedef CDockingFrameTraitsT < CSimpleSplitterBar<5>,
+typedef CDockingFrameTraitsT < CSimpleSplitterBar<>,
         WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
         WS_EX_APPWINDOW | WS_EX_WINDOWEDGE > CDockingFrameTraits;
 
 
-typedef CDockingFrameTraitsT < CSimpleSplitterBarEx<6>,
+typedef CDockingFrameTraitsT < CSimpleSplitterBarEx<>,
         WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0 > CDockingSiteTraits;
 
 #endif

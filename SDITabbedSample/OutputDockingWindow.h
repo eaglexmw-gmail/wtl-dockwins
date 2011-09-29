@@ -27,7 +27,7 @@ public:
 
     LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
     {
-        m_edit.Create(m_hWnd,NULL, NULL, WS_CHILD | WS_VISIBLE );
+        m_edit.Create(m_hWnd,NULL, NULL, WS_CHILD | WS_VISIBLE, WS_EX_CLIENTEDGE);
         m_edit.AppendText(_T("some text here..."));
         return 0;
     }

@@ -46,11 +46,11 @@ struct CDockingFrameTraitsT : CWinTraits <t_dwStyle, t_dwExStyle>
     typedef TAutoHidePaneTraits CAutoHidePaneTraits;
 };
 
-typedef CDockingFrameTraitsT < COutlookLikeAutoHidePaneTraits, CSimpleSplitterBar<5>,
+typedef CDockingFrameTraitsT < COutlookLikeAutoHidePaneTraits, CSimpleSplitterBar<>,
         WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
         WS_EX_APPWINDOW | WS_EX_WINDOWEDGE > CDockingFrameTraits;
 
-typedef CDockingFrameTraitsT < COutlookLikeAutoHidePaneTraits, CSimpleSplitterBarEx<6>,
+typedef CDockingFrameTraitsT < COutlookLikeAutoHidePaneTraits, CSimpleSplitterBarEx<>,
         WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 0 > CDockingSiteTraits;
 
 struct IPinnedLabel
