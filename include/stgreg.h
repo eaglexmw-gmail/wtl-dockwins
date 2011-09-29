@@ -43,11 +43,12 @@ public:
         return RegOpenKeyEx(static_cast<CStgRegistry&>(parent).m_key, name, 0, ModesMap[mode], &m_key);
     }
 
-    virtual long SetBinary(LPCTSTR name, const void* data, DWORD size)
+    virtual long SetBinary(LPCTSTR name, const void* data, size_t size)
     {
         ATLASSERT(m_key != 0);
         DWORD type = (size == sizeof(DWORD) ? REG_DWORD : REG_BINARY);
-        return ::RegSetValueEx(m_key, name, 0, type, static_cast<const BYTE*>(data), size);
+        return ::RegSetValueEx(m_key, name, 0, type, static_cast<const BYTE*>(data),
+            static_cast<DWORD>(size));
     }
 
     virtual long GetBinary(LPCTSTR name, void* data, size_t& size)
