@@ -445,13 +445,25 @@ public:
         rcOutput.DeflateRect(captionPadding,captionPadding);
         HICON icon=m_tabs[i].Icon();
         CDWSettings settings;
-        CSize  sz(settings.CXMinIcon(),settings.CYMinIcon());
-        if( icon!=0
-            && (sz.cx<=(rc.Width()-2*captionPadding))
-            && (sz.cy<=(rc.Height()-2*captionPadding)) )
+        CSize sz(settings.CXMinIcon(),settings.CYMinIcon());
+
+        if (icon && (sz.cx<=(rc.Width()-2*captionPadding))
+                 && (sz.cy<=(rc.Height()-2*captionPadding)))
         {
-            POINT pt={rcOutput.left,rcOutput.top};
-            dc.DrawIconEx(pt,icon,sz);
+            POINT pt;
+
+            if (side.IsHorizontal())
+            {
+                pt.x = rcOutput.left;
+                pt.y = rcOutput.top + (rcOutput.Height() - sz.cx) / 2;
+            }
+            else
+            {
+                pt.x = rcOutput.left + (rcOutput.Width() - sz.cy) / 2;
+                pt.y = rcOutput.top;
+            }
+
+            dc.DrawIconEx(pt, icon, sz);
         }
         else
         {
