@@ -51,7 +51,7 @@ public:
     }
 
     // Call in WM_DESTROY handler or UnsubclassWindow
-    void Uninitialize(void)
+    void Uninitialize()
     {
         m_headerCtrl = NULL;
     }

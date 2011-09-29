@@ -63,12 +63,12 @@
 #ifndef __ITabbedMDIChildModifiedList_FWD_DEFINED__
 #define __ITabbedMDIChildModifiedList_FWD_DEFINED__
 typedef interface ITabbedMDIChildModifiedList ITabbedMDIChildModifiedList;
-#endif 	/* __ITabbedMDIChildModifiedList_FWD_DEFINED__ */
+#endif     /* __ITabbedMDIChildModifiedList_FWD_DEFINED__ */
 
 #ifndef __ITabbedMDIChildModifiedItem_FWD_DEFINED__
 #define __ITabbedMDIChildModifiedItem_FWD_DEFINED__
 typedef interface ITabbedMDIChildModifiedItem ITabbedMDIChildModifiedItem;
-#endif 	/* __ITabbedMDIChildModifiedItem_FWD_DEFINED__ */
+#endif     /* __ITabbedMDIChildModifiedItem_FWD_DEFINED__ */
 
 
 // Interfaces
@@ -79,45 +79,45 @@ public IUnknown
 {
 public:
     //[propget, id(DISPID_VALUE)]
-    //	HRESULT Item([in] long index, [out, retval] ITabbedMDIChildModifiedItem** item);
+    //    HRESULT Item([in] long index, [out, retval] ITabbedMDIChildModifiedItem** item);
     virtual HRESULT STDMETHODCALLTYPE get_Item(
         long index,
         ITabbedMDIChildModifiedItem** item) = 0;
     //[propget]
-    //	HRESULT Index([in] ITabbedMDIChildModifiedItem* item, [out, retval] long* index);
+    //    HRESULT Index([in] ITabbedMDIChildModifiedItem* item, [out, retval] long* index);
     virtual HRESULT STDMETHODCALLTYPE get_Index(
         ITabbedMDIChildModifiedItem* item,
         long* index) = 0;
     //[propget]
-    //	HRESULT Count([out, retval] long* count);
+    //    HRESULT Count([out, retval] long* count);
     virtual HRESULT STDMETHODCALLTYPE get_Count(
         long* count) = 0;
     //[]
-    //	HRESULT AddNew(
-    //		[in] const wchar_t* name, [in] const wchar_t* displayName, [in] const wchar_t* description,
-    //		[in] DATE lastModified, [in] HICON icon,
-    //		[out, retval,unique,defaultvalue(NULL)] ITabbedMDIChildModifiedItem** item);
+    //    HRESULT AddNew(
+    //        [in] const wchar_t* name, [in] const wchar_t* displayName, [in] const wchar_t* description,
+    //        [in] DATE lastModified, [in] HICON icon,
+    //        [out, retval,unique,defaultvalue(NULL)] ITabbedMDIChildModifiedItem** item);
     virtual HRESULT STDMETHODCALLTYPE AddNew(
         const wchar_t* name, const wchar_t* displayName, const wchar_t* description,
         DATE lastModified, HICON icon,
         ITabbedMDIChildModifiedItem** item = NULL) = 0;
     //[]
-    //	HRESULT Insert([in] long index, [in] ITabbedMDIChildModifiedItem* item);
+    //    HRESULT Insert([in] long index, [in] ITabbedMDIChildModifiedItem* item);
     virtual HRESULT STDMETHODCALLTYPE Insert(
         long index, ITabbedMDIChildModifiedItem* item) = 0;
     //[]
-    //	HRESULT InsertList([in] long index, [in] ITabbedMDIChildModifiedList* list);
+    //    HRESULT InsertList([in] long index, [in] ITabbedMDIChildModifiedList* list);
     virtual HRESULT STDMETHODCALLTYPE InsertList(
         long index, ITabbedMDIChildModifiedList* list) = 0;
     //[]
-    //	HRESULT Remove([in] long index, [out,retval,unique,defaultvalue(NULL)] ITabbedMDIChildModifiedItem** item = NULL);
+    //    HRESULT Remove([in] long index, [out,retval,unique,defaultvalue(NULL)] ITabbedMDIChildModifiedItem** item = NULL);
     virtual HRESULT STDMETHODCALLTYPE Remove(
         long index, ITabbedMDIChildModifiedItem** item = NULL) = 0;
     //[]
-    //	HRESULT Clear();
+    //    HRESULT Clear();
     virtual HRESULT STDMETHODCALLTYPE Clear() = 0;
     //[propget]
-    //	HRESULT ParentItem([out,retval] ITabbedMDIChildModifiedItem** item);
+    //    HRESULT ParentItem([out,retval] ITabbedMDIChildModifiedItem** item);
     virtual HRESULT STDMETHODCALLTYPE get_ParentItem(
         ITabbedMDIChildModifiedItem** item) = 0;
 };
@@ -128,75 +128,75 @@ public IUnknown
 {
 public:
     //[propget]
-    //	HRESULT Window([out,retval] HWND* window);
+    //    HRESULT Window([out,retval] HWND* window);
     virtual HRESULT STDMETHODCALLTYPE get_Window(
         HWND* window) = 0;
     //[propput]
-    //	HRESULT Window([in] HWND window);
+    //    HRESULT Window([in] HWND window);
     virtual HRESULT STDMETHODCALLTYPE put_Window(
         HWND window) = 0;
     //[propget]
-    //	HRESULT Name([out,retval] BSTR* name);
+    //    HRESULT Name([out,retval] BSTR* name);
     virtual HRESULT STDMETHODCALLTYPE get_Name(
         BSTR* name) = 0;
     //[propput]
-    //	HRESULT Name([in] const wchar_t* name);
+    //    HRESULT Name([in] const wchar_t* name);
     virtual HRESULT STDMETHODCALLTYPE put_Name(
         const wchar_t* name) = 0;
     //[propget]
-    //	HRESULT DisplayName([out,retval] BSTR* displayName);
+    //    HRESULT DisplayName([out,retval] BSTR* displayName);
     virtual HRESULT STDMETHODCALLTYPE get_DisplayName(
         BSTR* displayName) = 0;
     //[propput]
-    //	HRESULT DisplayName([in] const wchar_t* displayName);
+    //    HRESULT DisplayName([in] const wchar_t* displayName);
     virtual HRESULT STDMETHODCALLTYPE put_DisplayName(
         const wchar_t* displayName) = 0;
     //[propget]
-    //	HRESULT Description([out,retval] BSTR* description);
+    //    HRESULT Description([out,retval] BSTR* description);
     virtual HRESULT STDMETHODCALLTYPE get_Description(
         BSTR* description) = 0;
     //[propput]
-    //	HRESULT Description([in] const wchar_t* description);
+    //    HRESULT Description([in] const wchar_t* description);
     virtual HRESULT STDMETHODCALLTYPE put_Description(
         const wchar_t* description) = 0;
     //[propget]
-    //	HRESULT LastModifiedUTC([out,retval] DATE* lastModified);
+    //    HRESULT LastModifiedUTC([out,retval] DATE* lastModified);
     virtual HRESULT STDMETHODCALLTYPE get_LastModifiedUTC(
         DATE* lastModified) = 0;
     //[propput]
-    //	HRESULT LastModifiedUTC([in] DATE lastModified);
+    //    HRESULT LastModifiedUTC([in] DATE lastModified);
     virtual HRESULT STDMETHODCALLTYPE put_LastModifiedUTC(
         DATE lastModified) = 0;
     //[propget]
-    //	HRESULT Icon([out,retval] HICON* icon);
+    //    HRESULT Icon([out,retval] HICON* icon);
     virtual HRESULT STDMETHODCALLTYPE get_Icon(
         HICON* icon) = 0;
     //[propput]
-    //	HRESULT Icon([in] HICON icon);
+    //    HRESULT Icon([in] HICON icon);
     virtual HRESULT STDMETHODCALLTYPE put_Icon(
         HICON icon) = 0;
     //[propget]
-    //	HRESULT UserData([out,retval] IUnknown** userData);
+    //    HRESULT UserData([out,retval] IUnknown** userData);
     virtual HRESULT STDMETHODCALLTYPE get_UserData(
         IUnknown** userData) = 0;
     //[propputref]
-    //	HRESULT UserData([in] IUnknown* userData);
+    //    HRESULT UserData([in] IUnknown* userData);
     virtual HRESULT STDMETHODCALLTYPE putref_UserData(
         IUnknown* userData) = 0;
     //[propget]
-    //	HRESULT ParentList([out,retval] ITabbedMDIChildModifiedList** parentList);
+    //    HRESULT ParentList([out,retval] ITabbedMDIChildModifiedList** parentList);
     virtual HRESULT STDMETHODCALLTYPE get_ParentList(
         ITabbedMDIChildModifiedList** parentList) = 0;
     //[propputref]
-    //	HRESULT ParentList([in] ITabbedMDIChildModifiedList* parentList);
+    //    HRESULT ParentList([in] ITabbedMDIChildModifiedList* parentList);
     virtual HRESULT STDMETHODCALLTYPE putref_ParentList(
         ITabbedMDIChildModifiedList* parentList) = 0;
     //[propget]
-    //	HRESULT SubItems([out,retval] ITabbedMDIChildModifiedList** subItems);
+    //    HRESULT SubItems([out,retval] ITabbedMDIChildModifiedList** subItems);
     virtual HRESULT STDMETHODCALLTYPE get_SubItems(
         ITabbedMDIChildModifiedList** subItems) = 0;
     //[]
-    //	HRESULT CopyTo([in] ITabbedMDIChildModifiedItem* destination);
+    //    HRESULT CopyTo([in] ITabbedMDIChildModifiedItem* destination);
     virtual HRESULT STDMETHODCALLTYPE CopyTo(
         ITabbedMDIChildModifiedItem* destination) = 0;
 };
@@ -467,9 +467,9 @@ public:
     END_DLGRESIZE_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
-//	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
-//	LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-//	LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
+//    LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+//    LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+//    LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
 
     LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -497,13 +497,13 @@ public:
 
 // DynamicDialog::CDynamicDialogImpl overrides
 public:
-    bool ConstructDialogResource(void);
+    bool ConstructDialogResource();
 
 protected:
-    bool InitializeControls(void);
-    bool InitializeValues(void);
-    bool InitializeColumns(void);
-    int AutoHideUnusedColumns(void);
+    bool InitializeControls();
+    bool InitializeValues();
+    bool InitializeColumns();
+    int AutoHideUnusedColumns();
     bool FindUsedColumns(ITabbedMDIChildModifiedList* list, int columnUseCount[eColumn_Count]);
     bool AddItems(ITabbedMDIChildModifiedList* list, int indent);
     _CSTRING_NS::CString FormatLastModifiedDateString(DATE lastModifiedUTC);
@@ -514,8 +514,8 @@ protected:
     void SetTristateCheckState(int item, CheckState checkState);
     CheckState GetTristateCheckState(int item);
     void UpdateParentCheckState(int item, CheckState checkState);
-    void CreateDefaultImages(void);
-    void CreateDefaultStateImages(void);
+    void CreateDefaultImages();
+    void CreateDefaultStateImages();
     int AddCheckStateImage(HDC dcScreen, int cx, int cy, enum CheckState checkState);
 
 // Members

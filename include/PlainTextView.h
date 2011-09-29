@@ -80,7 +80,7 @@ public:
 // Helpers
 protected:
 
-    void InitializeFont(void)
+    void InitializeFont()
     {
         // Set the font of the edit control.
         CLogFont logFont;
@@ -102,7 +102,7 @@ protected:
     }
 
 
-    void CreateAccelerators(void)
+    void CreateAccelerators()
     {
         const int cAccel = 13;
         ACCEL AccelTable[cAccel] =
@@ -127,7 +127,7 @@ protected:
         m_hAccel = ::CreateAcceleratorTable(AccelTable, cAccel);
     }
 
-    void DestroyAccelerators(void)
+    void DestroyAccelerators()
     {
         if (m_hAccel)
         {
