@@ -89,7 +89,7 @@ public:
             rc.left += 2;
             rc.top += 2;
          }
-         CString sText = pItem->GetText();
+         _CSTRING_NS::CString sText = pItem->GetText();
          dc.DrawText(sText, sText.GetLength(), &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
       }
    }
@@ -204,7 +204,7 @@ public:
 	  customTabClass::TItem* pItem = this->GetItem(lpNMCustomDraw->nmcd.dwItemSpec);
       if(pItem) {
          // Draw text
-         CString sText = pItem->GetText();
+         _CSTRING_NS::CString sText = pItem->GetText();
          ::InflateRect(&rc, -(CXOFFSET + CXMARGIN), -CYMARGIN);
          dc.DrawText(sText, sText.GetLength(), &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
       }
@@ -362,7 +362,7 @@ public:
       ::InflateRect(&rcText, -m_settings.iPadding, 0);
       rcText.bottom -= 3;
 
-      CString sText = pItem->GetText();
+      _CSTRING_NS::CString sText = pItem->GetText();
       dc.DrawText(sText, sText.GetLength(), &rcText, DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
       dc.SelectFont(hOldFont);
    }
