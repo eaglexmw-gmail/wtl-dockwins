@@ -21,6 +21,8 @@
 #error SimpleSplitterBar.h requires atlmisc.h to be included first
 #endif
 
+#include "dockwins.h"
+
 namespace dockwins
 {
 
@@ -120,7 +122,6 @@ protected:
     bool m_bHorizontal;
 };
 
-
 template<class TTraits = CSimpleSplitterBarTraits>
 class CSimpleSplitterBarEx
     : public CSimpleSplitterBar<TTraits>
@@ -136,12 +137,31 @@ public:
     {
     }
 
-    void Draw(CDC& dc) const
+    void Draw(CDC& dc, DockingSide side = DockingSide_None)
     {
-        dc.FillRect(this, (HBRUSH)LongToPtr(COLOR_3DFACE + 1));
+        dc.FillRect(this, COLOR_3DFACE);
+
         CRect rc(*this);
-//        dc.DrawEdge(&rc, EDGE_RAISED, (IsHorizontal()) ? (BF_TOP | BF_BOTTOM) : (BF_LEFT | BF_RIGHT) );
-        dc.DrawEdge(&rc, BDR_RAISEDINNER, (IsHorizontal()) ? (BF_TOP | BF_BOTTOM) : (BF_LEFT | BF_RIGHT));
+
+        DWORD flags = 0;
+
+        switch (side)
+        {
+            case DockingSide_Left:
+                flags = BF_RIGHT;
+                break;
+            case DockingSide_Right:
+                flags = BF_LEFT;
+                break;
+            case DockingSide_Top:
+                flags = BF_BOTTOM;
+                break;
+            case DockingSide_Bottom:
+                flags = BF_TOP;
+                break;
+        }
+
+        dc.DrawEdge(&rc, BDR_RAISEDINNER, flags);
     }
 
 };

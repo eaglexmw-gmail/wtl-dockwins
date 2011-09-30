@@ -154,6 +154,7 @@
     <ClInclude Include="..\include\DockingFrame.h" />
     <ClInclude Include="..\include\DockingWindow.h" />
     <ClInclude Include="..\include\DockMisc.h" />
+    <ClInclude Include="..\include\dockwins.h" />
     <ClInclude Include="..\include\DotNetTabCtrl.h" />
     <ClInclude Include="..\include\DWAutoHide.h" />
     <ClInclude Include="..\include\dwstate.h" />

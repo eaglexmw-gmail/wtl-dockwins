@@ -28,6 +28,7 @@
 #include "ssec.h"
 #include "DockMisc.h"
 #include "ExtDockingWindow.h"
+#include "dockwins.h"
 
 namespace dockwins
 {
@@ -1121,8 +1122,29 @@ public:
         if ((style & WS_CAPTION) != 0)
             m_caption.Draw(m_hWnd, dc);
 
-        m_splitter.Draw(dc);
+        DockingSide side;
+
+        switch (m_side & 3)
+        {
+            case CDockingSide::sTop:
+                side = DockingSide_Top;
+                break;
+            case CDockingSide::sBottom:
+                side = DockingSide_Bottom;
+                break;
+            case CDockingSide::sLeft:
+                side = DockingSide_Left;
+                break;
+            case CDockingSide::sRight:
+                side = DockingSide_Right;
+                break;
+            default:
+                ATLASSERT(FALSE);
+        }
+
+        m_splitter.Draw(dc, side);
     }
+
     bool CloseBtnPress()
     {
         PostMessage(WM_CLOSE);

@@ -125,5 +125,8 @@
     <ClInclude Include="..\include\WndFrmPkg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\dockwins.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

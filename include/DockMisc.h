@@ -154,7 +154,7 @@ class CDockingSide
         mskSide = 3
     };
 public:
-    enum
+    enum eSide
     {
         sTop = 2, sBottom = 0,
         sLeft = 3, sRight = 1,
