@@ -5,7 +5,7 @@
 #if !defined(AFX_DOCKSITEWINDOW_H__78B78B04_7909_4BF3_8D73_73EF82ABA491__INCLUDED_)
 #define AFX_DOCKSITEWINDOW_H__78B78B04_7909_4BF3_8D73_73EF82ABA491__INCLUDED_
 
-#include <DockingFrame.h>
+#include <dockwins/DockingFrame.h>
 #include "SampleDockingWindow.h"
 
 #if _MSC_VER >= 1000

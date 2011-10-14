@@ -18,6 +18,50 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\dockwins\atlgdix.h" />
+    <ClInclude Include="..\include\dockwins\CustomTabCtrl.h" />
+    <ClInclude Include="..\include\dockwins\dbstate.h" />
+    <ClInclude Include="..\include\dockwins\DDTracker.h" />
+    <ClInclude Include="..\include\dockwins\DockingBox.h" />
+    <ClInclude Include="..\include\dockwins\DockingFrame.h" />
+    <ClInclude Include="..\include\dockwins\DockingWindow.h" />
+    <ClInclude Include="..\include\dockwins\DockMisc.h" />
+    <ClInclude Include="..\include\dockwins\dockwins.h" />
+    <ClInclude Include="..\include\dockwins\DotNetTabCtrl.h" />
+    <ClInclude Include="..\include\dockwins\DWAutoHide.h" />
+    <ClInclude Include="..\include\dockwins\dwstate.h" />
+    <ClInclude Include="..\include\dockwins\DynamicDialogTemplate.h" />
+    <ClInclude Include="..\include\dockwins\ExtDockingWindow.h" />
+    <ClInclude Include="..\include\dockwins\FlyingTabs.h" />
+    <ClInclude Include="..\include\dockwins\ImageUtil.h" />
+    <ClInclude Include="..\include\dockwins\ListViewNoFlicker.h" />
+    <ClInclude Include="..\include\dockwins\PackageWindow.h" />
+    <ClInclude Include="..\include\dockwins\PlainTextView.h" />
+    <ClInclude Include="..\include\dockwins\SimpleDlgTabCtrls.h" />
+    <ClInclude Include="..\include\dockwins\SimpleSplitterBar.h" />
+    <ClInclude Include="..\include\dockwins\SimpleTabCtrls.h" />
+    <ClInclude Include="..\include\dockwins\ssec.h" />
+    <ClInclude Include="..\include\dockwins\sstate.h" />
+    <ClInclude Include="..\include\dockwins\stg.h" />
+    <ClInclude Include="..\include\dockwins\stgreg.h" />
+    <ClInclude Include="..\include\dockwins\stgxml.h" />
+    <ClInclude Include="..\include\dockwins\TabbedDockingWindow.h" />
+    <ClInclude Include="..\include\dockwins\TabbedFrame.h" />
+    <ClInclude Include="..\include\dockwins\TabbedMDI.h" />
+    <ClInclude Include="..\include\dockwins\TabbedMDIMessages.h" />
+    <ClInclude Include="..\include\dockwins\TabbedMDISave.h" />
+    <ClInclude Include="..\include\dockwins\TabDockingBox.h" />
+    <ClInclude Include="..\include\dockwins\WndFrmPkg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\dockwins\DockImpl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F67B4B68-5EEC-40C1-AFD9-3D7D53552B12}</ProjectGuid>
     <RootNamespace>DockWins</RootNamespace>
@@ -119,69 +163,6 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\include\DockImpl.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="stdatl.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdatl.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdatl.h</PrecompiledHeaderFile>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdatl.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdatl.h</PrecompiledHeaderFile>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\include\atlgdix.h" />
-    <ClInclude Include="..\include\CustomTabCtrl.h" />
-    <ClInclude Include="..\include\dbstate.h" />
-    <ClInclude Include="..\include\DDTracker.h" />
-    <ClInclude Include="..\include\DockingBox.h" />
-    <ClInclude Include="..\include\DockingFrame.h" />
-    <ClInclude Include="..\include\DockingWindow.h" />
-    <ClInclude Include="..\include\DockMisc.h" />
-    <ClInclude Include="..\include\dockwins.h" />
-    <ClInclude Include="..\include\DotNetTabCtrl.h" />
-    <ClInclude Include="..\include\DWAutoHide.h" />
-    <ClInclude Include="..\include\dwstate.h" />
-    <ClInclude Include="..\include\DynamicDialogTemplate.h" />
-    <ClInclude Include="..\include\ExtDockingWindow.h" />
-    <ClInclude Include="..\include\FlyingTabs.h" />
-    <ClInclude Include="..\include\ImageUtil.h" />
-    <ClInclude Include="..\include\ListViewNoFlicker.h" />
-    <ClInclude Include="..\include\PackageWindow.h" />
-    <ClInclude Include="..\include\PlainTextView.h" />
-    <ClInclude Include="..\include\SimpleDlgTabCtrls.h" />
-    <ClInclude Include="..\include\SimpleSplitterBar.h" />
-    <ClInclude Include="..\include\SimpleTabCtrls.h" />
-    <ClInclude Include="..\include\ssec.h" />
-    <ClInclude Include="..\include\sstate.h" />
-    <ClInclude Include="stdatl.h" />
-    <ClInclude Include="..\include\stg.h" />
-    <ClInclude Include="..\include\stgreg.h" />
-    <ClInclude Include="..\include\stgxml.h" />
-    <ClInclude Include="..\include\TabbedDockingWindow.h" />
-    <ClInclude Include="..\include\TabbedFrame.h" />
-    <ClInclude Include="..\include\TabbedMDI.h" />
-    <ClInclude Include="..\include\TabbedMDIMessages.h" />
-    <ClInclude Include="..\include\TabbedMDISave.h" />
-    <ClInclude Include="..\include\TabDockingBox.h" />
-    <ClInclude Include="..\include\WndFrmPkg.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

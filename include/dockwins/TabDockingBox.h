@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <atlgdix.h>
+#include <dockwins/atlgdix.h>
 
 #include "CustomTabCtrl.h"
 #include "DotNetTabCtrl.h"

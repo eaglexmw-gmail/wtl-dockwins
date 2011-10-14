@@ -6,7 +6,7 @@
 #define AFX_TASKLISTDOCKINGWINDOW_H__2A6E117E_C650_480D_84F3_1E40C395859C__INCLUDED_
 
 #include <sstream>
-#include <ExtDockingWindow.h>
+#include <dockwins/ExtDockingWindow.h>
 
 #if _MSC_VER > 1000
 #pragma once

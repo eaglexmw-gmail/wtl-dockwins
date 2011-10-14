@@ -5,11 +5,11 @@
 #if !defined(AFX_MAINFRM_H__FF6062EE_F8DC_4B97_8E74_0069145120B8__INCLUDED_)
 #define AFX_MAINFRM_H__FF6062EE_F8DC_4B97_8E74_0069145120B8__INCLUDED_
 
-#include <DockingFrame.h>
+#include <dockwins/DockingFrame.h>
 
-#include <sstate.h>
-#include <dwstate.h>
-#include <stgreg.h>
+#include <dockwins/sstate.h>
+#include <dockwins/dwstate.h>
+#include <dockwins/stgreg.h>
 
 #include "SampleDockingWindow.h"
 #include "FoldersDockingWindow.h"

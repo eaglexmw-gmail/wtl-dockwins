@@ -6,7 +6,7 @@
 #define AFX_FOLDERSDOCKINGWINDOW_H__46F73EC2_257A_4C57_A311_B5ECB00535DF__INCLUDED_
 
 #include <sstream>
-#include <ExtDockingWindow.h>
+#include <dockwins/ExtDockingWindow.h>
 
 #if _MSC_VER > 1000
 #pragma once

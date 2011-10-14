@@ -33,7 +33,7 @@ extern CAppModule _Module;
 #pragma message("to save private data in xml file instead of regestry uncoment this")
 //#define STORE_PRIVATE_DATA_IN_XML
 #pragma message("to add/remove auto-hiding features just add/remove #include <DWAutoHide.h>")
-#include <DWAutoHide.h>
+#include <dockwins/DWAutoHide.h>
 
 #ifdef _MSC_VER
 #if defined _M_IX86

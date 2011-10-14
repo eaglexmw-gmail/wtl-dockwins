@@ -31,7 +31,7 @@ extern CAppModule _Module;
 #endif //(_ATL_VER >= 0x0700)
 
 #pragma message("to add/remove auto-hiding features just add/remove #include <DWAutoHide.h>")
-#include <DWAutoHide.h>
+#include <dockwins/DWAutoHide.h>
 
 #ifdef _MSC_VER
 #if defined _M_IX86

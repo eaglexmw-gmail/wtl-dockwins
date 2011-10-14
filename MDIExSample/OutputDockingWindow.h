@@ -5,7 +5,7 @@
 #if !defined(AFX_OUTPUTDOCKINGWINDOW_H__0D6B82E7_6A06_4FCC_B621_B21ED1C742E9__INCLUDED_)
 #define AFX_OUTPUTDOCKINGWINDOW_H__0D6B82E7_6A06_4FCC_B621_B21ED1C742E9__INCLUDED_
 
-#include <TabDockingBox.h>
+#include <dockwins/TabDockingBox.h>
 
 #if _MSC_VER > 1000
 #pragma once

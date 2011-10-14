@@ -5,15 +5,15 @@
 #if !defined(AFX_MAINFRM_H__45B9F696_4912_4555_8EA9_E985A36A3671__INCLUDED_)
 #define AFX_MAINFRM_H__45B9F696_4912_4555_8EA9_E985A36A3671__INCLUDED_
 
-#include <dbstate.h>
+#include <dockwins/dbstate.h>
 #ifdef STORE_PRIVATE_DATA_IN_XML
-#include <stgxml.h>
+#include <dockwins/stgxml.h>
 #else
-#include <stgreg.h>
+#include <dockwins/stgreg.h>
 #endif //STORE_PRIVATE_DATA_IN_XML
 
 
-#include <DockingFrame.h>
+#include <dockwins/DockingFrame.h>
 #include "FoldersDockingWindow.h"
 #include "OutputDockingWindow.h"
 #include "TaskListDockingWindow.h"

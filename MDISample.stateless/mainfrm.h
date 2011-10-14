@@ -5,7 +5,7 @@
 #if !defined(AFX_MAINFRM_H__07FAAE85_FAE5_4CEF_8688_3823D32BADD1__INCLUDED_)
 #define AFX_MAINFRM_H__07FAAE85_FAE5_4CEF_8688_3823D32BADD1__INCLUDED_
 
-#include <DockingFrame.h>
+#include <dockwins/DockingFrame.h>
 #include "SampleDockingWindow.h"
 #include "FoldersDockingWindow.h"
 #include "OutputDockingWindow.h"
