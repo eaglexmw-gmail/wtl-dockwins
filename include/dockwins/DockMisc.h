@@ -21,6 +21,8 @@
 #error dockmisk.h requires atlmisc.h to be included first
 #endif
 
+#include <string>
+
 #include "SimpleSplitterBar.h"
 
 namespace dockwins
@@ -606,7 +608,51 @@ protected:
     static CSettings settings;
 };
 
-void DrawEllipsisText(CDC& dc, LPCTSTR sText, int n, LPRECT prc, bool bHorizontal);
+__declspec(selectany) CDWSettings::CSettings CDWSettings::settings;
+
+inline void DrawEllipsisText(CDC& dc, LPCTSTR sText, int n, LPRECT prc, bool bHorizontal)
+{
+    if (n < 0)
+        n = lstrlen(sText);
+
+    long width = bHorizontal ? prc->right - prc->left : prc->bottom - prc->top;
+    CSize size;
+    std::basic_string<TCHAR> sTmp;
+    ATLVERIFY(dc.GetTextExtent(sText, n, &size));
+
+    if (width < size.cx)
+    {
+        const std::basic_string<TCHAR> sEllipsis = _T("...");
+        sTmp.reserve(sEllipsis.size() + n);
+        sTmp.append(sEllipsis);
+        sTmp.append(sText, n);
+        bool bRes = (GetTextExtentExPoint(dc, sTmp.c_str(), static_cast<int>
+            (sTmp.size()), width, &n, NULL, &size) != FALSE);
+
+        if (bRes)
+        {
+            int newLegnth = static_cast<int>(sEllipsis.size() + 1);
+
+            if (n < newLegnth)
+                n = newLegnth;
+
+            sTmp.assign(sText, n - sEllipsis.size());
+            sTmp.append(sEllipsis);
+            sText = sTmp.c_str();
+        }
+    }
+
+    //    UINT prevAlign=dc.SetTextAlign(TA_LEFT | TA_TOP | TA_NOUPDATECP);
+    CPoint pt(prc->left, prc->top);
+
+    if (bHorizontal)
+        pt.y = (prc->bottom - prc->top - size.cy) / 2 + prc->top;
+    else
+        pt.x = prc->right - (prc->right - prc->left - size.cy) / 2;
+
+    dc.ExtTextOut(pt.x, pt.y, ETO_CLIPPED, prc, sText, n, NULL);
+    //    dc.SetTextAlign(prevAlign);
+}
 
 }//namespace dockwins
 #endif // WTL_DW_DOCKMISC_H_INCLUDED_

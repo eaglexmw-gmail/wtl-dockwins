@@ -708,10 +708,19 @@ protected:
     CCloseButton    m_btnClose;
 };
 
-
 typedef CDockingWindowTraits < CVC6LikeCaption,
         WS_OVERLAPPEDWINDOW | WS_POPUP | WS_VISIBLE |
         WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_TOOLWINDOW >
         CVC6LikeTitleDockingWindowTraits;
+
+#ifdef DF_AUTO_HIDE_FEATURES
+
+__declspec(selectany) COutlookLikeCaption::CPinButton::CIcons
+    COutlookLikeCaption::CPinButton::m_icons;
+__declspec(selectany) CVC6LikeCaption::CPinButton::CIcons
+    CVC6LikeCaption::CPinButton::m_icons;
+
+#endif // DF_AUTO_HIDE_FEATURES
+
 }//namespace dockwins
 #endif // WTL_DW_EXTDOCKINGWINDOW_H_INCLUDED_

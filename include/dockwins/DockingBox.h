@@ -108,6 +108,8 @@ protected:
     static CDockingBoxMessage m_message;
 };
 
+__declspec(selectany) CDockingBoxMessage CDockingBox::m_message;
+
 class CBoxDocker : public CDocker
 {
 public:
