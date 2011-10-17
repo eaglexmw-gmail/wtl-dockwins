@@ -3,8 +3,9 @@
 
 #pragma once
 
-namespace
+namespace dockwins
 {
+
 enum DockingSide
 {
     DockingSide_None,
@@ -14,7 +15,6 @@ enum DockingSide
     DockingSide_Bottom
 };
 
-} // dockwins
+} // namespace dockwins
 
 #endif // DOCKWINS_H
-
