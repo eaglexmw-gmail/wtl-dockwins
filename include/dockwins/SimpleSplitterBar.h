@@ -161,7 +161,7 @@ public:
                 break;
         }
 
-        dc.DrawEdge(&rc, BDR_RAISEDINNER, flags);
+        dc.DrawEdge(&rc, EDGE_RAISED, flags);
     }
 
 };
