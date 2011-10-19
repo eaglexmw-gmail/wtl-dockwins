@@ -62,7 +62,7 @@ struct bounds_type
 };
 
 //uncommenting default value for TPosition yield "fatal error C1001: INTERNAL COMPILER ERROR" I don't know why
-template < class T, class TPosition/*=long*/, class TDistance = long, const TDistance TMinDistance = 0 >
+template < class T, class TPosition = long, class TDistance = long, TDistance TMinDistance = 0 >
 class spraits
 {
 public:
@@ -75,7 +75,7 @@ public:
 };
 
 //SeparatedSection
-template<class T, class TTraits = spraits<> >
+template<class T, class TTraits = spraits<T> >
 class ssection
 {
     typedef T                        separator_t;
