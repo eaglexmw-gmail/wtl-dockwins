@@ -204,6 +204,7 @@ public:
     bool Invalidate()
     {
         Invalidate(m_side);
+        return true;
     }
     static void Invalidate(DWORD& side)
     {

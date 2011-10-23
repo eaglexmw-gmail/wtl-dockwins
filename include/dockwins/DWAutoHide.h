@@ -596,7 +596,7 @@ public:
         for (CBunch::iterator i = m_bunch.begin(); i != m_bunch.end(); ++i)
             delete *i;
     }
-    operator const CRect& () const
+    const CRect& GetBounds() const
     {
         return *this;
     }
@@ -1697,12 +1697,12 @@ public:
         CBrush bgrBrush;
         bgrBrush.CreateSolidBrush(settings.CoolCtrlBackgroundColor());
         HBRUSH hOldBrush = dc.SelectBrush(bgrBrush);
-        CRect rcTop(m_bars[CSide::sTop].operator const CRect & ());
-        CRect rcBottom(m_bars[CSide::sBottom].operator const CRect & ());
+        CRect rcTop(m_bars[CSide::sTop].GetBounds());
+        CRect rcBottom(m_bars[CSide::sBottom].GetBounds());
 
         if (m_bars[CSide::sLeft].IsBarVisible())
         {
-            const CRect& rc = m_bars[CSide::sLeft].operator const CRect & ();
+            const CRect& rc = m_bars[CSide::sLeft].GetBounds();
             rcTop.left -= rc.Height();
             rcBottom.left -= rc.Height();
             dc.PatBlt(rc.left, rc.top, rc.Width(), rc.Height(), PATCOPY);
@@ -1710,7 +1710,7 @@ public:
 
         if (m_bars[CSide::sRight].IsBarVisible())
         {
-            const CRect& rc = m_bars[CSide::sRight].operator const CRect & ();
+            const CRect& rc = m_bars[CSide::sRight].GetBounds();
             rcTop.right += rc.Height();
             rcBottom.right += rc.Height();
             dc.PatBlt(rc.left, rc.top, rc.Width(), rc.Height(), PATCOPY);
